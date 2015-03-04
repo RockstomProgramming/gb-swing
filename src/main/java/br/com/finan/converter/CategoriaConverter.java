@@ -3,7 +3,6 @@ package br.com.finan.converter;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
-import org.hibernate.Hibernate;
 import org.jdesktop.beansbinding.Converter;
 
 /**

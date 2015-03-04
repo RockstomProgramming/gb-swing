@@ -1,6 +1,6 @@
 package br.com.finan.util;
 
-import br.com.finan.form.despesa.ManterDespesaForm;
+import br.com.finan.form.despesa.CadastroDespesaForm;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +18,7 @@ public class Formatters {
         try {
             dateFormatter = new MaskFormatter("##/##/####");
         } catch (ParseException ex) {
-            Logger.getLogger(ManterDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

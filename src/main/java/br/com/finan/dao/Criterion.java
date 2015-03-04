@@ -50,6 +50,8 @@ public interface Criterion {
 
 	CriteriaBuilder eqStatusAtivo();
 	CriteriaBuilder eqStatus(EnumStatus status);
+        
+        CriteriaBuilder sqlRestrictions(String sql);
 
 	CriteriaBuilder ilike(String propertyName, Object value);
 	CriteriaBuilder ilike(String propertyName, String value, MatchMode mode);

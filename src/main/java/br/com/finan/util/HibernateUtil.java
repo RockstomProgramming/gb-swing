@@ -65,8 +65,8 @@ public final class HibernateUtil {
     
     public static void inativar(Long id, String classe) {
         Query query = getSessao().createQuery("UPDATE ".concat(classe).concat(" SET status = :status WHERE id = :id"));
-        query.setParameter(":status", EnumStatus.INATIVO);
-        query.setParameter(":id", id);
+        query.setParameter("status", EnumStatus.INATIVO);
+        query.setParameter("id", id);
         query.executeUpdate();
     }
 }

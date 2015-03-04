@@ -1,6 +1,7 @@
 package br.com.finan.form.principal;
 
-import br.com.finan.form.despesa.ManterDespesaForm;
+import br.com.finan.form.despesa.CadastroDespesaForm;
+import br.com.finan.form.despesa.ListagemDespesaForm;
 import java.awt.Component;
 import javax.swing.JInternalFrame;
 
@@ -15,7 +16,7 @@ public class PrincipalForm extends javax.swing.JFrame {
      */
     public PrincipalForm() {
         initComponents();
-        abrirFrame(new ManterDespesaForm(), NomeFrame.DESPESA_FRAME.toString());
+        abrirFrame(new CadastroDespesaForm(), NomeFrame.CADASTRO_DESPESA_FRAME.toString());
     }
 
     /**
@@ -49,7 +50,7 @@ public class PrincipalForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
-                .addContainerGap(613, Short.MAX_VALUE))
+                .addContainerGap(881, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -57,14 +58,14 @@ public class PrincipalForm extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        abrirFrame(new ManterDespesaForm(), NomeFrame.DESPESA_FRAME.toString());
+        abrirFrame(new ListagemDespesaForm(), NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void abrirFrame(JInternalFrame frame, String nome) {
@@ -88,7 +89,8 @@ public class PrincipalForm extends javax.swing.JFrame {
 
     enum NomeFrame {
 
-        DESPESA_FRAME;
+        CADASTRO_DESPESA_FRAME,
+        LISTAGEM_DESPESA_FRAME;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

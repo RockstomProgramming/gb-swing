@@ -136,6 +136,12 @@ public class CriteriaBuilder implements Criterion {
     }
 
     @Override
+    public CriteriaBuilder sqlRestrictions(String sql) {
+        getCriteria().add(Restrictions.sqlRestriction(sql));
+        return this;
+    }
+
+    @Override
     public CriteriaBuilder addFiltro(final Map<String, Object> filters) {
         if (filters != null) {
             for (final Map.Entry<String, Object> entry : filters.entrySet()) {

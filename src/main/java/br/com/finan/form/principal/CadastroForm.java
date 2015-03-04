@@ -30,7 +30,7 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
     }
 
     protected void salvar() {
-        HibernateUtil.salvar(entidade);
+//        HibernateUtil.salvar(entidade);
         limparCampos();
         iniciarDados();
         JOptionPane.showMessageDialog(getFrame(), "Dados Salvos com sucesso");

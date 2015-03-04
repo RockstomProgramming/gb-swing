@@ -67,6 +67,12 @@ public class Conta extends Entidade {
     @Enumerated(EnumType.ORDINAL)
     private TipoConta tipo;
 
+    @Override
+    public void preSalvar() {
+        setDataEmisao(new Date());
+        super.preSalvar();
+    }
+
     public String getDescricao() {
         return descricao;
     }

@@ -22,6 +22,11 @@ public class ContaBancaria extends Entidade {
     @Column
     private String agencia;
 
+    @Override
+    public String toString() {
+        return getDescricao();
+    }
+    
     public ContaBancaria() {
         super();
     }
