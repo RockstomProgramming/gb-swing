@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package br.com.finan.util;
 
 import br.com.finan.form.despesa.ManterDespesaForm;
@@ -14,7 +8,7 @@ import javax.swing.text.MaskFormatter;
 
 /**
  *
- * @author fabrica
+ * @author Wesley Luiz
  */
 public class Formatters {
     

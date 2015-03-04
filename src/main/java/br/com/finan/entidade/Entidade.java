@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.finan.entidade;
 
 import br.com.finan.entidade.enumerator.EnumStatus;
@@ -18,7 +13,7 @@ import javax.persistence.PrePersist;
 
 /**
  *
- * @author fabrica
+ * @author Wesley Luiz
  */
 @MappedSuperclass
 public class Entidade implements Serializable {

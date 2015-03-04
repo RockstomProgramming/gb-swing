@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.finan.converter;
 
 import br.com.finan.entidade.Categoria;
@@ -13,7 +8,7 @@ import org.jdesktop.beansbinding.Converter;
 
 /**
  *
- * @author fabrica
+ * @author Wesley Luiz
  */
 public class CategoriaConverter extends Converter<Categoria, String> {
 

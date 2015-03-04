@@ -1,10 +1,9 @@
 package br.com.finan.entidade;
 
+import br.com.finan.entidade.enumerator.FormaPagamento;
 import br.com.finan.entidade.enumerator.TipoConta;
-import br.com.note.model.enumerator.FormaPagamento;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

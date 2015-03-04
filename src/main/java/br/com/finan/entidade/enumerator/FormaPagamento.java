@@ -1,4 +1,4 @@
-package br.com.note.model.enumerator;
+package br.com.finan.entidade.enumerator;
 
 public enum FormaPagamento {
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.finan.form.despesa;
 
 import br.com.finan.entidade.Categoria;
@@ -16,7 +11,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author fabrica
+ * @author Wesley Luiz
  */
 public class ManterDespesaForm extends CadastroForm<Conta> {
 

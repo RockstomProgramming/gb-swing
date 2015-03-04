@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.finan.form.principal;
 
 import br.com.finan.util.Formatters;
@@ -34,11 +29,15 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
         formatters = new Formatters();
     }
 
-     protected void salvar() {
+    protected void salvar() {
         HibernateUtil.salvar(entidade);
         limparCampos();
         iniciarDados();
         JOptionPane.showMessageDialog(getFrame(), "Dados Salvos com sucesso");
+    }
+
+    protected void alterar() {
+
     }
 
     protected T obterPorId(Long id) {

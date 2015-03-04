@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.finan.form.principal;
 
 import br.com.finan.util.HibernateUtil;
@@ -10,7 +5,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author fabrica
+ * @author Wesley Luiz
  */
 public class Main {
 
