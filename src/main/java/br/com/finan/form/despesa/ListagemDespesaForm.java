@@ -66,7 +66,7 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
 
             },
             new String [] {
-                "Título 1", "Título 2", "Título 3", "Título 4", "Título 5"
+                "", "Descrição", "Categoria", "Vencimento", "Valor"
             }
         ) {
             Class[] types = new Class [] {
@@ -222,14 +222,6 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
     @Override
     protected JTable getTable() {
         return tblDespesa;
-    }
-
-    @Override
-    protected void buscarDados() {
-        super.buscarDados();
-//        for (DespesaDTO dto : getDados()) {
-//            getModel().addRow(new Object[]{dto.isSelecionado(), dto.getDescricao(), dto.getCategoria(), dto.getVencimento(), dto.getValor()});
-//        }
     }
 
     @Override

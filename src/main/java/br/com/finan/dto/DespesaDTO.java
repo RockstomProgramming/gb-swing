@@ -12,19 +12,19 @@ public class DespesaDTO {
     
     private Long id;
     
-    @ColunaTabela
+    @ColunaTabela(2)
     private String descricao;
     
-    @ColunaTabela
+    @ColunaTabela(3)
     private String categoria;
     
-    @ColunaTabela
+    @ColunaTabela(5)
     private BigDecimal valor;
     
-    @ColunaTabela
+    @ColunaTabela(4)
     private Date vencimento;
     
-    @ColunaTabela
+    @ColunaTabela(1)
     private boolean selecionado;
     
     private Integer parcela;
