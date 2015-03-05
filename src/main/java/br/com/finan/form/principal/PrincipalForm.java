@@ -16,7 +16,7 @@ public class PrincipalForm extends javax.swing.JFrame {
      */
     public PrincipalForm() {
         initComponents();
-        abrirFrame(new CadastroDespesaForm(), NomeFrame.CADASTRO_DESPESA_FRAME.toString());
+        abrirFrame(new ListagemDespesaForm(), NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
     }
 
     /**
@@ -65,7 +65,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        abrirFrame(new ListagemDespesaForm(), NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
+        abrirFrame(new CadastroDespesaForm(), NomeFrame.CADASTRO_DESPESA_FRAME.toString());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void abrirFrame(JInternalFrame frame, String nome) {
