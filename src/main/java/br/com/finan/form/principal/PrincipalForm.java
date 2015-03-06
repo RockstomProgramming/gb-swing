@@ -2,7 +2,6 @@ package br.com.finan.form.principal;
 
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.despesa.ListagemDespesaForm;
-import br.com.finan.form.receita.ListagemReceitaForm;
 import java.awt.Component;
 import javax.swing.JInternalFrame;
 
@@ -17,8 +16,7 @@ public class PrincipalForm extends javax.swing.JFrame {
      */
     public PrincipalForm() {
         initComponents();
-        abrirFrame(new ListagemReceitaForm(), NomeFrame.LISTAGEM_RECEITA_FRAME.toString());
-//        abrirFrame(new ListagemDespesaForm(), NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
+        abrirFrame(new ListagemDespesaForm(), NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
 //        abrirFrame(new CadastroReceitaForm(), NomeFrame.CADASTRO_RECEITA_FRAME.toString());
     }
 

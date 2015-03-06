@@ -3,8 +3,10 @@ package br.com.finan.form.despesa;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DespesaDTO;
 import br.com.finan.entidade.Conta;
+import br.com.finan.entidade.enumerator.Mes;
 import br.com.finan.entidade.enumerator.TipoConta;
-import br.com.finan.form.principal.ContaForm;
+import br.com.finan.form.principal.ListagemContaForm;
+import br.com.finan.form.principal.ListagemForm;
 import br.com.finan.util.HibernateUtil;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -15,7 +17,7 @@ import org.hibernate.sql.JoinType;
  *
  * @author Wesley Luiz
  */
-public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
+public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
 
     /**
      * Creates new form ListagemDespesa
@@ -114,7 +116,6 @@ public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
         pnlPaginacao.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lbPaginacao.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbPaginacao.setText("jLabel1");
 
         btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png"))); // NOI18N
         btnAnterior.addActionListener(new java.awt.event.ActionListener() {
@@ -178,7 +179,7 @@ public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 796, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -275,10 +276,11 @@ public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-//    @Override
-//    protected JTable getTable() {
-//        return tblDespesa;
-//    }
+    @Override
+    protected JTable getTable() {
+        return tblDespesa;
+    }
+
     @Override
     protected CriteriaBuilder getBuilderListagem() {
         return HibernateUtil.getCriteriaBuilder(Conta.class)
@@ -307,8 +309,8 @@ public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
                 .sqlRestrictions("YEAR(dataVencimento) = " + getAno());
     }
 
-//    @Override
-//    protected JPanel getPanelPaginacao() {
-//        return pnlPaginacao;
-//    }
+    @Override
+    protected JPanel getPanelPaginacao() {
+        return pnlPaginacao;
+    }
 }

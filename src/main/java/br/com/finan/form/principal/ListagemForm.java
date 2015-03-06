@@ -37,22 +37,9 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
     private Long qntRegistros = 0L;
     protected final int MAX_REGISTROS = 15;
 
-    private javax.swing.JButton btnAnterior;
-    private javax.swing.JButton btnExcluir;
-    private javax.swing.JButton btnMesAnterior;
-    private javax.swing.JButton btnMesProximo;
-    private javax.swing.JButton btnPrimeiro;
-    private javax.swing.JButton btnProximo;
-    private javax.swing.JButton btnSalvar;
-    private javax.swing.JButton btnUltimo;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbPaginacao;
-    private javax.swing.JPanel pnlPaginacao;
-    private javax.swing.JTable tabela;
-
     protected void iniciarDados() {
-        setModel((DefaultTableModel) getTabela().getModel());
-        getTabela().setModel(getModel());
+        setModel((DefaultTableModel) getTable().getModel());
+        getTable().setModel(getModel());
         buscarDados(0);
         validarBtnPaginacao();
     }
@@ -97,23 +84,23 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
     }
 
     protected void validarBtnPaginacao() {
-//        getPanelPaginacao().getComponent(1).setEnabled(getPagina() != 1);
-//        getPanelPaginacao().getComponent(2).setEnabled(getPanelPaginacao().getComponent(1).isEnabled());
-//        getPanelPaginacao().getComponent(3).setEnabled(!isUltimaPagina());
-//        getPanelPaginacao().getComponent(4).setEnabled(!isUltimaPagina());
-//        ((JLabel) getPanelPaginacao().getComponent(0)).setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
+        getPanelPaginacao().getComponent(1).setEnabled(getPagina() != 1);
+        getPanelPaginacao().getComponent(2).setEnabled(getPanelPaginacao().getComponent(1).isEnabled());
+        getPanelPaginacao().getComponent(3).setEnabled(!isUltimaPagina());
+        getPanelPaginacao().getComponent(4).setEnabled(!isUltimaPagina());
+        ((JLabel) getPanelPaginacao().getComponent(0)).setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
     }
 
     protected void inativarDados(String nomeClasse) {
-//        for (int i = 0; i < getTable().getRowCount(); i++) {
-//            boolean b = (boolean) getTable().getValueAt(i, 0);
-//            if (b) {
-//                T dto = getDados().get(i);
-//                HibernateUtil.inativar(dto.getId(), nomeClasse);
-//            }
-//        }
-//
-//        iniciarDados();
+        for (int i = 0; i < getTable().getRowCount(); i++) {
+            boolean b = (boolean) getTable().getValueAt(i, 0);
+            if (b) {
+                T dto = getDados().get(i);
+                HibernateUtil.inativar(dto.getId(), nomeClasse);
+            }
+        }
+
+        iniciarDados();
     }
 
     protected void buscarDados(int primResultado) {
@@ -166,12 +153,14 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
         return v;
     }
 
-//    protected abstract JTable getTable();
+    protected abstract JTable getTable();
+
     protected abstract CriteriaBuilder getBuilderListagem();
 
     protected abstract CriteriaBuilder getBuilderQntRegistros();
 
-//    protected abstract JPanel getPanelPaginacao();
+    protected abstract JPanel getPanelPaginacao();
+
     public DefaultTableModel getModel() {
         return model;
     }
@@ -202,101 +191,5 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 
     public void setQntRegistros(Long qntRegistros) {
         this.qntRegistros = qntRegistros;
-    }
-
-    public javax.swing.JButton getBtnAnterior() {
-        return btnAnterior;
-    }
-
-    public void setBtnAnterior(javax.swing.JButton btnAnterior) {
-        this.btnAnterior = btnAnterior;
-    }
-
-    public javax.swing.JButton getBtnExcluir() {
-        return btnExcluir;
-    }
-
-    public void setBtnExcluir(javax.swing.JButton btnExcluir) {
-        this.btnExcluir = btnExcluir;
-    }
-
-    public javax.swing.JButton getBtnMesAnterior() {
-        return btnMesAnterior;
-    }
-
-    public void setBtnMesAnterior(javax.swing.JButton btnMesAnterior) {
-        this.btnMesAnterior = btnMesAnterior;
-    }
-
-    public javax.swing.JButton getBtnMesProximo() {
-        return btnMesProximo;
-    }
-
-    public void setBtnMesProximo(javax.swing.JButton btnMesProximo) {
-        this.btnMesProximo = btnMesProximo;
-    }
-
-    public javax.swing.JButton getBtnPrimeiro() {
-        return btnPrimeiro;
-    }
-
-    public void setBtnPrimeiro(javax.swing.JButton btnPrimeiro) {
-        this.btnPrimeiro = btnPrimeiro;
-    }
-
-    public javax.swing.JButton getBtnProximo() {
-        return btnProximo;
-    }
-
-    public void setBtnProximo(javax.swing.JButton btnProximo) {
-        this.btnProximo = btnProximo;
-    }
-
-    public javax.swing.JButton getBtnSalvar() {
-        return btnSalvar;
-    }
-
-    public void setBtnSalvar(javax.swing.JButton btnSalvar) {
-        this.btnSalvar = btnSalvar;
-    }
-
-    public javax.swing.JButton getBtnUltimo() {
-        return btnUltimo;
-    }
-
-    public void setBtnUltimo(javax.swing.JButton btnUltimo) {
-        this.btnUltimo = btnUltimo;
-    }
-
-    public javax.swing.JScrollPane getjScrollPane1() {
-        return jScrollPane1;
-    }
-
-    public void setjScrollPane1(javax.swing.JScrollPane jScrollPane1) {
-        this.jScrollPane1 = jScrollPane1;
-    }
-
-    public javax.swing.JLabel getLbPaginacao() {
-        return lbPaginacao;
-    }
-
-    public void setLbPaginacao(javax.swing.JLabel lbPaginacao) {
-        this.lbPaginacao = lbPaginacao;
-    }
-
-    public javax.swing.JPanel getPnlPaginacao() {
-        return pnlPaginacao;
-    }
-
-    public void setPnlPaginacao(javax.swing.JPanel pnlPaginacao) {
-        this.pnlPaginacao = pnlPaginacao;
-    }
-
-    public javax.swing.JTable getTabela() {
-        return tabela;
-    }
-
-    public void setTabela(javax.swing.JTable tabela) {
-        this.tabela = tabela;
     }
 }

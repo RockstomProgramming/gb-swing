@@ -392,6 +392,8 @@ public class CadastroDespesaForm extends CadastroForm<Conta> {
                 Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        iniciarDados();
     }
 
     @Override
