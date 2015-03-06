@@ -275,11 +275,10 @@ public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    protected JTable getTable() {
-        return tblDespesa;
-    }
-
+//    @Override
+//    protected JTable getTable() {
+//        return tblDespesa;
+//    }
     @Override
     protected CriteriaBuilder getBuilderListagem() {
         return HibernateUtil.getCriteriaBuilder(Conta.class)
@@ -308,8 +307,8 @@ public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
                 .sqlRestrictions("YEAR(dataVencimento) = " + getAno());
     }
 
-    @Override
-    protected JPanel getPanelPaginacao() {
-        return pnlPaginacao;
-    }
+//    @Override
+//    protected JPanel getPanelPaginacao() {
+//        return pnlPaginacao;
+//    }
 }
