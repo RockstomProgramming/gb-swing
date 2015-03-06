@@ -20,11 +20,11 @@ public class CategoriaConverter extends Converter<Categoria, String> {
     public Categoria convertReverse(String t) {
         Categoria categoria = (Categoria) HibernateUtil.getCriteriaBuilder(Categoria.class).eq("nome", t)
                 .eqStatusAtivo().uniqueResult();
-        
+
         if (ObjetoUtil.isReferencia(categoria)) {
             return categoria;
         }
-        
+
         return new Categoria(t);
     }
 

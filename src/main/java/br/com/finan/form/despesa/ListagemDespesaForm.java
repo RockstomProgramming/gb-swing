@@ -3,14 +3,10 @@ package br.com.finan.form.despesa;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DespesaDTO;
 import br.com.finan.entidade.Conta;
-import br.com.finan.entidade.enumerator.Mes;
 import br.com.finan.entidade.enumerator.TipoConta;
-import br.com.finan.form.principal.ListagemForm;
+import br.com.finan.form.principal.ContaForm;
 import br.com.finan.util.HibernateUtil;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import org.hibernate.criterion.Order;
 import org.hibernate.sql.JoinType;
@@ -19,21 +15,12 @@ import org.hibernate.sql.JoinType;
  *
  * @author Wesley Luiz
  */
-public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
-
-    private static final String MASK_YEAR = "yyyy";
-
-    private List<Mes> meses;
-    private Mes mesSelecionado;
-    private String ano;
+public class ListagemDespesaForm extends ContaForm<DespesaDTO> {
 
     /**
      * Creates new form ListagemDespesa
      */
     public ListagemDespesaForm() {
-        meses = Arrays.asList(Mes.values());
-        mesSelecionado = Mes.JANEIRO;
-        ano = new SimpleDateFormat(MASK_YEAR).format(new Date());
         initComponents();
         iniciarDados();
     }
@@ -56,11 +43,12 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
         btnMesProximo = new javax.swing.JButton();
         txtMes = new javax.swing.JComboBox();
         txtAno = new javax.swing.JTextField();
-        btnUltimo = new javax.swing.JButton();
-        btnProximo = new javax.swing.JButton();
-        btnAnterior = new javax.swing.JButton();
-        btnPrimeiro = new javax.swing.JButton();
+        pnlPaginacao = new javax.swing.JPanel();
         lbPaginacao = new javax.swing.JLabel();
+        btnAnterior = new javax.swing.JButton();
+        btnProximo = new javax.swing.JButton();
+        btnUltimo = new javax.swing.JButton();
+        btnPrimeiro = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -123,36 +111,65 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ano}"), txtAno, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        btnUltimo.setText(">>");
-        btnUltimo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUltimoActionPerformed(evt);
-            }
-        });
+        pnlPaginacao.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        btnProximo.setText(">");
-        btnProximo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProximoActionPerformed(evt);
-            }
-        });
+        lbPaginacao.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbPaginacao.setText("jLabel1");
 
-        btnAnterior.setText("<");
+        btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png"))); // NOI18N
         btnAnterior.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAnteriorActionPerformed(evt);
             }
         });
 
-        btnPrimeiro.setText("<<");
+        btnProximo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png"))); // NOI18N
+        btnProximo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProximoActionPerformed(evt);
+            }
+        });
+
+        btnUltimo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/last.png"))); // NOI18N
+        btnUltimo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUltimoActionPerformed(evt);
+            }
+        });
+
+        btnPrimeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/first.png"))); // NOI18N
         btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPrimeiroActionPerformed(evt);
             }
         });
 
-        lbPaginacao.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbPaginacao.setText("jLabel1");
+        javax.swing.GroupLayout pnlPaginacaoLayout = new javax.swing.GroupLayout(pnlPaginacao);
+        pnlPaginacao.setLayout(pnlPaginacaoLayout);
+        pnlPaginacaoLayout.setHorizontalGroup(
+            pnlPaginacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPaginacaoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbPaginacao, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnPrimeiro)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAnterior)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnProximo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnUltimo)
+                .addContainerGap())
+        );
+        pnlPaginacaoLayout.setVerticalGroup(
+            pnlPaginacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPaginacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(btnUltimo)
+                .addComponent(btnProximo)
+                .addComponent(btnAnterior)
+                .addComponent(btnPrimeiro))
+            .addComponent(lbPaginacao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -161,32 +178,28 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 796, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnMesAnterior)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMesProximo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtAno, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnSalvar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnExcluir)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnMesAnterior)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMesProximo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtAno, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnExcluir)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbPaginacao, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPrimeiro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAnterior)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnProximo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnUltimo)))
+                        .addComponent(pnlPaginacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnExcluir, btnSalvar});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -197,16 +210,13 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
                     .addComponent(txtMes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtAno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSalvar)
-                    .addComponent(btnExcluir)
-                    .addComponent(btnUltimo)
-                    .addComponent(btnProximo)
-                    .addComponent(btnAnterior)
-                    .addComponent(btnPrimeiro)
-                    .addComponent(lbPaginacao))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlPaginacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -220,39 +230,15 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        for (DespesaDTO dto : getDados()) {
-            if (dto.isSelecionado()) {
-                HibernateUtil.inativar(dto.getId(), Conta.class.getSimpleName());
-            }
-        }
-        tblDespesa.removeAll();
-        buscarDados(1);
+        inativarDados(Conta.class.getSimpleName());
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnMesAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesAnteriorActionPerformed
-        int mes = getMesSelecionado().getReferencia() - 1;
-
-        if (mes < 1) {
-            mes = 12;
-            final Integer a = Integer.valueOf(ano) - 1;
-            txtAno.setText(a.toString());
-        }
-
-        txtMes.setSelectedItem(Mes.getMesPorReferencia(mes));
-        buscarDados(1);
+        irMesAnterior(txtMes, txtAno);
     }//GEN-LAST:event_btnMesAnteriorActionPerformed
 
     private void btnMesProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesProximoActionPerformed
-        int mes = getMesSelecionado().getReferencia() + 1;
-
-        if (mes > 12) {
-            mes = 1;
-            final Integer a = Integer.valueOf(ano) + 1;
-            txtAno.setText(a.toString());
-        }
-
-        txtMes.setSelectedItem(Mes.getMesPorReferencia(mes));
-        buscarDados(1);
+        irProximoMes(txtMes, txtAno);
     }//GEN-LAST:event_btnMesProximoActionPerformed
 
     private void btnPrimeiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimeiroActionPerformed
@@ -271,16 +257,6 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
         irUltimaPagina();
     }//GEN-LAST:event_btnUltimoActionPerformed
 
-    @Override
-    protected void validarBtnPaginacao() {
-        btnPrimeiro.setEnabled(getPagina() != 1);
-        btnAnterior.setEnabled(btnPrimeiro.isEnabled());
-        btnProximo.setEnabled(!isUltimaPagina());
-        btnUltimo.setEnabled(!isUltimaPagina());
-        lbPaginacao.setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros());
-    }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnterior;
     private javax.swing.JButton btnExcluir;
@@ -292,6 +268,7 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
     private javax.swing.JButton btnUltimo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbPaginacao;
+    private javax.swing.JPanel pnlPaginacao;
     private javax.swing.JTable tblDespesa;
     private javax.swing.JTextField txtAno;
     private javax.swing.JComboBox txtMes;
@@ -308,7 +285,7 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
         return HibernateUtil.getCriteriaBuilder(Conta.class)
                 .eqStatusAtivo()
                 .eq("tipo", TipoConta.DESPESA)
-                .sqlRestrictions("MONTH(dataVencimento) = " + mesSelecionado.getReferencia())
+                .sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado().getReferencia())
                 .sqlRestrictions("YEAR(dataVencimento) = " + getAno())
                 .addAliases("categoria", "categoria", JoinType.LEFT_OUTER_JOIN)
                 .addProjection("id", "id")
@@ -327,32 +304,12 @@ public class ListagemDespesaForm extends ListagemForm<DespesaDTO> {
         return HibernateUtil.getCriteriaBuilder(Conta.class)
                 .eqStatusAtivo()
                 .eq("tipo", TipoConta.DESPESA)
-                .sqlRestrictions("MONTH(dataVencimento) = " + mesSelecionado.getReferencia())
+                .sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado().getReferencia())
                 .sqlRestrictions("YEAR(dataVencimento) = " + getAno());
     }
 
-    public Mes getMesSelecionado() {
-        return mesSelecionado;
+    @Override
+    protected JPanel getPanelPaginacao() {
+        return pnlPaginacao;
     }
-
-    public void setMesSelecionado(Mes mesSelecionado) {
-        this.mesSelecionado = mesSelecionado;
-    }
-
-    public List<Mes> getMeses() {
-        return meses;
-    }
-
-    public void setMeses(List<Mes> meses) {
-        this.meses = meses;
-    }
-
-    public String getAno() {
-        return ano;
-    }
-
-    public void setAno(String ano) {
-        this.ano = ano;
-    }
-
 }

@@ -17,6 +17,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     public PrincipalForm() {
         initComponents();
         abrirFrame(new ListagemDespesaForm(), NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
+//        abrirFrame(new CadastroReceitaForm(), NomeFrame.CADASTRO_RECEITA_FRAME.toString());
     }
 
     /**
@@ -90,6 +91,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     enum NomeFrame {
 
         CADASTRO_DESPESA_FRAME,
+        CADASTRO_RECEITA_FRAME,
         LISTAGEM_DESPESA_FRAME;
     }
 

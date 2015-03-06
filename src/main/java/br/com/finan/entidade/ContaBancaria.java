@@ -26,7 +26,7 @@ public class ContaBancaria extends Entidade {
     public String toString() {
         return getDescricao();
     }
-    
+
     public ContaBancaria() {
         super();
     }

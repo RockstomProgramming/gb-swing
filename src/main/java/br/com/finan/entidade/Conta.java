@@ -62,7 +62,7 @@ public class Conta extends Entidade {
     @Column
     @Enumerated(EnumType.ORDINAL)
     private FormaPagamento formaPagamento;
-    
+
     @Column
     @Enumerated(EnumType.ORDINAL)
     private TipoConta tipo;

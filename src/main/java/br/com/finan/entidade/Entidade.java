@@ -17,14 +17,14 @@ import javax.persistence.PrePersist;
  */
 @MappedSuperclass
 public class Entidade implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Column
     private EnumStatus status;
-    
+
     private transient final PropertyChangeSupport property = new PropertyChangeSupport(this);
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -34,7 +34,7 @@ public class Entidade implements Serializable {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         property.removePropertyChangeListener(listener);
     }
-    
+
     @PrePersist
     public void preSalvar() {
         status = EnumStatus.ATIVO;

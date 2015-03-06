@@ -334,7 +334,6 @@ public class CadastroDespesaForm extends CadastroForm<Conta> {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPagoActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFechar;
     private javax.swing.JButton btnSalvar;

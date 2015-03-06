@@ -8,38 +8,28 @@ import java.util.Date;
  *
  * @author Wesley Luiz
  */
-public class DespesaDTO {
-    
-    private Long id;
-    
+public class DespesaDTO extends DTO {
+
     @ColunaTabela(2)
     private String descricao;
-    
+
     @ColunaTabela(3)
     private String categoria;
-    
+
     @ColunaTabela(5)
     private BigDecimal valor;
-    
+
     @ColunaTabela(4)
     private Date vencimento;
-    
+
     @ColunaTabela(1)
     private boolean selecionado;
-    
+
     private Integer parcela;
-    
+
     private Integer totalParcela;
-    
+
     private boolean editado;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getDescricao() {
         return descricao;

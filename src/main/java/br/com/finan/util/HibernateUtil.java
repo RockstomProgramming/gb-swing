@@ -15,7 +15,7 @@ import org.hibernate.Session;
 public final class HibernateUtil {
 
     public static EntityManagerFactory factory;
-    
+
     public static Session getSessao() {
         return (Session) factory.createEntityManager().getDelegate();
     }
@@ -23,7 +23,7 @@ public final class HibernateUtil {
     public static CriteriaBuilder getCriteriaBuilder(Class<? extends Entidade> entidade) {
         return new CriteriaBuilder(getSessao().createCriteria(entidade));
     }
-    
+
     public static void salvar(Entidade entidade) {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
@@ -36,7 +36,7 @@ public final class HibernateUtil {
             em.close();
         }
     }
-    
+
     public static void alterar(Entidade entidade) {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
@@ -49,7 +49,7 @@ public final class HibernateUtil {
             em.close();
         }
     }
-    
+
     public static void remover(Entidade entidade) {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
@@ -62,7 +62,7 @@ public final class HibernateUtil {
             em.close();
         }
     }
-    
+
     public static void inativar(Long id, String classe) {
         Query query = getSessao().createQuery("UPDATE ".concat(classe).concat(" SET status = :status WHERE id = :id"));
         query.setParameter("status", EnumStatus.INATIVO);

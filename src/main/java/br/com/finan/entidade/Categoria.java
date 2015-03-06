@@ -38,7 +38,7 @@ public class Categoria extends Entidade {
     public String toString() {
         return this.nome;
     }
-    
+
     public String getNome() {
         return nome;
     }

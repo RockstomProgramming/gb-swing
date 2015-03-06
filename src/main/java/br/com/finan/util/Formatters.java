@@ -11,7 +11,7 @@ import javax.swing.text.MaskFormatter;
  * @author Wesley Luiz
  */
 public class Formatters {
-    
+
     private MaskFormatter dateFormatter;
 
     public Formatters() {
@@ -21,10 +21,9 @@ public class Formatters {
             Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public MaskFormatter getDateFormatter() {
         return dateFormatter;
     }
-    
-    
+
 }

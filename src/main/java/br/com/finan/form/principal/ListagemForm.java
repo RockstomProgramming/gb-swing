@@ -1,7 +1,11 @@
 package br.com.finan.form.principal;
 
 import br.com.finan.dao.CriteriaBuilder;
+import br.com.finan.dto.DTO;
+import br.com.finan.dto.DespesaDTO;
+import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.annotation.ColunaTabela;
+import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
 import br.com.finan.util.StringUtil;
 import java.lang.reflect.Field;
@@ -16,6 +20,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.criterion.Projections;
@@ -25,7 +31,7 @@ import org.hibernate.criterion.Projections;
  * @author Wesley Luiz
  * @param <T>
  */
-public abstract class ListagemForm<T> extends javax.swing.JInternalFrame {
+public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalFrame {
 
     private DefaultTableModel model;
     private List<T> dados;
@@ -78,18 +84,31 @@ public abstract class ListagemForm<T> extends javax.swing.JInternalFrame {
     protected boolean isUltimaPagina() {
         return pagina >= getQntPagina();
     }
-    
+
     protected void validarBtnPaginacao() {
-        
+        getPanelPaginacao().getComponent(1).setEnabled(getPagina() != 1);
+        getPanelPaginacao().getComponent(2).setEnabled(getPanelPaginacao().getComponent(1).isEnabled());
+        getPanelPaginacao().getComponent(3).setEnabled(!isUltimaPagina());
+        getPanelPaginacao().getComponent(4).setEnabled(!isUltimaPagina());
+        ((JLabel) getPanelPaginacao().getComponent(0)).setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
+    }
+
+    protected void inativarDados(String nomeClasse) {
+        for (int i = 0; i < getTable().getRowCount(); i++) {
+            boolean b = (boolean) getTable().getValueAt(i, 0);
+            if (b) {
+                T dto = getDados().get(i);
+                HibernateUtil.inativar(dto.getId(), nomeClasse);
+            }
+        }
+
+        iniciarDados();
     }
 
     protected void buscarDados(int primResultado) {
         limparTabela();
         setDados(getBuilderListagem().getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
-
-        if (getQntRegistros().equals(0L)) {
-            setQntRegistros((Long) getBuilderQntRegistros().getCriteria().setProjection(Projections.rowCount()).uniqueResult());
-        }
+        setQntRegistros((Long) getBuilderQntRegistros().getCriteria().setProjection(Projections.rowCount()).uniqueResult());
 
         Map<Integer, Field> campos = new TreeMap<Integer, Field>();
         Class<T> clazz = obterTipoDaClasse();
@@ -141,6 +160,8 @@ public abstract class ListagemForm<T> extends javax.swing.JInternalFrame {
     protected abstract CriteriaBuilder getBuilderListagem();
 
     protected abstract CriteriaBuilder getBuilderQntRegistros();
+
+    protected abstract JPanel getPanelPaginacao();
 
     public DefaultTableModel getModel() {
         return model;
