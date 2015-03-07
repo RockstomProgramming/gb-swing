@@ -10,19 +10,19 @@ import java.util.Date;
  */
 public class DespesaDTO extends DTO {
 
-    @ColunaTabela(2)
+    @ColunaTabela(index = 2, titulo = "Descrição")
     private String descricao;
 
-    @ColunaTabela(3)
+    @ColunaTabela(index = 3, titulo = "Categoria")
     private String categoria;
 
-    @ColunaTabela(5)
+    @ColunaTabela(index = 5, titulo = "Valor")
     private BigDecimal valor;
 
-    @ColunaTabela(4)
+    @ColunaTabela(index = 4, titulo = "Vencimento")
     private Date vencimento;
 
-    @ColunaTabela(1)
+    @ColunaTabela(index = 1, titulo = "")
     private boolean selecionado;
 
     private Integer parcela;

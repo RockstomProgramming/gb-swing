@@ -2,6 +2,7 @@ package br.com.finan.form.principal;
 
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
+import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.annotation.ColunaTabela;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
@@ -23,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import org.hibernate.criterion.Projections;
 import sun.swing.SwingAccessor;
 
@@ -33,10 +35,10 @@ import sun.swing.SwingAccessor;
  */
 public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalFrame {
 
-    private DefaultTableModel model;
     private List<T> dados;
     private int pagina = 1;
     private Long qntRegistros = 0L;
+    private DefaultTableModel model;
     protected final int MAX_REGISTROS = 15;
 
     protected javax.swing.JButton btnAnterior;
@@ -108,13 +110,27 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
                 irUltimaPagina();
             }
         });
+
+        Map<Integer, Field> campos = getCamposTabela();
+        List<String> titulos = new ArrayList<String>();
+
+        for (Field f : campos.values()) {
+            titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
+        }
+
+        model = new DefaultTableModel(new Object[][]{}, titulos.toArray()) {
+            Class[] types = new Class[]{
+                java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, Date.class, BigDecimal.class
+            };
+        };
+
+        tabela.setModel(model);
     }
 
     protected void iniciarDados() {
-        setModel((DefaultTableModel) tabela.getModel());
-        tabela.setModel(getModel());
         buscarDados(0);
         validarBtnPaginacao();
+
     }
 
     protected void irProximaPagina() {
@@ -181,14 +197,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
         setDados(getBuilderListagem().getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
         setQntRegistros((Long) getBuilderQntRegistros().getCriteria().setProjection(Projections.rowCount()).uniqueResult());
 
-        Map<Integer, Field> campos = new TreeMap<Integer, Field>();
-        Class<T> clazz = obterTipoDaClasse();
-
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(ColunaTabela.class)) {
-                campos.put(field.getAnnotation(ColunaTabela.class).value(), field);
-            }
-        }
+        Map<Integer, Field> campos = getCamposTabela();
 
         for (T d : getDados()) {
             List<Object> valores = new ArrayList();
@@ -204,6 +213,17 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
             }
             getModel().addRow(valores.toArray());
         }
+    }
+
+    private Map<Integer, Field> getCamposTabela() throws SecurityException {
+        Map<Integer, Field> campos = new TreeMap<Integer, Field>();
+        Class<T> clazz = obterTipoDaClasse();
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(ColunaTabela.class)) {
+                campos.put(field.getAnnotation(ColunaTabela.class).index(), field);
+            }
+        }
+        return campos;
     }
 
     protected void limparTabela() {
@@ -232,14 +252,6 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 
     protected abstract String getNomeEntidade();
 
-    public DefaultTableModel getModel() {
-        return model;
-    }
-
-    public void setModel(DefaultTableModel model) {
-        this.model = model;
-    }
-
     public List<T> getDados() {
         return dados;
     }
@@ -262,5 +274,9 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 
     public void setQntRegistros(Long qntRegistros) {
         this.qntRegistros = qntRegistros;
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
     }
 }
