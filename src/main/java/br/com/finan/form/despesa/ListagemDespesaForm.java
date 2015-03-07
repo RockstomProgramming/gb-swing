@@ -3,13 +3,9 @@ package br.com.finan.form.despesa;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DespesaDTO;
 import br.com.finan.entidade.Conta;
-import br.com.finan.entidade.enumerator.Mes;
 import br.com.finan.entidade.enumerator.TipoConta;
 import br.com.finan.form.principal.ListagemContaForm;
-import br.com.finan.form.principal.ListagemForm;
 import br.com.finan.util.HibernateUtil;
-import javax.swing.JPanel;
-import javax.swing.JTable;
 import org.hibernate.criterion.Order;
 import org.hibernate.sql.JoinType;
 
@@ -37,26 +33,16 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblDespesa = new javax.swing.JTable();
-        btnSalvar = new javax.swing.JButton();
-        btnExcluir = new javax.swing.JButton();
         btnMesAnterior = new javax.swing.JButton();
         btnMesProximo = new javax.swing.JButton();
         txtMes = new javax.swing.JComboBox();
         txtAno = new javax.swing.JTextField();
-        pnlPaginacao = new javax.swing.JPanel();
-        lbPaginacao = new javax.swing.JLabel();
-        btnAnterior = new javax.swing.JButton();
-        btnProximo = new javax.swing.JButton();
-        btnUltimo = new javax.swing.JButton();
-        btnPrimeiro = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
         setResizable(true);
 
-        tblDespesa.setModel(new javax.swing.table.DefaultTableModel(
+        tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -72,21 +58,7 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblDespesa);
-
-        btnSalvar.setText("Salvar");
-        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalvarActionPerformed(evt);
-            }
-        });
-
-        btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExcluirActionPerformed(evt);
-            }
-        });
+        jScrollPane1.setViewportView(tabela);
 
         btnMesAnterior.setText("<");
         btnMesAnterior.addActionListener(new java.awt.event.ActionListener() {
@@ -116,34 +88,6 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
         pnlPaginacao.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lbPaginacao.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-
-        btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png"))); // NOI18N
-        btnAnterior.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnteriorActionPerformed(evt);
-            }
-        });
-
-        btnProximo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png"))); // NOI18N
-        btnProximo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProximoActionPerformed(evt);
-            }
-        });
-
-        btnUltimo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/last.png"))); // NOI18N
-        btnUltimo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUltimoActionPerformed(evt);
-            }
-        });
-
-        btnPrimeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/first.png"))); // NOI18N
-        btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrimeiroActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout pnlPaginacaoLayout = new javax.swing.GroupLayout(pnlPaginacao);
         pnlPaginacao.setLayout(pnlPaginacaoLayout);
@@ -226,14 +170,6 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSalvarActionPerformed
-
-    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        inativarDados(Conta.class.getSimpleName());
-    }//GEN-LAST:event_btnExcluirActionPerformed
-
     private void btnMesAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesAnteriorActionPerformed
         irMesAnterior(txtMes, txtAno);
     }//GEN-LAST:event_btnMesAnteriorActionPerformed
@@ -242,44 +178,13 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
         irProximoMes(txtMes, txtAno);
     }//GEN-LAST:event_btnMesProximoActionPerformed
 
-    private void btnPrimeiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrimeiroActionPerformed
-        irPrimeiraPagina();
-    }//GEN-LAST:event_btnPrimeiroActionPerformed
-
-    private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
-        irPaginaAnterior();
-    }//GEN-LAST:event_btnAnteriorActionPerformed
-
-    private void btnProximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProximoActionPerformed
-        irProximaPagina();
-    }//GEN-LAST:event_btnProximoActionPerformed
-
-    private void btnUltimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUltimoActionPerformed
-        irUltimaPagina();
-    }//GEN-LAST:event_btnUltimoActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAnterior;
-    private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnMesAnterior;
     private javax.swing.JButton btnMesProximo;
-    private javax.swing.JButton btnPrimeiro;
-    private javax.swing.JButton btnProximo;
-    private javax.swing.JButton btnSalvar;
-    private javax.swing.JButton btnUltimo;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbPaginacao;
-    private javax.swing.JPanel pnlPaginacao;
-    private javax.swing.JTable tblDespesa;
     private javax.swing.JTextField txtAno;
     private javax.swing.JComboBox txtMes;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    protected JTable getTable() {
-        return tblDespesa;
-    }
 
     @Override
     protected CriteriaBuilder getBuilderListagem() {
@@ -310,7 +215,8 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
     }
 
     @Override
-    protected JPanel getPanelPaginacao() {
-        return pnlPaginacao;
+    protected String getNomeEntidade() {
+        return Conta.class.getSimpleName();
     }
+
 }

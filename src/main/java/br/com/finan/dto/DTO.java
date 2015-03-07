@@ -8,6 +8,10 @@ public class DTO {
 
     private Long id;
 
+    public String getNomeEntidade() {
+        return null;
+    }
+
     public Long getId() {
         return id;
     }

@@ -6,6 +6,7 @@ import br.com.finan.entidade.annotation.ColunaTabela;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
 import br.com.finan.util.StringUtil;
+import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.criterion.Projections;
+import sun.swing.SwingAccessor;
 
 /**
  *
@@ -37,9 +39,80 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
     private Long qntRegistros = 0L;
     protected final int MAX_REGISTROS = 15;
 
+    protected javax.swing.JButton btnAnterior;
+    protected javax.swing.JButton btnExcluir;
+    protected javax.swing.JButton btnPrimeiro;
+    protected javax.swing.JButton btnProximo;
+    protected javax.swing.JButton btnSalvar;
+    protected javax.swing.JButton btnUltimo;
+    protected javax.swing.JScrollPane jScrollPane1;
+    protected javax.swing.JLabel lbPaginacao;
+    protected javax.swing.JPanel pnlPaginacao;
+    protected javax.swing.JTable tabela;
+
+    public ListagemForm() {
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabela = new javax.swing.JTable();
+        btnSalvar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
+        pnlPaginacao = new javax.swing.JPanel();
+        lbPaginacao = new javax.swing.JLabel();
+        btnAnterior = new javax.swing.JButton();
+        btnProximo = new javax.swing.JButton();
+        btnUltimo = new javax.swing.JButton();
+        btnPrimeiro = new javax.swing.JButton();
+
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inativarDados(getNomeEntidade());
+            }
+        });
+
+        btnPrimeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/first.png")));
+        btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                irPrimeiraPagina();
+            }
+        });
+
+        btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png")));
+        btnAnterior.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                irPaginaAnterior();
+            }
+        });
+
+        btnProximo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png")));
+        btnProximo.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                irProximaPagina();
+            }
+        });
+
+        btnUltimo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/last.png")));
+        btnUltimo.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                irUltimaPagina();
+            }
+        });
+    }
+
     protected void iniciarDados() {
-        setModel((DefaultTableModel) getTable().getModel());
-        getTable().setModel(getModel());
+        setModel((DefaultTableModel) tabela.getModel());
+        tabela.setModel(getModel());
         buscarDados(0);
         validarBtnPaginacao();
     }
@@ -84,16 +157,16 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
     }
 
     protected void validarBtnPaginacao() {
-        getPanelPaginacao().getComponent(1).setEnabled(getPagina() != 1);
-        getPanelPaginacao().getComponent(2).setEnabled(getPanelPaginacao().getComponent(1).isEnabled());
-        getPanelPaginacao().getComponent(3).setEnabled(!isUltimaPagina());
-        getPanelPaginacao().getComponent(4).setEnabled(!isUltimaPagina());
-        ((JLabel) getPanelPaginacao().getComponent(0)).setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
+        btnPrimeiro.setEnabled(getPagina() != 1);
+        btnAnterior.setEnabled(btnPrimeiro.isEnabled());
+        btnProximo.setEnabled(!isUltimaPagina());
+        btnUltimo.setEnabled(!isUltimaPagina());
+        lbPaginacao.setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
     }
 
     protected void inativarDados(String nomeClasse) {
-        for (int i = 0; i < getTable().getRowCount(); i++) {
-            boolean b = (boolean) getTable().getValueAt(i, 0);
+        for (int i = 0; i < tabela.getRowCount(); i++) {
+            boolean b = (boolean) tabela.getValueAt(i, 0);
             if (b) {
                 T dto = getDados().get(i);
                 HibernateUtil.inativar(dto.getId(), nomeClasse);
@@ -153,13 +226,11 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
         return v;
     }
 
-    protected abstract JTable getTable();
-
     protected abstract CriteriaBuilder getBuilderListagem();
 
     protected abstract CriteriaBuilder getBuilderQntRegistros();
 
-    protected abstract JPanel getPanelPaginacao();
+    protected abstract String getNomeEntidade();
 
     public DefaultTableModel getModel() {
         return model;
