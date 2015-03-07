@@ -8,7 +8,7 @@ import java.util.Date;
  *
  * @author Wesley Luiz
  */
-public class DespesaDTO extends DTO {
+public class ContaDTO extends DTO {
 
     @ColunaTabela(index = 2, titulo = "Descrição")
     private String descricao;

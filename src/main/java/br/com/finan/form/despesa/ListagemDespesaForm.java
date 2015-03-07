@@ -1,7 +1,7 @@
 package br.com.finan.form.despesa;
 
 import br.com.finan.dao.CriteriaBuilder;
-import br.com.finan.dto.DespesaDTO;
+import br.com.finan.dto.ContaDTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.enumerator.TipoConta;
 import br.com.finan.form.principal.ListagemContaForm;
@@ -13,7 +13,7 @@ import org.hibernate.sql.JoinType;
  *
  * @author Wesley Luiz
  */
-public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
+public class ListagemDespesaForm extends ListagemContaForm<ContaDTO> {
 
     /**
      * Creates new form ListagemDespesa
@@ -185,7 +185,7 @@ public class ListagemDespesaForm extends ListagemContaForm<DespesaDTO> {
                 .addProjection("parcela", "parcela")
                 .addProjection("totalParcelas", "totalParcela")
                 .addProjection("categoria.nome", "categoria")
-                .addAliasToBean(DespesaDTO.class).close()
+                .addAliasToBean(ContaDTO.class).close()
                 .addOrdenacao(Order.asc("dataVencimento"));
     }
 
