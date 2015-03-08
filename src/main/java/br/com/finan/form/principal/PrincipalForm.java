@@ -90,7 +90,6 @@ public class PrincipalForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JMenuBar jMenuBar1;
@@ -165,6 +164,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     }
 
     enum NomeFrame {
+
         CADASTRO_DESPESA_FRAME,
         CADASTRO_RECEITA_FRAME,
         LISTAGEM_DESPESA_FRAME,

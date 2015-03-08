@@ -2,7 +2,6 @@ package br.com.finan.form.principal;
 
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
-import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.annotation.ColunaTabela;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
@@ -20,13 +19,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import org.hibernate.criterion.Projections;
-import sun.swing.SwingAccessor;
 
 /**
  *
@@ -63,6 +57,8 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
         btnProximo = new javax.swing.JButton();
         btnUltimo = new javax.swing.JButton();
         btnPrimeiro = new javax.swing.JButton();
+        
+        setTitle(getTituloFrame());
 
         btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
@@ -130,7 +126,6 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
     protected void iniciarDados() {
         buscarDados(0);
         validarBtnPaginacao();
-
     }
 
     protected void irProximaPagina() {
@@ -251,6 +246,8 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
     protected abstract CriteriaBuilder getBuilderQntRegistros();
 
     protected abstract String getNomeEntidade();
+    
+    protected abstract String getTituloFrame();
 
     public List<T> getDados() {
         return dados;
