@@ -2,6 +2,7 @@ package br.com.finan.form.principal;
 
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.despesa.ListagemDespesaForm;
+import br.com.finan.form.receita.CadastroReceitaForm;
 import br.com.finan.form.receita.ListagemReceitaForm;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     public PrincipalForm() {
         initComponents();
         iniciarDados();
+        abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
     }
 
     /**
@@ -127,7 +129,7 @@ public class PrincipalForm extends javax.swing.JFrame {
         menuCadReceita.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
+                abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
             }
         });
 

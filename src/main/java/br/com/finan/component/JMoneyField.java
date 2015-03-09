@@ -26,7 +26,7 @@ public class JMoneyField extends JFormattedTextField {
      * Creates a new instance of JMoneyField
      */
     public JMoneyField() {
-        this.setHorizontalAlignment(JTextField.CENTER);
+        this.setHorizontalAlignment(JTextField.LEFT);
         this.setDocument(new MoneyFieldDocument());
         this.addFocusListener(new MoneyFieldFocusListener());
         this.setText("0,00");
