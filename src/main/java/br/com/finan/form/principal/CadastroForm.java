@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,8 +31,7 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
     }
 
     protected void salvar() {
-//        HibernateUtil.salvar(entidade);
-        limparCampos();
+        HibernateUtil.salvar(entidade);
         iniciarDados();
         JOptionPane.showMessageDialog(getFrame(), "Dados Salvos com sucesso");
     }
@@ -76,7 +76,9 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
         return ObjetoUtil.isReferencia(valores);
     }
 
-    protected abstract void iniciarDados();
+    protected void iniciarDados() {
+        limparCampos();
+    }
 
     protected abstract JInternalFrame getFrame();
 

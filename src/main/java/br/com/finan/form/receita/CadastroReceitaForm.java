@@ -9,56 +9,72 @@ import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.entidade.enumerator.FormaPagamento;
 import br.com.finan.entidade.enumerator.Frequencia;
 import br.com.finan.entidade.enumerator.TipoConta;
+import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.principal.CadastroForm;
 import br.com.finan.util.BindingUtil;
+import br.com.finan.util.CalcularRecorrencia;
 import br.com.finan.util.HibernateUtil;
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.MaskFormatter;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.beanutils.BeanUtils;
 import org.jdesktop.beansbinding.BindingGroup;
 
 /**
- * Constraints do mig layout (span, wrap, grow, gap, align, dock)
- *
  * @author Wesley Luiz
  */
 public class CadastroReceitaForm extends CadastroForm<Conta> {
+
+    public static final String TITULO_FRAME = "Cadastro de Receita";
+
+    private JTextField txtDescricao;
+    private JFormattedTextField txtVencimento;
+    private JFormattedTextField txtPagamento;
+    private JMoneyField txtValor;
+    private JComboBox<Categoria> txtCategoria;
+    private JComboBox<ContaBancaria> txtContaBancaria;
+    private JComboBox<FormaPagamento> txtFormaPagamento;
+    private JComboBox<Frequencia> txtRecorrencia;
+    private JTextField txtMaximo;
+    private JButton btnSalvar;
+    private JPanel pnlCad;
+    private JCheckBox txtPago;
+    private JTextArea txtObservacoes;
+
+    private int limite = 1;
+    private Frequencia recorrencia;
 
     public CadastroReceitaForm() {
         iniciarComponentes();
         iniciarDados();
     }
 
-    JTextField txtDescricao;
-    JFormattedTextField txtVencimento;
-    JMoneyField txtValor;
-    JComboBox<Categoria> txtCategoria;
-    JComboBox<ContaBancaria> txtContaBancaria;
-    JComboBox<FormaPagamento> txtFormaPagamento;
-    JComboBox<Frequencia> txtRecorrencia;
-    JTextField txtMaximo;
-    JButton btnSalvar;
-
-    private void iniciarComponentes() {
+    protected void iniciarComponentes() {
 
         try {
             txtDescricao = new JTextField(20);
             txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
+            txtPagamento = new JFormattedTextField(new MaskFormatter("##/##/####"));
             txtValor = new JMoneyField();
             txtCategoria = new JComboBox<Categoria>();
             txtContaBancaria = new JComboBox<ContaBancaria>();
@@ -66,104 +82,153 @@ public class CadastroReceitaForm extends CadastroForm<Conta> {
             txtRecorrencia = new JComboBox<Frequencia>();
             txtMaximo = new JTextField(10);
             btnSalvar = new JButton("Salvar");
-            
-            final BindingGroup bindingGroup = new BindingGroup();
-            BindingUtil.create(bindingGroup)
-                    .addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
-                    .add(this, "${entidade.descricao}", txtDescricao)
-                    .add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
-                    .add(this, "${entidade.valor}", txtValor, new BigDecimalConverter()) //                .add(this, "${entidade.categoria}", txtCategoria)
-                    //                .add(this, "${entidade.contaBancaria}", txtContaBancaria)
-                    //                .add(this, "${}", txtFormaPagamento)
-                    //                .add(this, "${}", txtRecorrencia)
-                    //                .add(this, "${}", txtMaximo)
-                    ;
-            
-            btnSalvar.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.print(getEntidade().getDescricao());
-                }
-            });
-
-            setClosable(true);
-            setMaximizable(true);
-
-            JPanel pnlRecorrencia = new JPanel(new MigLayout());
-            pnlRecorrencia.setBorder(new LineBorder(Color.black));
-            pnlRecorrencia.add(new JLabel("Recorrência:"));
-            pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
-            pnlRecorrencia.add(new JLabel("Limite:"));
-            pnlRecorrencia.add(txtMaximo);
-
-            JPanel pnlCad = new JPanel(new MigLayout("wrap 2"));
-            pnlCad.add(new JLabel("Descrição:"));
-            pnlCad.add(txtDescricao);
-            pnlCad.add(new JLabel("Vencimento:"));
-            pnlCad.add(txtVencimento, "grow");
-            pnlCad.add(new JLabel("Valor (R$):"));
-            pnlCad.add(txtValor, "grow");
-            pnlCad.add(new JLabel("Categoria:"));
-            pnlCad.add(txtCategoria, "grow");
-            pnlCad.add(new JLabel("Conta Bancária:"));
-            pnlCad.add(txtContaBancaria, "grow");
-            pnlCad.add(new JLabel("Forma Pagamento:"));
-            pnlCad.add(txtFormaPagamento, "grow");
-            pnlCad.add(pnlRecorrencia);
-            pnlCad.add(btnSalvar);
-
-            add(pnlCad);
-
-            bindingGroup.bind();
-            pack();
-            setSize(800, 600);
-
+            txtPago = new JCheckBox("Sim");
+            txtObservacoes = new JTextArea(5, 30);
         } catch (ParseException ex) {
             Logger.getLogger(CadastroReceitaForm.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        adicionarAcoes();
+        addBinding().bind();
+        montarTela();
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setSize(900, 500);
+        setTitle(TITULO_FRAME);
+        pack();
+
     }
-    
+
+    private void adicionarAcoes() {
+        btnSalvar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                salvar();
+            }
+        });
+    }
+
+    private void montarTela() {
+        JPanel pnlRecorrencia = new JPanel(new MigLayout());
+        pnlRecorrencia.setBorder(new TitledBorder(new EtchedBorder(), "Repetir lançamento"));
+        pnlRecorrencia.add(new JLabel("Recorrência:"));
+        pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
+        pnlRecorrencia.add(new JLabel("Limite:"));
+        pnlRecorrencia.add(txtMaximo);
+
+        JPanel pnlAcao = new JPanel(new MigLayout());
+        pnlAcao.setBorder(new EtchedBorder());
+        pnlAcao.add(btnSalvar);
+
+        JPanel pnlCad_1 = new JPanel(new MigLayout("wrap 2"));
+        pnlCad_1.add(new JLabel("Descrição:"));
+        pnlCad_1.add(txtDescricao);
+        pnlCad_1.add(new JLabel("Vencimento:"));
+        pnlCad_1.add(txtVencimento, "grow");
+        pnlCad_1.add(new JLabel("Valor (R$):"));
+        pnlCad_1.add(txtValor, "grow");
+        pnlCad_1.add(new JLabel("Categoria:"));
+        pnlCad_1.add(txtCategoria, "grow");
+        pnlCad_1.add(new JLabel("Conta Bancária:"));
+        pnlCad_1.add(txtContaBancaria, "grow");
+
+        JPanel pnlCad_2 = new JPanel(new MigLayout("wrap 2"));
+        pnlCad_2.add(new JLabel("Pago"));
+        pnlCad_2.add(txtPago);
+        pnlCad_2.add(new JLabel("Pagamento:"));
+        pnlCad_2.add(txtPagamento, "grow");
+        pnlCad_2.add(new JLabel("Forma Pagamento:"));
+        pnlCad_2.add(txtFormaPagamento, "grow");
+        pnlCad_2.add(new JLabel("Observações:"));
+        pnlCad_2.add(txtObservacoes, "spanx 2");
+
+        pnlCad = new JPanel(new MigLayout());
+        pnlCad.add(pnlCad_1);
+        pnlCad.add(pnlCad_2, "wrap");
+        pnlCad.add(pnlRecorrencia, "wrap, growx");
+        pnlCad.add(pnlAcao, "growx, spanx 2");
+
+        add(pnlCad);
+    }
+
+    // Constraints do mig layout (span, wrap, grow, gap, align, dock)
+    private BindingGroup addBinding() {
+        final BindingGroup bindingGroup = new BindingGroup();
+        BindingUtil.create(bindingGroup)
+                .addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
+                .addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), txtFormaPagamento)
+                .addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class)
+                        .eqStatusAtivo().list(), txtCategoria)
+                .addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class)
+                        .eqStatusAtivo().list(), txtContaBancaria)
+                .add(this, "${entidade.categoria}", txtCategoria, "selectedItem")
+                .add(this, "${entidade.contaBancaria}", txtContaBancaria, "selectedItem")
+                .add(this, "${entidade.formaPagamento}", txtFormaPagamento, "selectedItem")
+                .add(this, "${entidade.descricao}", txtDescricao)
+                .add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
+                .add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
+                .add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
+                .add(this, "${entidade.isPago}", txtPago, "selected")
+                .add(this, "${entidade.observacoes}", txtObservacoes)
+                .add(this, "${recorrencia}", txtRecorrencia, "selectedItem")
+                .add(this, "${limite}", txtMaximo)
+                .add(txtPago, "${selected}", txtPagamento, "enabled")
+                .add(txtPago, "${selected}", txtFormaPagamento, "enabled");
+
+        return bindingGroup;
+    }
+
+    @Override
+    protected void salvar() {
+        List<Date> vencimentos = new CalcularRecorrencia(getRecorrencia(), getEntidade().getDataVencimento(), getLimite()).obterVencimentos();
+
+        for (int i = 0; i < getLimite(); i++) {
+            try {
+                Conta conta = new Conta();
+                BeanUtils.copyProperties(conta, getEntidade());
+                conta.setParcela(i + 1);
+                conta.setTotalParcelas(getLimite());
+                conta.setDataVencimento(vencimentos.get(i));
+                HibernateUtil.salvar(conta);
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        iniciarDados();
+    }
+
     @Override
     protected void iniciarDados() {
-        popularComboCategoria();
-//        popularComboRecorrencia();
-        popularComboFormaPagamento();
         getEntidade().setTipo(TipoConta.RECEITA);
-    }
-
-    private void popularComboFormaPagamento() {
-        txtFormaPagamento.removeAllItems();
-        for (FormaPagamento pag : Arrays.asList(FormaPagamento.values())) {
-            txtFormaPagamento.addItem(pag);
-        }
-    }
-
-    private void popularComboRecorrencia() {
-        txtRecorrencia.removeAllItems();
-        for (Frequencia freq : Arrays.asList(Frequencia.values())) {
-            txtRecorrencia.addItem(freq);
-        }
-    }
-
-    private void popularComboCategoria() {
-        List<Categoria> categorias = HibernateUtil.getCriteriaBuilder(Categoria.class)
-                .eqStatusAtivo().addProjection("id", "status", "nome").addAliasToBean(Categoria.class).list();
-
-        txtCategoria.removeAllItems();
-
-        for (Categoria cat : categorias) {
-            txtCategoria.addItem(cat);
-        }
+        super.iniciarDados();
     }
 
     @Override
     protected JInternalFrame getFrame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this;
     }
 
     @Override
     protected JPanel getContainerCadastro() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.pnlCad;
+    }
+
+    public int getLimite() {
+        return limite;
+    }
+
+    public void setLimite(int limite) {
+        this.limite = limite;
+    }
+
+    public Frequencia getRecorrencia() {
+        return recorrencia;
+    }
+
+    public void setRecorrencia(Frequencia recorrencia) {
+        this.recorrencia = recorrencia;
     }
 
 }

@@ -1,7 +1,10 @@
 package br.com.finan.util;
 
+import br.com.finan.entidade.Categoria;
+import br.com.finan.form.receita.CadastroReceitaForm;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -24,20 +27,25 @@ public class BindingUtil {
         return new BindingUtil(bindingGroup);
     }
 
-    public BindingUtil add(Object source, String el, JTextField field) {
-        return add(source, el, field, "text", null);
-    }
-    public BindingUtil add(Object source, String el, JTextField field, Converter converter) {
-        return add(source, el, field, "text", converter);
-    }
-    
     public BindingUtil addJComboBoxBinding(List list, JComboBox combobox) {
         bindingGroup.addBinding(SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ, list, combobox));
         return this;
     }
 
-    public BindingUtil add(Object source, String el, JTextField field, String bean, Converter converter) {
-        final Binding b = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, source, ELProperty.create(el), field, BeanProperty.create(bean));
+    public BindingUtil add(Object source, String el, JComponent component) {
+        return add(source, el, component, "text", null);
+    }
+
+    public BindingUtil add(Object source, String el, JComponent component, String bean) {
+        return add(source, el, component, bean, null);
+    }
+
+    public BindingUtil add(Object source, String el, JComponent component, Converter converter) {
+        return add(source, el, component, "text", converter);
+    }
+
+    public BindingUtil add(Object source, String el, JComponent component, String bean, Converter converter) {
+        final Binding b = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, source, ELProperty.create(el), component, BeanProperty.create(bean));
         if (ObjetoUtil.isReferencia(converter)) {
             b.setConverter(converter);
         }
