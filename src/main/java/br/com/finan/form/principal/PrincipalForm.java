@@ -2,6 +2,7 @@ package br.com.finan.form.principal;
 
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.despesa.ListagemDespesaForm;
+import br.com.finan.form.despesa.TransacoesForm;
 import br.com.finan.form.receita.CadastroReceitaForm;
 import br.com.finan.form.receita.ListagemReceitaForm;
 import java.awt.Component;
@@ -38,6 +39,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     private void initComponents() {
 
         desktop = new javax.swing.JDesktopPane();
+        btnImportar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuCadastro = new javax.swing.JMenu();
         menuCadReceita = new javax.swing.JMenuItem();
@@ -50,6 +52,8 @@ public class PrincipalForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         desktop.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnImportar.setText("Importar");
 
         menuCadastro.setText("Cadastros");
 
@@ -81,11 +85,17 @@ public class PrincipalForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 946, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnImportar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(49, 49, 49)
+                .addGap(8, 8, 8)
+                .addComponent(btnImportar)
+                .addGap(18, 18, 18)
                 .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE))
         );
 
@@ -93,6 +103,7 @@ public class PrincipalForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnImportar;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem menuCadDespsea;
@@ -132,6 +143,13 @@ public class PrincipalForm extends javax.swing.JFrame {
                 abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
             }
         });
+        
+        btnImportar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirFrame(TransacoesForm.class, NomeFrame.TRANSACOES_FRAME.toString());
+            }
+        });
 
         menuSair.addMouseListener(new MouseAdapter() {
             @Override
@@ -166,10 +184,10 @@ public class PrincipalForm extends javax.swing.JFrame {
     }
 
     enum NomeFrame {
-
         CADASTRO_DESPESA_FRAME,
         CADASTRO_RECEITA_FRAME,
         LISTAGEM_DESPESA_FRAME,
-        LISTAGEM_RECEITA_FRAME;
+        LISTAGEM_RECEITA_FRAME,
+        TRANSACOES_FRAME;
     }
 }
