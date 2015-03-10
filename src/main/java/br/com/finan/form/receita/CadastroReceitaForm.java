@@ -14,7 +14,8 @@ import br.com.finan.form.principal.CadastroForm;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.CalcularRecorrencia;
 import br.com.finan.util.HibernateUtil;
-import java.awt.Dimension;
+import br.com.finan.validator.IntegerValidator;
+import br.com.finan.validator.MaxLengthValidator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
@@ -39,6 +40,7 @@ import javax.swing.text.MaskFormatter;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Validator;
 
 /**
  * @author Wesley Luiz
@@ -62,7 +64,7 @@ public class CadastroReceitaForm extends CadastroForm<Conta> {
     private JTextArea txtObservacoes;
 
     private int limite = 1;
-    private Frequencia recorrencia;
+    private Frequencia recorrencia = Frequencia.MENSAL;
 
     public CadastroReceitaForm() {
         iniciarComponentes();
@@ -73,6 +75,7 @@ public class CadastroReceitaForm extends CadastroForm<Conta> {
 
         try {
             txtDescricao = new JTextField(20);
+//            txtDescricao.setDocument(new FixedLengthDocument(5));
             txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
             txtPagamento = new JFormattedTextField(new MaskFormatter("##/##/####"));
             txtValor = new JMoneyField();
@@ -109,6 +112,7 @@ public class CadastroReceitaForm extends CadastroForm<Conta> {
         });
     }
 
+    // Constraints do mig layout (span, wrap, grow, gap, align, dock)
     private void montarTela() {
         JPanel pnlRecorrencia = new JPanel(new MigLayout());
         pnlRecorrencia.setBorder(new TitledBorder(new EtchedBorder(), "Repetir lançamento"));
@@ -152,7 +156,6 @@ public class CadastroReceitaForm extends CadastroForm<Conta> {
         add(pnlCad);
     }
 
-    // Constraints do mig layout (span, wrap, grow, gap, align, dock)
     private BindingGroup addBinding() {
         final BindingGroup bindingGroup = new BindingGroup();
         BindingUtil.create(bindingGroup)
@@ -165,14 +168,14 @@ public class CadastroReceitaForm extends CadastroForm<Conta> {
                 .add(this, "${entidade.categoria}", txtCategoria, "selectedItem")
                 .add(this, "${entidade.contaBancaria}", txtContaBancaria, "selectedItem")
                 .add(this, "${entidade.formaPagamento}", txtFormaPagamento, "selectedItem")
-                .add(this, "${entidade.descricao}", txtDescricao)
+                .add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
                 .add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
                 .add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
                 .add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
                 .add(this, "${entidade.isPago}", txtPago, "selected")
-                .add(this, "${entidade.observacoes}", txtObservacoes)
+                .add(this, "${entidade.observacoes}", txtObservacoes, new MaxLengthValidator(225))
                 .add(this, "${recorrencia}", txtRecorrencia, "selectedItem")
-                .add(this, "${limite}", txtMaximo)
+                .add(this, "${limite}", txtMaximo, new IntegerValidator(4))
                 .add(txtPago, "${selected}", txtPagamento, "enabled")
                 .add(txtPago, "${selected}", txtFormaPagamento, "enabled");
 

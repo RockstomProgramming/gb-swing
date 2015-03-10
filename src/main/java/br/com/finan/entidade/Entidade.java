@@ -55,4 +55,9 @@ public class Entidade implements Serializable {
     public void setStatus(EnumStatus status) {
         this.status = status;
     }
+
+    public PropertyChangeSupport getProperty() {
+        return property;
+    }
+
 }
