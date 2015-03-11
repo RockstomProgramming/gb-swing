@@ -14,52 +14,52 @@ import javax.persistence.Table;
 @Table(name = "tb_categoria")
 public class Categoria extends Entidade {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Column(nullable = false)
-    private String nome;
+	@Column(nullable = false)
+	private String nome;
 
-    @ManyToOne
-    @JoinColumn(name = "idSuperCategoria")
-    private Categoria superCategoria;
+	@ManyToOne
+	@JoinColumn(name = "idSuperCategoria")
+	private Categoria superCategoria;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Categoria.class, mappedBy = "superCategoria")
-    private Collection<Categoria> subCategorias;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Categoria.class, mappedBy = "superCategoria")
+	private Collection<Categoria> subCategorias;
 
-    public Categoria() {
-        super();
-    }
+	public Categoria() {
+		super();
+	}
 
-    public Categoria(String nome) {
-        this.nome = nome;
-    }
+	public Categoria(final String nome) {
+		this.nome = nome;
+	}
 
-    @Override
-    public String toString() {
-        return this.nome;
-    }
+	@Override
+	public String toString() {
+		return this.nome;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public void setNome(final String nome) {
-        this.nome = nome;
-    }
+	public void setNome(final String nome) {
+		this.nome = nome;
+	}
 
-    public Categoria getSuperCategoria() {
-        return superCategoria;
-    }
+	public Categoria getSuperCategoria() {
+		return superCategoria;
+	}
 
-    public void setSuperCategoria(final Categoria superCategoria) {
-        this.superCategoria = superCategoria;
-    }
+	public void setSuperCategoria(final Categoria superCategoria) {
+		this.superCategoria = superCategoria;
+	}
 
-    public Collection<Categoria> getSubCategorias() {
-        return subCategorias;
-    }
+	public Collection<Categoria> getSubCategorias() {
+		return subCategorias;
+	}
 
-    public void setSubCategorias(final Collection<Categoria> subCategorias) {
-        this.subCategorias = subCategorias;
-    }
+	public void setSubCategorias(final Collection<Categoria> subCategorias) {
+		this.subCategorias = subCategorias;
+	}
 }

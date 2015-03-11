@@ -1,6 +1,5 @@
 package br.com.finan.entidade;
 
-import br.com.finan.entidade.enumerator.EnumStatus;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
@@ -10,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import br.com.finan.entidade.enumerator.EnumStatus;
 
 /**
  *
@@ -18,46 +18,49 @@ import javax.persistence.PrePersist;
 @MappedSuperclass
 public class Entidade implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	/** Atributo serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    @Column
-    private EnumStatus status;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    private transient final PropertyChangeSupport property = new PropertyChangeSupport(this);
+	@Column
+	private EnumStatus status;
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        property.addPropertyChangeListener(listener);
-    }
+	private transient final PropertyChangeSupport property = new PropertyChangeSupport(this);
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        property.removePropertyChangeListener(listener);
-    }
+	public void addPropertyChangeListener(final PropertyChangeListener listener) {
+		property.addPropertyChangeListener(listener);
+	}
 
-    @PrePersist
-    public void preSalvar() {
-        status = EnumStatus.ATIVO;
-    }
+	public void removePropertyChangeListener(final PropertyChangeListener listener) {
+		property.removePropertyChangeListener(listener);
+	}
 
-    public Long getId() {
-        return id;
-    }
+	@PrePersist
+	public void preSalvar() {
+		status = EnumStatus.ATIVO;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public EnumStatus getStatus() {
-        return status;
-    }
+	public void setId(final Long id) {
+		this.id = id;
+	}
 
-    public void setStatus(EnumStatus status) {
-        this.status = status;
-    }
+	public EnumStatus getStatus() {
+		return status;
+	}
 
-    public PropertyChangeSupport getProperty() {
-        return property;
-    }
+	public void setStatus(final EnumStatus status) {
+		this.status = status;
+	}
+
+	public PropertyChangeSupport getProperty() {
+		return property;
+	}
 
 }

@@ -1,21 +1,5 @@
 package br.com.finan.form.receita;
 
-import br.com.finan.component.JMoneyField;
-import br.com.finan.converter.BigDecimalConverter;
-import br.com.finan.converter.DateConverter;
-import br.com.finan.entidade.Categoria;
-import br.com.finan.entidade.Conta;
-import br.com.finan.entidade.ContaBancaria;
-import br.com.finan.entidade.enumerator.FormaPagamento;
-import br.com.finan.entidade.enumerator.Frequencia;
-import br.com.finan.entidade.enumerator.TipoConta;
-import br.com.finan.form.despesa.CadastroDespesaForm;
-import br.com.finan.form.principal.CadastroForm;
-import br.com.finan.util.BindingUtil;
-import br.com.finan.util.CalcularRecorrencia;
-import br.com.finan.util.HibernateUtil;
-import br.com.finan.validator.IntegerValidator;
-import br.com.finan.validator.MaxLengthValidator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
@@ -40,198 +24,213 @@ import javax.swing.text.MaskFormatter;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Validator;
+import br.com.finan.component.JMoneyField;
+import br.com.finan.converter.BigDecimalConverter;
+import br.com.finan.converter.DateConverter;
+import br.com.finan.entidade.Categoria;
+import br.com.finan.entidade.Conta;
+import br.com.finan.entidade.ContaBancaria;
+import br.com.finan.entidade.enumerator.FormaPagamento;
+import br.com.finan.entidade.enumerator.Frequencia;
+import br.com.finan.entidade.enumerator.TipoConta;
+import br.com.finan.form.despesa.CadastroDespesaForm;
+import br.com.finan.form.principal.CadastroForm;
+import br.com.finan.util.BindingUtil;
+import br.com.finan.util.CalcularRecorrencia;
+import br.com.finan.util.HibernateUtil;
+import br.com.finan.validator.IntegerValidator;
+import br.com.finan.validator.MaxLengthValidator;
 
 /**
  * @author Wesley Luiz
  */
 public class CadastroReceitaForm extends CadastroForm<Conta> {
 
-    public static final String TITULO_FRAME = "Cadastro de Receita";
+	/** Atributo serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    private JTextField txtDescricao;
-    private JFormattedTextField txtVencimento;
-    private JFormattedTextField txtPagamento;
-    private JMoneyField txtValor;
-    private JComboBox<Categoria> txtCategoria;
-    private JComboBox<ContaBancaria> txtContaBancaria;
-    private JComboBox<FormaPagamento> txtFormaPagamento;
-    private JComboBox<Frequencia> txtRecorrencia;
-    private JTextField txtMaximo;
-    private JButton btnSalvar;
-    private JPanel pnlCad;
-    private JCheckBox txtPago;
-    private JTextArea txtObservacoes;
+	public static final String TITULO_FRAME = "Cadastro de Receita";
 
-    private int limite = 1;
-    private Frequencia recorrencia = Frequencia.MENSAL;
+	private JTextField txtDescricao;
+	private JFormattedTextField txtVencimento;
+	private JFormattedTextField txtPagamento;
+	private JMoneyField txtValor;
+	private JComboBox<Categoria> txtCategoria;
+	private JComboBox<ContaBancaria> txtContaBancaria;
+	private JComboBox<FormaPagamento> txtFormaPagamento;
+	private JComboBox<Frequencia> txtRecorrencia;
+	private JTextField txtMaximo;
+	private JButton btnSalvar;
+	private JPanel pnlCad;
+	private JCheckBox txtPago;
+	private JTextArea txtObservacoes;
 
-    public CadastroReceitaForm() {
-        iniciarComponentes();
-        iniciarDados();
-    }
+	private int limite = 1;
+	private Frequencia recorrencia = Frequencia.MENSAL;
 
-    protected void iniciarComponentes() {
+	public CadastroReceitaForm() {
+		iniciarComponentes();
+		iniciarDados();
+	}
 
-        try {
-            txtDescricao = new JTextField(20);
-//            txtDescricao.setDocument(new FixedLengthDocument(5));
-            txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
-            txtPagamento = new JFormattedTextField(new MaskFormatter("##/##/####"));
-            txtValor = new JMoneyField();
-            txtCategoria = new JComboBox<Categoria>();
-            txtContaBancaria = new JComboBox<ContaBancaria>();
-            txtFormaPagamento = new JComboBox<FormaPagamento>();
-            txtRecorrencia = new JComboBox<Frequencia>();
-            txtMaximo = new JTextField(10);
-            btnSalvar = new JButton("Salvar");
-            txtPago = new JCheckBox("Sim");
-            txtObservacoes = new JTextArea(5, 30);
-        } catch (ParseException ex) {
-            Logger.getLogger(CadastroReceitaForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+	protected void iniciarComponentes() {
 
-        adicionarAcoes();
-        addBinding().bind();
-        montarTela();
-        setClosable(true);
-        setMaximizable(true);
-        setResizable(true);
-        setSize(900, 500);
-        setTitle(TITULO_FRAME);
-        pack();
+		try {
+			txtDescricao = new JTextField(20);
+			txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
+			txtPagamento = new JFormattedTextField(new MaskFormatter("##/##/####"));
+			txtValor = new JMoneyField();
+			txtCategoria = new JComboBox<Categoria>();
+			txtContaBancaria = new JComboBox<ContaBancaria>();
+			txtFormaPagamento = new JComboBox<FormaPagamento>();
+			txtRecorrencia = new JComboBox<Frequencia>();
+			txtMaximo = new JTextField(10);
+			btnSalvar = new JButton("Salvar");
+			txtPago = new JCheckBox("Sim");
+			txtObservacoes = new JTextArea(5, 30);
+		} catch (final ParseException ex) {
+			Logger.getLogger(CadastroReceitaForm.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
-    }
+		adicionarAcoes();
+		addBinding().bind();
+		montarTela();
+		setClosable(true);
+		setMaximizable(true);
+		setResizable(true);
+		setSize(900, 500);
+		setTitle(TITULO_FRAME);
+		pack();
 
-    private void adicionarAcoes() {
-        btnSalvar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                salvar();
-            }
-        });
-    }
+	}
 
-    // Constraints do mig layout (span, wrap, grow, gap, align, dock)
-    private void montarTela() {
-        JPanel pnlRecorrencia = new JPanel(new MigLayout());
-        pnlRecorrencia.setBorder(new TitledBorder(new EtchedBorder(), "Repetir lançamento"));
-        pnlRecorrencia.add(new JLabel("Recorrência:"));
-        pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
-        pnlRecorrencia.add(new JLabel("Limite:"));
-        pnlRecorrencia.add(txtMaximo);
+	private void adicionarAcoes() {
+		btnSalvar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				salvar();
+			}
+		});
+	}
 
-        JPanel pnlAcao = new JPanel(new MigLayout());
-        pnlAcao.setBorder(new EtchedBorder());
-        pnlAcao.add(btnSalvar);
+	// Constraints do mig layout (span, wrap, grow, gap, align, dock)
+	private void montarTela() {
+		final JPanel pnlRecorrencia = new JPanel(new MigLayout());
+		pnlRecorrencia.setBorder(new TitledBorder(new EtchedBorder(), "Repetir lançamento"));
+		pnlRecorrencia.add(new JLabel("Recorrência:"));
+		pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
+		pnlRecorrencia.add(new JLabel("Limite:"));
+		pnlRecorrencia.add(txtMaximo);
 
-        JPanel pnlCad_1 = new JPanel(new MigLayout("wrap 2"));
-        pnlCad_1.add(new JLabel("Descrição:"));
-        pnlCad_1.add(txtDescricao);
-        pnlCad_1.add(new JLabel("Vencimento:"));
-        pnlCad_1.add(txtVencimento, "grow");
-        pnlCad_1.add(new JLabel("Valor (R$):"));
-        pnlCad_1.add(txtValor, "grow");
-        pnlCad_1.add(new JLabel("Categoria:"));
-        pnlCad_1.add(txtCategoria, "grow");
-        pnlCad_1.add(new JLabel("Conta Bancária:"));
-        pnlCad_1.add(txtContaBancaria, "grow");
+		final JPanel pnlAcao = new JPanel(new MigLayout());
+		pnlAcao.setBorder(new EtchedBorder());
+		pnlAcao.add(btnSalvar);
 
-        JPanel pnlCad_2 = new JPanel(new MigLayout("wrap 2"));
-        pnlCad_2.add(new JLabel("Pago"));
-        pnlCad_2.add(txtPago);
-        pnlCad_2.add(new JLabel("Pagamento:"));
-        pnlCad_2.add(txtPagamento, "grow");
-        pnlCad_2.add(new JLabel("Forma Pagamento:"));
-        pnlCad_2.add(txtFormaPagamento, "grow");
-        pnlCad_2.add(new JLabel("Observações:"));
-        pnlCad_2.add(txtObservacoes, "spanx 2");
+		final JPanel pnlCad_1 = new JPanel(new MigLayout("wrap 2"));
+		pnlCad_1.add(new JLabel("Descrição:"));
+		pnlCad_1.add(txtDescricao);
+		pnlCad_1.add(new JLabel("Vencimento:"));
+		pnlCad_1.add(txtVencimento, "grow");
+		pnlCad_1.add(new JLabel("Valor (R$):"));
+		pnlCad_1.add(txtValor, "grow");
+		pnlCad_1.add(new JLabel("Categoria:"));
+		pnlCad_1.add(txtCategoria, "grow");
+		pnlCad_1.add(new JLabel("Conta Bancária:"));
+		pnlCad_1.add(txtContaBancaria, "grow");
 
-        pnlCad = new JPanel(new MigLayout());
-        pnlCad.add(pnlCad_1);
-        pnlCad.add(pnlCad_2, "wrap");
-        pnlCad.add(pnlRecorrencia, "wrap, growx");
-        pnlCad.add(pnlAcao, "growx, spanx 2");
+		final JPanel pnlCad_2 = new JPanel(new MigLayout("wrap 2"));
+		pnlCad_2.add(new JLabel("Pago"));
+		pnlCad_2.add(txtPago);
+		pnlCad_2.add(new JLabel("Pagamento:"));
+		pnlCad_2.add(txtPagamento, "grow");
+		pnlCad_2.add(new JLabel("Forma Pagamento:"));
+		pnlCad_2.add(txtFormaPagamento, "grow");
+		pnlCad_2.add(new JLabel("Observações:"));
+		pnlCad_2.add(txtObservacoes, "spanx 2");
 
-        add(pnlCad);
-    }
+		pnlCad = new JPanel(new MigLayout());
+		pnlCad.add(pnlCad_1);
+		pnlCad.add(pnlCad_2, "wrap");
+		pnlCad.add(pnlRecorrencia, "wrap, growx");
+		pnlCad.add(pnlAcao, "growx, spanx 2");
 
-    private BindingGroup addBinding() {
-        final BindingGroup bindingGroup = new BindingGroup();
-        BindingUtil.create(bindingGroup)
-                .addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
-                .addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), txtFormaPagamento)
-                .addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class)
-                        .eqStatusAtivo().list(), txtCategoria)
-                .addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class)
-                        .eqStatusAtivo().list(), txtContaBancaria)
-                .add(this, "${entidade.categoria}", txtCategoria, "selectedItem")
-                .add(this, "${entidade.contaBancaria}", txtContaBancaria, "selectedItem")
-                .add(this, "${entidade.formaPagamento}", txtFormaPagamento, "selectedItem")
-                .add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
-                .add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
-                .add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
-                .add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
-                .add(this, "${entidade.isPago}", txtPago, "selected")
-                .add(this, "${entidade.observacoes}", txtObservacoes, new MaxLengthValidator(225))
-                .add(this, "${recorrencia}", txtRecorrencia, "selectedItem")
-                .add(this, "${limite}", txtMaximo, new IntegerValidator(4))
-                .add(txtPago, "${selected}", txtPagamento, "enabled")
-                .add(txtPago, "${selected}", txtFormaPagamento, "enabled");
+		add(pnlCad);
+	}
 
-        return bindingGroup;
-    }
+	private BindingGroup addBinding() {
+		final BindingGroup bindingGroup = new BindingGroup();
+			BindingUtil.create(bindingGroup)
+				.addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
+				.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), txtFormaPagamento)
+				.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), txtCategoria)
+				.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), txtContaBancaria)
+				.add(this, "${entidade.categoria}", txtCategoria, "selectedItem")
+				.add(this, "${entidade.contaBancaria}", txtContaBancaria, "selectedItem")
+				.add(this, "${entidade.formaPagamento}", txtFormaPagamento, "selectedItem")
+				.add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
+				.add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
+				.add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
+				.add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
+				.add(this, "${entidade.isPago}", txtPago, "selected")
+				.add(this, "${entidade.observacoes}", txtObservacoes, new MaxLengthValidator(225))
+				.add(this, "${recorrencia}", txtRecorrencia, "selectedItem")
+				.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
+				.add(txtPago, "${selected}", txtPagamento, "enabled")
+				.add(txtPago, "${selected}", txtFormaPagamento, "enabled");
 
-    @Override
-    protected void salvar() {
-        List<Date> vencimentos = new CalcularRecorrencia(getRecorrencia(), getEntidade().getDataVencimento(), getLimite()).obterVencimentos();
+		return bindingGroup;
+	}
 
-        for (int i = 0; i < getLimite(); i++) {
-            try {
-                Conta conta = new Conta();
-                BeanUtils.copyProperties(conta, getEntidade());
-                conta.setParcela(i + 1);
-                conta.setTotalParcelas(getLimite());
-                conta.setDataVencimento(vencimentos.get(i));
-                HibernateUtil.salvar(conta);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+	@Override
+	protected void salvar() {
+		final List<Date> vencimentos = new CalcularRecorrencia(getRecorrencia(), getEntidade().getDataVencimento(), getLimite()).obterVencimentos();
 
-        iniciarDados();
-    }
+		for (int i = 0; i < getLimite(); i++) {
+			try {
+				final Conta conta = new Conta();
+				BeanUtils.copyProperties(conta, getEntidade());
+				conta.setParcela(i + 1);
+				conta.setTotalParcelas(getLimite());
+				conta.setDataVencimento(vencimentos.get(i));
+				HibernateUtil.salvar(conta);
+			} catch (IllegalAccessException | InvocationTargetException ex) {
+				Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
 
-    @Override
-    protected void iniciarDados() {
-        getEntidade().setTipo(TipoConta.RECEITA);
-        super.iniciarDados();
-    }
+		iniciarDados();
+	}
 
-    @Override
-    protected JInternalFrame getFrame() {
-        return this;
-    }
+	@Override
+	protected void iniciarDados() {
+		getEntidade().setTipo(TipoConta.RECEITA);
+		super.iniciarDados();
+	}
 
-    @Override
-    protected JPanel getContainerCadastro() {
-        return this.pnlCad;
-    }
+	@Override
+	protected JInternalFrame getFrame() {
+		return this;
+	}
 
-    public int getLimite() {
-        return limite;
-    }
+	@Override
+	protected JPanel getContainerCadastro() {
+		return this.pnlCad;
+	}
 
-    public void setLimite(int limite) {
-        this.limite = limite;
-    }
+	public int getLimite() {
+		return limite;
+	}
 
-    public Frequencia getRecorrencia() {
-        return recorrencia;
-    }
+	public void setLimite(final int limite) {
+		this.limite = limite;
+	}
 
-    public void setRecorrencia(Frequencia recorrencia) {
-        this.recorrencia = recorrencia;
-    }
+	public Frequencia getRecorrencia() {
+		return recorrencia;
+	}
+
+	public void setRecorrencia(final Frequencia recorrencia) {
+		this.recorrencia = recorrencia;
+	}
 
 }

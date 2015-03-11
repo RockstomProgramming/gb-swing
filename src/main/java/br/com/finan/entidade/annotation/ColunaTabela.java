@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ColunaTabela {
 
-    int index();
+	int index();
 
-    String titulo();
+	String titulo();
 }

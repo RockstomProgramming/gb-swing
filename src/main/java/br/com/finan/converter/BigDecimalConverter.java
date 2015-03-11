@@ -15,27 +15,27 @@ import org.jdesktop.beansbinding.Converter;
  */
 public class BigDecimalConverter extends Converter<BigDecimal, String> {
 
-    NumberFormat format = NumberFormat.getInstance(new Locale("pt", "BR"));
+	NumberFormat format = NumberFormat.getInstance(new Locale("pt", "BR"));
 
-    public BigDecimalConverter() {
-        format.setMaximumFractionDigits(2);
-        format.setMinimumFractionDigits(2);
-    }
+	public BigDecimalConverter() {
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
+	}
 
-    @Override
-    public String convertForward(BigDecimal s) {
-        return s.toString();
-    }
+	@Override
+	public String convertForward(final BigDecimal s) {
+		return s.toString();
+	}
 
-    @Override
-    public BigDecimal convertReverse(String t) {
-        if (t != null && !t.isEmpty()) {
-            try {
-                return new BigDecimal(format.parse(t).toString()).setScale(2, RoundingMode.CEILING);
-            } catch (ParseException ex) {
-                Logger.getLogger(BigDecimalConverter.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return null;
-    }
+	@Override
+	public BigDecimal convertReverse(final String t) {
+		if (t != null && !t.isEmpty()) {
+			try {
+				return new BigDecimal(format.parse(t).toString()).setScale(2, RoundingMode.CEILING);
+			} catch (final ParseException ex) {
+				Logger.getLogger(BigDecimalConverter.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+		return null;
+	}
 }

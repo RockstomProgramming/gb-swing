@@ -1,5 +1,7 @@
 package br.com.finan.entidade.enumerator;
 
+import br.com.finan.entidade.Entidade;
+
 /**
  * Este <code>Enumerator</code> é responsável por fornecer um status à uma
  * {@link Entidade}, <i>Ativo</i> e <i>Inativo</i>
@@ -11,26 +13,25 @@ package br.com.finan.entidade.enumerator;
  */
 public enum EnumStatus {
 
-    INATIVO(false),
-    ATIVO(true);
+	INATIVO(false), ATIVO(true);
 
-    private boolean status;
+	private boolean status;
 
-    /**
-     * Responsável pela criação de novas instâncias desta classe.
-     *
-     * @param status
-     */
-    private EnumStatus(final boolean status) {
-        this.status = status;
-    }
+	/**
+	 * Responsável pela criação de novas instâncias desta classe.
+	 *
+	 * @param status
+	 */
+	private EnumStatus(final boolean status) {
+		this.status = status;
+	}
 
-    /**
-     * Retorna o valor do atributo <code>status</code>
-     *
-     * @return <code>boolean</code>
-     */
-    public boolean getStatus() {
-        return status;
-    }
+	/**
+	 * Retorna o valor do atributo <code>status</code>
+	 *
+	 * @return <code>boolean</code>
+	 */
+	public boolean getStatus() {
+		return status;
+	}
 }

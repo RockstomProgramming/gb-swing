@@ -1,8 +1,8 @@
 package br.com.finan.dto;
 
-import br.com.finan.entidade.annotation.ColunaTabela;
 import java.math.BigDecimal;
 import java.util.Date;
+import br.com.finan.entidade.annotation.ColunaTabela;
 
 /**
  *
@@ -10,88 +10,88 @@ import java.util.Date;
  */
 public class ContaDTO extends DTO {
 
-    @ColunaTabela(index = 2, titulo = "Descrição")
-    private String descricao;
+	@ColunaTabela(index = 2, titulo = "Descrição")
+	private String descricao;
 
-    @ColunaTabela(index = 3, titulo = "Categoria")
-    private String categoria;
+	@ColunaTabela(index = 3, titulo = "Categoria")
+	private String categoria;
 
-    @ColunaTabela(index = 5, titulo = "Valor")
-    private BigDecimal valor;
+	@ColunaTabela(index = 5, titulo = "Valor")
+	private BigDecimal valor;
 
-    @ColunaTabela(index = 4, titulo = "Vencimento")
-    private Date vencimento;
+	@ColunaTabela(index = 4, titulo = "Vencimento")
+	private Date vencimento;
 
-    @ColunaTabela(index = 1, titulo = "")
-    private boolean selecionado;
+	@ColunaTabela(index = 1, titulo = "")
+	private boolean selecionado;
 
-    private Integer parcela;
+	private Integer parcela;
 
-    private Integer totalParcela;
+	private Integer totalParcela;
 
-    private boolean editado;
+	private boolean editado;
 
-    public String getDescricao() {
-        return descricao;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+	public void setDescricao(final String descricao) {
+		this.descricao = descricao;
+	}
 
-    public BigDecimal getValor() {
-        return valor;
-    }
+	public BigDecimal getValor() {
+		return valor;
+	}
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
+	public void setValor(final BigDecimal valor) {
+		this.valor = valor;
+	}
 
-    public Date getVencimento() {
-        return vencimento;
-    }
+	public Date getVencimento() {
+		return vencimento;
+	}
 
-    public void setVencimento(Date vencimento) {
-        this.vencimento = vencimento;
-    }
+	public void setVencimento(final Date vencimento) {
+		this.vencimento = vencimento;
+	}
 
-    public boolean isSelecionado() {
-        return selecionado;
-    }
+	public boolean isSelecionado() {
+		return selecionado;
+	}
 
-    public void setSelecionado(boolean selecionado) {
-        this.selecionado = selecionado;
-    }
+	public void setSelecionado(final boolean selecionado) {
+		this.selecionado = selecionado;
+	}
 
-    public boolean isEditado() {
-        return editado;
-    }
+	public boolean isEditado() {
+		return editado;
+	}
 
-    public void setEditado(boolean editado) {
-        this.editado = editado;
-    }
+	public void setEditado(final boolean editado) {
+		this.editado = editado;
+	}
 
-    public String getCategoria() {
-        return categoria;
-    }
+	public String getCategoria() {
+		return categoria;
+	}
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+	public void setCategoria(final String categoria) {
+		this.categoria = categoria;
+	}
 
-    public Integer getParcela() {
-        return parcela;
-    }
+	public Integer getParcela() {
+		return parcela;
+	}
 
-    public void setParcela(Integer parcela) {
-        this.parcela = parcela;
-    }
+	public void setParcela(final Integer parcela) {
+		this.parcela = parcela;
+	}
 
-    public Integer getTotalParcela() {
-        return totalParcela;
-    }
+	public Integer getTotalParcela() {
+		return totalParcela;
+	}
 
-    public void setTotalParcela(Integer totalParcela) {
-        this.totalParcela = totalParcela;
-    }
+	public void setTotalParcela(final Integer totalParcela) {
+		this.totalParcela = totalParcela;
+	}
 }

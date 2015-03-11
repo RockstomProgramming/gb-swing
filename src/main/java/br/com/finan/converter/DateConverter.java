@@ -13,22 +13,22 @@ import org.jdesktop.beansbinding.Converter;
  */
 public class DateConverter extends Converter<Date, String> {
 
-    private static final String REGEX = "\\d{2}/\\d{2}/\\d{4}";
+	private static final String REGEX = "\\d{2}/\\d{2}/\\d{4}";
 
-    @Override
-    public String convertForward(Date s) {
-        return null;
-    }
+	@Override
+	public String convertForward(final Date s) {
+		return null;
+	}
 
-    @Override
-    public Date convertReverse(String t) {
-        try {
-            if (t.matches(REGEX)) {
-                return new SimpleDateFormat("dd/MM/yyyy").parse(t);
-            }
-        } catch (ParseException ex) {
-            Logger.getLogger(DateConverter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+	@Override
+	public Date convertReverse(final String t) {
+		try {
+			if (t.matches(REGEX)) {
+				return new SimpleDateFormat("dd/MM/yyyy").parse(t);
+			}
+		} catch (final ParseException ex) {
+			Logger.getLogger(DateConverter.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return null;
+	}
 }

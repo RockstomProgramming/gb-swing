@@ -8,18 +8,27 @@ import org.jdesktop.beansbinding.Converter;
  */
 public class IntegerConverter extends Converter<Integer, String> {
 
-    @Override
-    public String convertForward(Integer s) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+	@Override
+	public String convertForward(final Integer s) {
+		throw new UnsupportedOperationException("Not supported yet."); // To
+		// change
+		// body
+		// of
+		// generated
+		// methods,
+		// choose
+		// Tools
+		// |
+		// Templates.
+	}
 
-    @Override
-    public Integer convertReverse(String t) {
-        try {
-            return new Integer(t);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
+	@Override
+	public Integer convertReverse(final String t) {
+		try {
+			return new Integer(t);
+		} catch (final NumberFormatException e) {
+			return null;
+		}
+	}
 
 }

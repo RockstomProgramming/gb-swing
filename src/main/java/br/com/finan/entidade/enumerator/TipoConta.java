@@ -6,6 +6,5 @@ package br.com.finan.entidade.enumerator;
  */
 public enum TipoConta {
 
-    RECEITA,
-    DESPESA;
+	RECEITA, DESPESA;
 }

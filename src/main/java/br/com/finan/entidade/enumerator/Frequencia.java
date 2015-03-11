@@ -9,26 +9,20 @@ package br.com.finan.entidade.enumerator;
  */
 public enum Frequencia {
 
-    DIARIO("Diário"),
-    SEMANAL("Semanal"),
-    MENSAL("Mensal"),
-    BIMESTRAL("Bimestral"),
-    TRIMESTRAL("Trimestral"),
-    SEMESTRAL("Semestral"),
-    ANUAL("Anual");
+	DIARIO("Diário"), SEMANAL("Semanal"), MENSAL("Mensal"), BIMESTRAL("Bimestral"), TRIMESTRAL("Trimestral"), SEMESTRAL("Semestral"), ANUAL("Anual");
 
-    private final String descricao;
+	private final String descricao;
 
-    @Override
-    public String toString() {
-        return getDescricao();
-    }
+	@Override
+	public String toString() {
+		return getDescricao();
+	}
 
-    private Frequencia(String descricao) {
-        this.descricao = descricao;
-    }
+	private Frequencia(final String descricao) {
+		this.descricao = descricao;
+	}
 
-    public String getDescricao() {
-        return descricao;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 }

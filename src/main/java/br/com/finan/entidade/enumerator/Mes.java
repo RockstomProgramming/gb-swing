@@ -9,55 +9,44 @@ package br.com.finan.entidade.enumerator;
  */
 public enum Mes {
 
-    JANEIRO("Janeiro", 1),
-    FEVEREIRO("Fevereiro", 2),
-    MARCO("Março", 3),
-    ABRIL("Abril", 4),
-    MAIO("Maio", 5),
-    JUNHO("Junho", 6),
-    JULHO("Julho", 7),
-    AGOSTO("Agosto", 8),
-    SETEMBRO("Setembro", 9),
-    OUTUBRO("Outubro", 10),
-    NOVEMBRO("Novembro", 11),
-    DEZEMBRO("Dezembro", 12);
+	JANEIRO("Janeiro", 1), FEVEREIRO("Fevereiro", 2), MARCO("Março", 3), ABRIL("Abril", 4), MAIO("Maio", 5), JUNHO("Junho", 6), JULHO("Julho", 7), AGOSTO("Agosto", 8), SETEMBRO("Setembro", 9), OUTUBRO("Outubro", 10), NOVEMBRO("Novembro", 11), DEZEMBRO("Dezembro", 12);
 
-    private final String descricao;
-    private final Integer referencia;
+	private final String descricao;
+	private final Integer referencia;
 
-    @Override
-    public String toString() {
-        return getDescricao();
-    }
+	@Override
+	public String toString() {
+		return getDescricao();
+	}
 
-    private Mes(String descricao, Integer referencia) {
-        this.descricao = descricao;
-        this.referencia = referencia;
-    }
+	private Mes(final String descricao, final Integer referencia) {
+		this.descricao = descricao;
+		this.referencia = referencia;
+	}
 
-    public static Mes getMesPorDescricao(String descricao) {
-        for (Mes mes : Mes.values()) {
-            if (mes.getDescricao().equals(descricao)) {
-                return mes;
-            }
-        }
-        return null;
-    }
+	public static Mes getMesPorDescricao(final String descricao) {
+		for (final Mes mes : Mes.values()) {
+			if (mes.getDescricao().equals(descricao)) {
+				return mes;
+			}
+		}
+		return null;
+	}
 
-    public static Mes getMesPorReferencia(Integer referencia) {
-        for (Mes mes : Mes.values()) {
-            if (mes.getReferencia().equals(referencia)) {
-                return mes;
-            }
-        }
-        return null;
-    }
+	public static Mes getMesPorReferencia(final Integer referencia) {
+		for (final Mes mes : Mes.values()) {
+			if (mes.getReferencia().equals(referencia)) {
+				return mes;
+			}
+		}
+		return null;
+	}
 
-    public Integer getReferencia() {
-        return referencia;
-    }
+	public Integer getReferencia() {
+		return referencia;
+	}
 
-    public String getDescricao() {
-        return descricao;
-    }
+	public String getDescricao() {
+		return descricao;
+	}
 }

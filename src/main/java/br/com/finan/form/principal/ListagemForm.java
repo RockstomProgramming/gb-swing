@@ -1,11 +1,5 @@
 package br.com.finan.form.principal;
 
-import br.com.finan.dao.CriteriaBuilder;
-import br.com.finan.dto.DTO;
-import br.com.finan.entidade.annotation.ColunaTabela;
-import br.com.finan.util.HibernateUtil;
-import br.com.finan.util.NumberUtil;
-import br.com.finan.util.StringUtil;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +15,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.criterion.Projections;
+import br.com.finan.dao.CriteriaBuilder;
+import br.com.finan.dto.DTO;
+import br.com.finan.entidade.annotation.ColunaTabela;
+import br.com.finan.util.HibernateUtil;
+import br.com.finan.util.NumberUtil;
+import br.com.finan.util.StringUtil;
 
 /**
  *
@@ -29,251 +29,252 @@ import org.hibernate.criterion.Projections;
  */
 public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalFrame {
 
-    private List<T> dados;
-    private int pagina = 1;
-    private Long qntRegistros = 0L;
-    private DefaultTableModel model;
-    protected final int MAX_REGISTROS = 15;
+	/** Atributo serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+	private List<T> dados;
+	private int pagina = 1;
+	private Long qntRegistros = 0L;
+	private final DefaultTableModel model;
+	protected final int MAX_REGISTROS = 15;
 
-    protected javax.swing.JButton btnAnterior;
-    protected javax.swing.JButton btnExcluir;
-    protected javax.swing.JButton btnPrimeiro;
-    protected javax.swing.JButton btnProximo;
-    protected javax.swing.JButton btnSalvar;
-    protected javax.swing.JButton btnUltimo;
-    protected javax.swing.JScrollPane jScrollPane1;
-    protected javax.swing.JLabel lbPaginacao;
-    protected javax.swing.JPanel pnlPaginacao;
-    protected javax.swing.JTable tabela;
+	protected javax.swing.JButton btnAnterior;
+	protected javax.swing.JButton btnExcluir;
+	protected javax.swing.JButton btnPrimeiro;
+	protected javax.swing.JButton btnProximo;
+	protected javax.swing.JButton btnSalvar;
+	protected javax.swing.JButton btnUltimo;
+	protected javax.swing.JScrollPane jScrollPane1;
+	protected javax.swing.JLabel lbPaginacao;
+	protected javax.swing.JPanel pnlPaginacao;
+	protected javax.swing.JTable tabela;
 
-    public ListagemForm() {
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tabela = new javax.swing.JTable();
-        btnSalvar = new javax.swing.JButton();
-        btnExcluir = new javax.swing.JButton();
-        pnlPaginacao = new javax.swing.JPanel();
-        lbPaginacao = new javax.swing.JLabel();
-        btnAnterior = new javax.swing.JButton();
-        btnProximo = new javax.swing.JButton();
-        btnUltimo = new javax.swing.JButton();
-        btnPrimeiro = new javax.swing.JButton();
-        
-        setTitle(getTituloFrame());
+	public ListagemForm() {
+		jScrollPane1 = new javax.swing.JScrollPane();
+		tabela = new javax.swing.JTable();
+		btnSalvar = new javax.swing.JButton();
+		btnExcluir = new javax.swing.JButton();
+		pnlPaginacao = new javax.swing.JPanel();
+		lbPaginacao = new javax.swing.JLabel();
+		btnAnterior = new javax.swing.JButton();
+		btnProximo = new javax.swing.JButton();
+		btnUltimo = new javax.swing.JButton();
+		btnPrimeiro = new javax.swing.JButton();
 
-        btnSalvar.setText("Salvar");
-        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
+		setTitle(getTituloFrame());
 
-        btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                inativarDados(getNomeEntidade());
-            }
-        });
+		btnSalvar.setText("Salvar");
+		btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {}
+		});
 
-        btnPrimeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/first.png")));
-        btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                irPrimeiraPagina();
-            }
-        });
+		btnExcluir.setText("Excluir");
+		btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				inativarDados(getNomeEntidade());
+			}
+		});
 
-        btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png")));
-        btnAnterior.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                irPaginaAnterior();
-            }
-        });
+		btnPrimeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/first.png")));
+		btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				irPrimeiraPagina();
+			}
+		});
 
-        btnProximo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png")));
-        btnProximo.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                irProximaPagina();
-            }
-        });
+		btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png")));
+		btnAnterior.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				irPaginaAnterior();
+			}
+		});
 
-        btnUltimo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/last.png")));
-        btnUltimo.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                irUltimaPagina();
-            }
-        });
+		btnProximo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png")));
+		btnProximo.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				irProximaPagina();
+			}
+		});
 
-        Map<Integer, Field> campos = getCamposTabela();
-        List<String> titulos = new ArrayList<String>();
+		btnUltimo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/last.png")));
+		btnUltimo.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				irUltimaPagina();
+			}
+		});
 
-        for (Field f : campos.values()) {
-            titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
-        }
+		final Map<Integer, Field> campos = getCamposTabela();
+		final List<String> titulos = new ArrayList<String>();
 
-        model = new DefaultTableModel(new Object[][]{}, titulos.toArray()) {
-            Class[] types = new Class[]{
-                java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, Date.class, BigDecimal.class
-            };
-        };
+		for (final Field f : campos.values()) {
+			titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
+		}
 
-        tabela.setModel(model);
-    }
+		model = new DefaultTableModel(new Object[][] {}, titulos.toArray()) {
+			/** Atributo serialVersionUID. */
+			private static final long serialVersionUID = 1L;
+			Class[] types = new Class[] { java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, Date.class, BigDecimal.class };
+		};
 
-    protected void iniciarDados() {
-        buscarDados(0);
-        validarBtnPaginacao();
-    }
+		tabela.setModel(model);
+	}
 
-    protected void irProximaPagina() {
-        setPagina(getPagina() + 1);
-        paginar();
-    }
+	protected void iniciarDados() {
+		buscarDados(0);
+		validarBtnPaginacao();
+	}
 
-    protected void irPaginaAnterior() {
-        setPagina(getPagina() == 0 ? 0 : getPagina() - 1);
-        paginar();
-    }
+	protected void irProximaPagina() {
+		setPagina(getPagina() + 1);
+		paginar();
+	}
 
-    protected void irPrimeiraPagina() {
-        setPagina(1);
-        paginar();
-    }
+	protected void irPaginaAnterior() {
+		setPagina(getPagina() == 0 ? 0 : getPagina() - 1);
+		paginar();
+	}
 
-    protected void irUltimaPagina() {
-        setPagina(getQntPagina());
-        paginar();
-    }
+	protected void irPrimeiraPagina() {
+		setPagina(1);
+		paginar();
+	}
 
-    private void paginar() {
-        final int max = getPagina() * MAX_REGISTROS;
-        final int min = max - MAX_REGISTROS;
-        buscarDados(min);
-        validarBtnPaginacao();
-    }
+	protected void irUltimaPagina() {
+		setPagina(getQntPagina());
+		paginar();
+	}
 
-    protected int getQntPagina() {
-        int p = (int) (getQntRegistros() / MAX_REGISTROS);
-        if (getQntRegistros() % MAX_REGISTROS > 0) {
-            p++;
-        }
-        return p;
-    }
+	private void paginar() {
+		final int max = getPagina() * MAX_REGISTROS;
+		final int min = max - MAX_REGISTROS;
+		buscarDados(min);
+		validarBtnPaginacao();
+	}
 
-    protected boolean isUltimaPagina() {
-        return getPagina() >= getQntPagina();
-    }
+	protected int getQntPagina() {
+		int p = (int) (getQntRegistros() / MAX_REGISTROS);
+		if (getQntRegistros() % MAX_REGISTROS > 0) {
+			p++;
+		}
+		return p;
+	}
 
-    protected void validarBtnPaginacao() {
-        btnPrimeiro.setEnabled(getPagina() != 1);
-        btnAnterior.setEnabled(btnPrimeiro.isEnabled());
-        btnProximo.setEnabled(!isUltimaPagina());
-        btnUltimo.setEnabled(!isUltimaPagina());
-        lbPaginacao.setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
-    }
+	protected boolean isUltimaPagina() {
+		return getPagina() >= getQntPagina();
+	}
 
-    protected void inativarDados(String nomeClasse) {
-        for (int i = 0; i < tabela.getRowCount(); i++) {
-            boolean b = (boolean) tabela.getValueAt(i, 0);
-            if (b) {
-                T dto = getDados().get(i);
-                HibernateUtil.inativar(dto.getId(), nomeClasse);
-            }
-        }
+	protected void validarBtnPaginacao() {
+		btnPrimeiro.setEnabled(getPagina() != 1);
+		btnAnterior.setEnabled(btnPrimeiro.isEnabled());
+		btnProximo.setEnabled(!isUltimaPagina());
+		btnUltimo.setEnabled(!isUltimaPagina());
+		lbPaginacao.setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
+	}
 
-        iniciarDados();
-    }
+	protected void inativarDados(final String nomeClasse) {
+		for (int i = 0; i < tabela.getRowCount(); i++) {
+			final boolean b = (boolean) tabela.getValueAt(i, 0);
+			if (b) {
+				final T dto = getDados().get(i);
+				HibernateUtil.inativar(dto.getId(), nomeClasse);
+			}
+		}
 
-    protected void buscarDados(int primResultado) {
-        limparTabela();
-        setDados(getBuilderListagem().getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
-        setQntRegistros((Long) getBuilderQntRegistros().getCriteria().setProjection(Projections.rowCount()).uniqueResult());
+		iniciarDados();
+	}
 
-        Map<Integer, Field> campos = getCamposTabela();
+	protected void buscarDados(final int primResultado) {
+		limparTabela();
+		setDados(getBuilderListagem().getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
+		setQntRegistros((Long) getBuilderQntRegistros().getCriteria().setProjection(Projections.rowCount()).uniqueResult());
 
-        for (T d : getDados()) {
-            List<Object> valores = new ArrayList();
-            for (Field f : campos.values()) {
-                try {
-                    String ini = f.getType().getName().equals("boolean") ? "is" : "get";
-                    Method m = d.getClass().getDeclaredMethod(ini + StringUtil.toPrimeiraLetraMaiuscula(f.getName()));
-                    Object v = m.invoke(d);
-                    valores.add(formatarTipos(v));
-                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    Logger.getLogger(ListagemForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            getModel().addRow(valores.toArray());
-        }
-    }
+		final Map<Integer, Field> campos = getCamposTabela();
 
-    private Map<Integer, Field> getCamposTabela() throws SecurityException {
-        Map<Integer, Field> campos = new TreeMap<Integer, Field>();
-        Class<T> clazz = obterTipoDaClasse();
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(ColunaTabela.class)) {
-                campos.put(field.getAnnotation(ColunaTabela.class).index(), field);
-            }
-        }
-        return campos;
-    }
+		for (final T d : getDados()) {
+			final List<Object> valores = new ArrayList();
+			for (final Field f : campos.values()) {
+				try {
+					final String ini = f.getType().getName().equals("boolean") ? "is" : "get";
+					final Method m = d.getClass().getDeclaredMethod(ini + StringUtil.toPrimeiraLetraMaiuscula(f.getName()));
+					final Object v = m.invoke(d);
+					valores.add(formatarTipos(v));
+				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+					Logger.getLogger(ListagemForm.class.getName()).log(Level.SEVERE, null, ex);
+				}
+			}
+			getModel().addRow(valores.toArray());
+		}
+	}
 
-    protected void limparTabela() {
-        while (getModel().getRowCount() > 0) {
-            getModel().removeRow(0);
-        }
-    }
+	private Map<Integer, Field> getCamposTabela() throws SecurityException {
+		final Map<Integer, Field> campos = new TreeMap<Integer, Field>();
+		final Class<T> clazz = obterTipoDaClasse();
+		for (final Field field : clazz.getDeclaredFields()) {
+			if (field.isAnnotationPresent(ColunaTabela.class)) {
+				campos.put(field.getAnnotation(ColunaTabela.class).index(), field);
+			}
+		}
+		return campos;
+	}
 
-    protected Class<T> obterTipoDaClasse() {
-        return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
+	protected void limparTabela() {
+		while (getModel().getRowCount() > 0) {
+			getModel().removeRow(0);
+		}
+	}
 
-    private Object formatarTipos(Object v) {
-        if (v instanceof BigDecimal) {
-            return NumberUtil.obterNumeroFormatado(v);
-        } else if (v instanceof Date) {
-            return new SimpleDateFormat("dd/MM/yyyy").format(v);
-        }
+	protected Class<T> obterTipoDaClasse() {
+		return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
 
-        return v;
-    }
+	private Object formatarTipos(final Object v) {
+		if (v instanceof BigDecimal) {
+			return NumberUtil.obterNumeroFormatado(v);
+		} else if (v instanceof Date) {
+			return new SimpleDateFormat("dd/MM/yyyy").format(v);
+		}
 
-    protected abstract CriteriaBuilder getBuilderListagem();
+		return v;
+	}
 
-    protected abstract CriteriaBuilder getBuilderQntRegistros();
+	protected abstract CriteriaBuilder getBuilderListagem();
 
-    protected abstract String getNomeEntidade();
-    
-    protected abstract String getTituloFrame();
+	protected abstract CriteriaBuilder getBuilderQntRegistros();
 
-    public List<T> getDados() {
-        return dados;
-    }
+	protected abstract String getNomeEntidade();
 
-    public void setDados(List<T> dados) {
-        this.dados = dados;
-    }
+	protected abstract String getTituloFrame();
 
-    public int getPagina() {
-        return pagina;
-    }
+	public List<T> getDados() {
+		return dados;
+	}
 
-    public void setPagina(int pagina) {
-        this.pagina = pagina;
-    }
+	public void setDados(final List<T> dados) {
+		this.dados = dados;
+	}
 
-    public Long getQntRegistros() {
-        return qntRegistros;
-    }
+	public int getPagina() {
+		return pagina;
+	}
 
-    public void setQntRegistros(Long qntRegistros) {
-        this.qntRegistros = qntRegistros;
-    }
+	public void setPagina(final int pagina) {
+		this.pagina = pagina;
+	}
 
-    public DefaultTableModel getModel() {
-        return model;
-    }
+	public Long getQntRegistros() {
+		return qntRegistros;
+	}
+
+	public void setQntRegistros(final Long qntRegistros) {
+		this.qntRegistros = qntRegistros;
+	}
+
+	public DefaultTableModel getModel() {
+		return model;
+	}
 }

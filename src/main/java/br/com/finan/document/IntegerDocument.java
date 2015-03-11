@@ -9,22 +9,25 @@ import javax.swing.text.BadLocationException;
  */
 public class IntegerDocument extends FixedLengthDocument {
 
-    public IntegerDocument(int maxlen) {
-        super(maxlen);
-    }
+	/** Atributo serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-        if (str == null) {
-            return;
-        }
+	public IntegerDocument(final int maxlen) {
+		super(maxlen);
+	}
 
-        try {
-            Integer.parseInt(str);
-        } catch (Exception e) {
-            return;
-        }
+	@Override
+	public void insertString(final int offset, final String str, final AttributeSet attr) throws BadLocationException {
+		if (str == null) {
+			return;
+		}
 
-        super.insertString(offset, str, attr);
-    }
+		try {
+			Integer.parseInt(str);
+		} catch (final Exception e) {
+			return;
+		}
+
+		super.insertString(offset, str, attr);
+	}
 }

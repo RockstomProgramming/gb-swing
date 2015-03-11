@@ -1,18 +1,17 @@
 package br.com.finan.form.principal;
 
-import br.com.finan.util.Formatters;
-import br.com.finan.entidade.Entidade;
-import br.com.finan.util.HibernateUtil;
-import br.com.finan.util.ObjetoUtil;
 import java.awt.Component;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
+import br.com.finan.entidade.Entidade;
+import br.com.finan.util.Formatters;
+import br.com.finan.util.HibernateUtil;
+import br.com.finan.util.ObjetoUtil;
 
 /**
  *
@@ -21,79 +20,82 @@ import javax.swing.text.JTextComponent;
  */
 public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInternalFrame {
 
-    private T entidade;
+	/** Atributo serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    private final Formatters formatters;
+	private T entidade;
 
-    public CadastroForm() {
-        iniciarEntidade();
-        formatters = new Formatters();
-    }
+	private final Formatters formatters;
 
-    protected void salvar() {
-        HibernateUtil.salvar(entidade);
-        iniciarDados();
-        JOptionPane.showMessageDialog(getFrame(), "Dados Salvos com sucesso");
-    }
+	public CadastroForm() {
+		iniciarEntidade();
+		formatters = new Formatters();
+	}
 
-    protected void alterar() {
+	protected void salvar() {
+		HibernateUtil.salvar(entidade);
+		iniciarDados();
+		JOptionPane.showMessageDialog(getFrame(), "Dados Salvos com sucesso");
+	}
 
-    }
+	protected void alterar() {
 
-    protected T obterPorId(Long id) {
-        return (T) HibernateUtil.getCriteriaBuilder(entidade.getClass()).eqId(id).uniqueResult();
-    }
+	}
 
-    protected List<T> listarTudo() {
-        return HibernateUtil.getCriteriaBuilder(entidade.getClass()).list();
-    }
+	protected T obterPorId(final Long id) {
+		return (T) HibernateUtil.getCriteriaBuilder(entidade.getClass()).eqId(id).uniqueResult();
+	}
 
-    protected void limparCampos() {
-        limparCampos(getFrame(), getContainerCadastro());
-    }
+	protected List<T> listarTudo() {
+		return HibernateUtil.getCriteriaBuilder(entidade.getClass()).list();
+	}
 
-    protected void limparCampos(JInternalFrame frame, JPanel container) {
-        for (Component comp : container.getComponents()) {
-            if (comp instanceof JTextComponent) {
-                ((JTextComponent) comp).setText(null);
-            }
-        }
-    }
+	protected void limparCampos() {
+		limparCampos(getFrame(), getContainerCadastro());
+	}
 
-    protected Class<T> obterTipoDaClasse() {
-        return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
+	protected void limparCampos(final JInternalFrame frame, final JPanel container) {
+		for (final Component comp : container.getComponents()) {
+			if (comp instanceof JTextComponent) {
+				((JTextComponent) comp).setText(null);
+			}
+		}
+	}
 
-    private void iniciarEntidade() {
-        try {
-            setEntidade(obterTipoDaClasse().newInstance());
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(CadastroForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+	protected Class<T> obterTipoDaClasse() {
+		return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
 
-    protected boolean isReferencia(Object... valores) {
-        return ObjetoUtil.isReferencia(valores);
-    }
+	private void iniciarEntidade() {
+		try {
+			setEntidade(obterTipoDaClasse().newInstance());
+		} catch (InstantiationException | IllegalAccessException ex) {
+			Logger.getLogger(CadastroForm.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
 
-    protected void iniciarDados() {
-        limparCampos();
-    }
+	protected boolean isReferencia(final Object... valores) {
+		return ObjetoUtil.isReferencia(valores);
+	}
 
-    protected abstract JInternalFrame getFrame();
+	protected void iniciarDados() {
+		limparCampos();
+	}
 
-    protected abstract JPanel getContainerCadastro();
+	protected abstract JInternalFrame getFrame();
 
-    public T getEntidade() {
-        return entidade;
-    }
+	protected abstract JPanel getContainerCadastro();
 
-    public void setEntidade(T entidade) {
-        this.entidade = entidade;
-    }
+	public T getEntidade() {
+		return entidade;
+	}
 
-    public Formatters getFormatters() {
-        return formatters;
-    }
+	public void setEntidade(final T entidade) {
+		this.entidade = entidade;
+	}
+
+	public Formatters getFormatters() {
+		return formatters;
+	}
 
 }
