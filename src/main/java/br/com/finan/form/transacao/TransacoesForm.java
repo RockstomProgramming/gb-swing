@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -23,10 +24,13 @@ import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+
 import net.miginfocom.swing.MigLayout;
 import net.sf.ofx4j.domain.data.common.Transaction;
 import net.sf.ofx4j.domain.data.common.TransactionType;
+
 import org.jdesktop.beansbinding.BindingGroup;
+
 import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;

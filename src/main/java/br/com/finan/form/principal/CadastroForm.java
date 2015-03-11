@@ -4,11 +4,13 @@ import java.awt.Component;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
+
 import br.com.finan.entidade.Entidade;
+import br.com.finan.util.AppUtil;
 import br.com.finan.util.Formatters;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
@@ -35,17 +37,19 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 	protected void salvar() {
 		HibernateUtil.salvar(entidade);
 		iniciarDados();
-		JOptionPane.showMessageDialog(getFrame(), "Dados Salvos com sucesso");
+		AppUtil.exibirMsgSalvarSucesso(this);
 	}
 
 	protected void alterar() {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	protected T obterPorId(final Long id) {
 		return (T) HibernateUtil.getCriteriaBuilder(entidade.getClass()).eqId(id).uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected List<T> listarTudo() {
 		return HibernateUtil.getCriteriaBuilder(entidade.getClass()).list();
 	}
@@ -62,6 +66,7 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "restriction" })
 	protected Class<T> obterTipoDaClasse() {
 		return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}

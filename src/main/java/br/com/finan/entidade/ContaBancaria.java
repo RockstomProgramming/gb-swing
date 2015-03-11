@@ -3,6 +3,7 @@ package br.com.finan.entidade;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import br.com.finan.entidade.annotation.Unique;
 
 @Entity

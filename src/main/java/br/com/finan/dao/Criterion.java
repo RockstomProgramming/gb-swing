@@ -2,10 +2,13 @@ package br.com.finan.dao;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.SortOrder;
+
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.sql.JoinType;
+
 import br.com.finan.entidade.enumerator.EnumStatus;
 
 /**

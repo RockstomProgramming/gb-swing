@@ -2,6 +2,7 @@ package br.com.finan.component;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.CaretEvent;

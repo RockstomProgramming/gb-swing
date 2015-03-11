@@ -1,6 +1,7 @@
 package br.com.finan.validator;
 
 import javax.swing.text.JTextComponent;
+
 import org.jdesktop.beansbinding.Validator;
 
 /**

@@ -1,9 +1,11 @@
 package br.com.finan.util;
 
 import java.util.List;
+
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
+
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -13,6 +15,7 @@ import org.jdesktop.beansbinding.Converter;
 import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.beansbinding.Validator;
 import org.jdesktop.swingbinding.SwingBindings;
+
 import br.com.finan.validator.MaxLengthValidator;
 
 public class BindingUtil {

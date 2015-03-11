@@ -1,6 +1,7 @@
 package br.com.finan.form.principal;
 
 import javax.persistence.Persistence;
+
 import br.com.finan.util.HibernateUtil;
 
 /**

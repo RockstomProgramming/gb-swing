@@ -6,12 +6,16 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.beansbinding.BindingGroup;
+
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.enumerator.Mes;

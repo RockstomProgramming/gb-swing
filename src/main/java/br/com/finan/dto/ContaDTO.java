@@ -2,6 +2,7 @@ package br.com.finan.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 import br.com.finan.entidade.annotation.ColunaTabela;
 
 /**

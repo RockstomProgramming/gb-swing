@@ -1,6 +1,7 @@
 package br.com.finan.entidade;
 
 import java.util.Collection;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

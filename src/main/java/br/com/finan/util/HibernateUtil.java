@@ -2,8 +2,10 @@ package br.com.finan.util;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.entidade.Entidade;
 import br.com.finan.entidade.enumerator.EnumStatus;

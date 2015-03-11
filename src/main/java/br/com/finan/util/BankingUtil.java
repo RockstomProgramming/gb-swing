@@ -3,6 +3,7 @@ package br.com.finan.util;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.sf.ofx4j.domain.data.MessageSetType;
 import net.sf.ofx4j.domain.data.ResponseEnvelope;
 import net.sf.ofx4j.domain.data.ResponseMessageSet;
