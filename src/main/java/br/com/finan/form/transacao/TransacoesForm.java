@@ -1,4 +1,4 @@
-package br.com.finan.form.despesa;
+package br.com.finan.form.transacao;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -134,6 +135,16 @@ public class TransacoesForm extends JInternalFrame {
 
 	private void abrirSelecionadorDeArquivos(final TransacaoTableModel<Transaction> model) {
 		final JFileChooser fc = new JFileChooser();
+		Properties prop = AppUtil.getPropertyConfig(getClass());
+		String path = prop.getProperty(AppUtil.PROP_CONF_FILECHOOSER);
+		
+		if (!path.isEmpty()) {
+			try {
+				fc.setCurrentDirectory(new File(path));
+			} catch (Exception e) {
+			}
+		}
+		
 		fc.addChoosableFileFilter(new FileNameExtensionFilter("ofx", "ofx"));
 		final int result = fc.showOpenDialog(this);
 		
@@ -142,6 +153,7 @@ public class TransacoesForm extends JInternalFrame {
 			try {
 				final FileInputStream in = new FileInputStream(file);
 				final List<Transaction> tr = BankingUtil.obterTransacoesArquivoOfx(in);
+				model.clear();
 				model.setDados(tr);
 				for (final Transaction t : tr) {
 					Double amount = t.getAmount();
@@ -150,6 +162,9 @@ public class TransacoesForm extends JInternalFrame {
 					}
 					model.addRow(new Object[] { t.getMemo(), new SimpleDateFormat("dd/MM/yyyy").format(t.getDatePosted()), NumberUtil.obterNumeroFormatado(t.getAmount()) });
 				}
+				
+				AppUtil.setPropertyConfig(getClass(), file.getAbsolutePath());
+				
 			} catch (final FileNotFoundException ex) {
 				Logger.getLogger(TransacoesForm.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -189,8 +204,10 @@ public class TransacoesForm extends JInternalFrame {
 		}
 
 		public void clear() {
-			for (int i = 0; i < dados.size(); i++) {
-				this.removeRow(0);
+			if (ObjetoUtil.isReferencia(dados)) {
+				for (int i = 0; i < dados.size(); i++) {
+					this.removeRow(0);
+				}
 			}
 		}
 

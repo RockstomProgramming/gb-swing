@@ -1,5 +1,6 @@
 package br.com.finan.form.principal;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +14,10 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
+import net.miginfocom.swing.MigLayout;
 import org.hibernate.criterion.Projections;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
@@ -43,13 +47,13 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 	protected javax.swing.JButton btnProximo;
 	protected javax.swing.JButton btnSalvar;
 	protected javax.swing.JButton btnUltimo;
-	protected javax.swing.JScrollPane jScrollPane1;
+	protected javax.swing.JScrollPane scroll;
 	protected javax.swing.JLabel lbPaginacao;
 	protected javax.swing.JPanel pnlPaginacao;
 	protected javax.swing.JTable tabela;
 
 	public ListagemForm() {
-		jScrollPane1 = new javax.swing.JScrollPane();
+		scroll = new javax.swing.JScrollPane();
 		tabela = new javax.swing.JTable();
 		btnSalvar = new javax.swing.JButton();
 		btnExcluir = new javax.swing.JButton();
@@ -59,7 +63,10 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		btnProximo = new javax.swing.JButton();
 		btnUltimo = new javax.swing.JButton();
 		btnPrimeiro = new javax.swing.JButton();
-
+		
+		scroll.setViewportView(tabela);
+		scroll.setPreferredSize(new Dimension(800, 280));
+		
 		setTitle(getTituloFrame());
 
 		btnSalvar.setText("Salvar");
@@ -115,11 +122,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 			titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
 		}
 
-		model = new DefaultTableModel(new Object[][] {}, titulos.toArray()) {
-			/** Atributo serialVersionUID. */
-			private static final long serialVersionUID = 1L;
-			Class[] types = new Class[] { java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, Date.class, BigDecimal.class };
-		};
+		model = new DefaultTableModel(new Object[][] {}, titulos.toArray());
 
 		tabela.setModel(model);
 	}
@@ -188,6 +191,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		iniciarDados();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void buscarDados(final int primResultado) {
 		limparTabela();
 		setDados(getBuilderListagem().getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
@@ -196,7 +200,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		final Map<Integer, Field> campos = getCamposTabela();
 
 		for (final T d : getDados()) {
-			final List<Object> valores = new ArrayList();
+			final List<Object> valores = new ArrayList<>();
 			for (final Field f : campos.values()) {
 				try {
 					final String ini = f.getType().getName().equals("boolean") ? "is" : "get";
@@ -228,10 +232,27 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "restriction" })
 	protected Class<T> obterTipoDaClasse() {
 		return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
+	protected JPanel getPanelPaginacao() {
+		JPanel panelPaginacao = new JPanel(new MigLayout());
+		panelPaginacao.setBorder(new EtchedBorder());
+		panelPaginacao.add(lbPaginacao);
+		panelPaginacao.add(btnPrimeiro);
+		panelPaginacao.add(btnAnterior);
+		panelPaginacao.add(btnProximo);
+		panelPaginacao.add(btnUltimo);
+
+		JPanel panel = new JPanel(new MigLayout());
+		panel.add(scroll, "wrap, growx");
+		panel.add(panelPaginacao, "growx");
+		
+		return panel;
+	}
+	
 	private Object formatarTipos(final Object v) {
 		if (v instanceof BigDecimal) {
 			return NumberUtil.obterNumeroFormatado(v);

@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.despesa.ListagemDespesaForm;
-import br.com.finan.form.despesa.TransacoesForm;
 import br.com.finan.form.receita.CadastroReceitaForm;
 import br.com.finan.form.receita.ListagemReceitaForm;
+import br.com.finan.form.transacao.TransacoesForm;
 
 /**
  *
