@@ -3,13 +3,13 @@
     <persistence-unit name="finan-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/finan"/>
-            <property name="javax.persistence.jdbc.user" value="usuario1"/>
-            <property name="javax.persistence.jdbc.password" value="123"/>
-            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:db/finandb"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
         </properties>
     </persistence-unit>
 </persistence>

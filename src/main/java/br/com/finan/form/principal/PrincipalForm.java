@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JInternalFrame;
 
+import br.com.finan.form.categoria.CadastroCategoriaForm;
+import br.com.finan.form.conta.CadastroContaBancariaForm;
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.despesa.ListagemDespesaForm;
 import br.com.finan.form.receita.CadastroReceitaForm;
@@ -31,6 +33,7 @@ public class PrincipalForm extends javax.swing.JFrame {
 	public PrincipalForm() {
 		initComponents();
 		iniciarDados();
+		abrirFrame(CadastroContaBancariaForm.class, NomeFrame.CADASTRO_CONTA_BANCARIA_FRAME.toString());
 	}
 
 	private void initComponents() {
@@ -167,6 +170,12 @@ public class PrincipalForm extends javax.swing.JFrame {
 	}
 
 	enum NomeFrame {
-		CADASTRO_DESPESA_FRAME, CADASTRO_RECEITA_FRAME, LISTAGEM_DESPESA_FRAME, LISTAGEM_RECEITA_FRAME, TRANSACOES_FRAME;
+		CADASTRO_DESPESA_FRAME, 
+		CADASTRO_RECEITA_FRAME,
+		CADASTRO_CATEGORIA_FRAME,
+		CADASTRO_CONTA_BANCARIA_FRAME,
+		LISTAGEM_DESPESA_FRAME, 
+		LISTAGEM_RECEITA_FRAME, 
+		TRANSACOES_FRAME;
 	}
 }

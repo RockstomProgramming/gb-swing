@@ -1,7 +1,5 @@
 package br.com.finan.form.principal;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -10,7 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -61,7 +58,6 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 	private JComboBox<FormaPagamento> txtFormaPagamento;
 	private JComboBox<Frequencia> txtRecorrencia;
 	private JTextField txtMaximo;
-	private JButton btnSalvar;
 	private JPanel pnlCad;
 	private JCheckBox txtPago;
 	private JTextArea txtObservacoes;
@@ -86,14 +82,12 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 			txtFormaPagamento = new JComboBox<FormaPagamento>();
 			txtRecorrencia = new JComboBox<Frequencia>();
 			txtMaximo = new JTextField(10);
-			btnSalvar = new JButton("Salvar");
 			txtPago = new JCheckBox("Sim");
 			txtObservacoes = new JTextArea(5, 30);
 		} catch (final ParseException ex) {
 			Logger.getLogger(CadastroReceitaForm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
-		adicionarAcoes();
 		addBinding().bind();
 		montarTela();
 		setClosable(true);
@@ -104,15 +98,6 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 
 	}
 
-	private void adicionarAcoes() {
-		btnSalvar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				salvar();
-			}
-		});
-	}
-
 	// Constraints do mig layout (span, wrap, grow, gap, align, dock)
 	private void montarTela() {
 		final JPanel pnlRecorrencia = new JPanel(new MigLayout());
@@ -121,10 +106,6 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 		pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
 		pnlRecorrencia.add(new JLabel("Limite:"));
 		pnlRecorrencia.add(txtMaximo);
-
-		final JPanel pnlAcao = new JPanel(new MigLayout());
-		pnlAcao.setBorder(new EtchedBorder());
-		pnlAcao.add(btnSalvar);
 
 		final JPanel pnlCad_1 = new JPanel(new MigLayout("wrap 2"));
 		pnlCad_1.add(new JLabel("Descrição:"));
@@ -152,7 +133,7 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 		pnlCad.add(pnlCad_1);
 		pnlCad.add(pnlCad_2, "wrap");
 		pnlCad.add(pnlRecorrencia, "wrap, growx");
-		pnlCad.add(pnlAcao, "growx, spanx 2");
+		pnlCad.add(getPanelAcao(), "growx, spanx 2");
 
 		add(pnlCad);
 	}

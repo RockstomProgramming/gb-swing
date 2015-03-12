@@ -139,14 +139,15 @@ public class TransacoesForm extends JInternalFrame {
 
 	private void abrirSelecionadorDeArquivos(final TransacaoTableModel<Transaction> model) {
 		final JFileChooser fc = new JFileChooser();
-		Properties prop = AppUtil.getPropertyConfig(getClass());
-		String path = prop.getProperty(AppUtil.PROP_CONF_FILECHOOSER);
 		
-		if (!path.isEmpty()) {
-			try {
-				fc.setCurrentDirectory(new File(path));
-			} catch (Exception e) {
+		try {
+			Properties prop = AppUtil.getPropertyConfig(getClass());
+			String path = prop.getProperty(AppUtil.PROP_CONF_FILECHOOSER);
+			
+			if (!path.isEmpty()) {
+					fc.setCurrentDirectory(new File(path));
 			}
+		} catch (Exception e) {
 		}
 		
 		fc.addChoosableFileFilter(new FileNameExtensionFilter("ofx", "ofx"));

@@ -1,13 +1,19 @@
 package br.com.finan.form.principal;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 import javax.swing.text.JTextComponent;
+
+import net.miginfocom.swing.MigLayout;
 
 import br.com.finan.entidade.Entidade;
 import br.com.finan.util.AppUtil;
@@ -26,11 +32,27 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 	private static final long serialVersionUID = 1L;
 
 	private T entidade;
+	
+	private JButton btnSalvar;
+	private JPanel pnlAcao;
 
 	private final Formatters formatters;
 
 	public CadastroForm() {
+		btnSalvar = new JButton("Salvar");
+		btnSalvar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				salvar();
+			}
+		});
+		
+		pnlAcao = new JPanel(new MigLayout());
+		pnlAcao.setBorder(new EtchedBorder());
+		pnlAcao.add(btnSalvar);
+		
 		iniciarEntidade();
+		iniciarComponentes();
 		formatters = new Formatters();
 	}
 
@@ -87,10 +109,16 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 		limparCampos();
 	}
 
+	protected JPanel getPanelAcao() {
+		return pnlAcao;
+	}
+	
 	protected abstract JInternalFrame getFrame();
 
 	protected abstract JPanel getContainerCadastro();
 
+	protected abstract void iniciarComponentes();
+	
 	public T getEntidade() {
 		return entidade;
 	}

@@ -131,7 +131,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		tabela.setModel(model);
 	}
 
-	protected void iniciarDados() {
+	public void iniciarDados() {
 		buscarDados(0);
 		validarBtnPaginacao();
 	}
@@ -241,7 +241,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
-	protected JPanel getPanelPaginacao() {
+	public JPanel getPanelPaginacao() {
 		JPanel panelPaginacao = new JPanel(new MigLayout());
 		panelPaginacao.setBorder(new EtchedBorder());
 		panelPaginacao.add(lbPaginacao);
