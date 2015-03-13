@@ -11,20 +11,17 @@ import br.com.finan.annotation.ColunaTabela;
  */
 public class ContaDTO extends DTO {
 
-	@ColunaTabela(index = 2, titulo = "Descrição")
+	@ColunaTabela(index = 1, titulo = "Descrição")
 	private String descricao;
 
-	@ColunaTabela(index = 3, titulo = "Categoria")
+	@ColunaTabela(index = 2, titulo = "Categoria")
 	private String categoria;
 
-	@ColunaTabela(index = 5, titulo = "Valor")
+	@ColunaTabela(index = 4, titulo = "Valor", tipo = BigDecimal.class)
 	private BigDecimal valor;
 
-	@ColunaTabela(index = 4, titulo = "Vencimento")
+	@ColunaTabela(index = 3, titulo = "Vencimento")
 	private Date vencimento;
-
-	@ColunaTabela(index = 1, titulo = "")
-	private boolean selecionado;
 
 	private Integer parcela;
 
@@ -54,14 +51,6 @@ public class ContaDTO extends DTO {
 
 	public void setVencimento(final Date vencimento) {
 		this.vencimento = vencimento;
-	}
-
-	public boolean isSelecionado() {
-		return selecionado;
-	}
-
-	public void setSelecionado(final boolean selecionado) {
-		this.selecionado = selecionado;
 	}
 
 	public boolean isEditado() {

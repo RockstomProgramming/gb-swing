@@ -4,13 +4,13 @@ import br.com.finan.annotation.ColunaTabela;
 
 public class ContaBancariaDTO extends DTO {
 	
-	@ColunaTabela(index = 0, titulo = "Descrição")
+	@ColunaTabela(index = 1, titulo = "Descrição")
 	private String descricao;
 
-	@ColunaTabela(index = 1, titulo = "Conta")
+	@ColunaTabela(index = 2, titulo = "Conta")
 	private String numero;
 	
-	@ColunaTabela(index = 2, titulo = "Agência")
+	@ColunaTabela(index = 3, titulo = "Agência")
 	private String agencia;
 
 	public String getDescricao() {

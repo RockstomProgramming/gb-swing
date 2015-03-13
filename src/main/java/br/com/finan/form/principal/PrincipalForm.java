@@ -32,6 +32,7 @@ import br.com.finan.form.despesa.ListagemDespesaForm;
 import br.com.finan.form.receita.CadastroReceitaForm;
 import br.com.finan.form.receita.ListagemReceitaForm;
 import br.com.finan.form.transacao.TransacoesForm;
+import br.com.finan.util.ObjetoUtil;
 
 /**
  *
@@ -201,7 +202,7 @@ public class PrincipalForm extends JFrame {
 	public boolean contemFrame(final String nomeFrame) {
 		final Component[] components = desktop.getComponents();
 		for (final Component comp : components) {
-			if (comp.getName().equals(nomeFrame)) {
+			if (ObjetoUtil.isReferencia(comp.getName()) && comp.getName().equals(nomeFrame)) {
 				try {
 					((JInternalFrame) comp).setSelected(true);
 				} catch (PropertyVetoException e) {

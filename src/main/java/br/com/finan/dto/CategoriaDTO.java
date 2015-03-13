@@ -4,10 +4,10 @@ import br.com.finan.annotation.ColunaTabela;
 
 public class CategoriaDTO extends DTO {
 	
-	@ColunaTabela(index = 0, titulo = "Nome")
+	@ColunaTabela(index = 1, titulo = "Nome")
 	private String nome;
 
-	@ColunaTabela(index = 1, titulo = "Categoria")
+	@ColunaTabela(index = 2, titulo = "Categoria")
 	private String supCategoria;
 
 	public String getNome() {

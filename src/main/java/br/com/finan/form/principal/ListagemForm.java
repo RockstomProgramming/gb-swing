@@ -23,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -34,6 +33,7 @@ import org.hibernate.criterion.Projections;
 import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
+import br.com.finan.util.FieldUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
 import br.com.finan.util.StringUtil;
@@ -140,15 +140,29 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 
 		final Map<Integer, Field> campos = getCamposTabela();
 		final List<String> titulos = new ArrayList<String>();
+		final List<ColunaTabela> anotacoes = new ArrayList<ColunaTabela>();
 
 		for (final Field f : campos.values()) {
-			titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
+			ColunaTabela a = f.getAnnotation(ColunaTabela.class);
+			titulos.add(a.titulo());
+			anotacoes.add(a);
 		}
 
-		model = new DefaultTableModel(new Object[][] {}, titulos.toArray());
+		model = new DefaultTableModel(new Object[][] {}, titulos.toArray()) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Class<?> getColumnClass(int columnIndex) {
+				if (columnIndex == 0) {
+					return Boolean.class;
+				}
+				
+				return anotacoes.get(columnIndex).tipo();
+			}
+		};
 		
-		tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tabela.setModel(model);
+		tabela.getColumnModel().getColumn(0).setPreferredWidth(5);
 	}
 
 	public void iniciarDados() {
@@ -242,7 +256,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 	private Map<Integer, Field> getCamposTabela() throws SecurityException {
 		final Map<Integer, Field> campos = new TreeMap<Integer, Field>();
 		final Class<T> clazz = obterTipoDaClasse();
-		for (final Field field : clazz.getDeclaredFields()) {
+		for (final Field field : FieldUtil.getAllFields(clazz)) {
 			if (field.isAnnotationPresent(ColunaTabela.class)) {
 				campos.put(field.getAnnotation(ColunaTabela.class).index(), field);
 			}

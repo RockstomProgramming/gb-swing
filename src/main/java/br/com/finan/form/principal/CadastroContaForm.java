@@ -84,7 +84,11 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 			txtRecorrencia = new JComboBox<Frequencia>();
 			txtMaximo = new JTextField(10);
 			txtPago = new JCheckBox("Sim");
-			txtObservacoes = new JTextArea(5, 30);
+			txtObservacoes = new JTextArea(5, 15);
+			
+			txtVencimento.setColumns(10);
+			txtPagamento.setColumns(10);
+			txtValor.setColumns(10);
 		} catch (final ParseException ex) {
 			Logger.getLogger(CadastroReceitaForm.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -92,7 +96,6 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 		addBinding().bind();
 		montarTela();
 		setClosable(true);
-		setSize(900, 500);
 		pack();
 
 	}
@@ -105,34 +108,28 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 		pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
 		pnlRecorrencia.add(new JLabel("Limite:"));
 		pnlRecorrencia.add(txtMaximo);
-
-		final JPanel pnlCad_1 = new JPanel(new MigLayout("wrap 2"));
-		pnlCad_1.add(new JLabel("Descrição:"));
-		pnlCad_1.add(txtDescricao);
-		pnlCad_1.add(new JLabel("Vencimento:"));
-		pnlCad_1.add(txtVencimento, "grow");
-		pnlCad_1.add(new JLabel("Valor (R$):"));
-		pnlCad_1.add(txtValor, "grow");
-		pnlCad_1.add(new JLabel("Categoria:"));
-		pnlCad_1.add(txtCategoria, "grow");
-		pnlCad_1.add(new JLabel("Conta Bancária:"));
-		pnlCad_1.add(txtContaBancaria, "grow");
-
-		final JPanel pnlCad_2 = new JPanel(new MigLayout("wrap 2"));
-		pnlCad_2.add(new JLabel("Pago"));
-		pnlCad_2.add(txtPago);
-		pnlCad_2.add(new JLabel("Pagamento:"));
-		pnlCad_2.add(txtPagamento, "grow");
-		pnlCad_2.add(new JLabel("Forma Pagamento:"));
-		pnlCad_2.add(txtFormaPagamento, "grow");
-		pnlCad_2.add(new JLabel("Observações:"));
-		pnlCad_2.add(txtObservacoes, "spanx 2");
-
+		
 		pnlCad = new JPanel(new MigLayout());
-		pnlCad.add(pnlCad_1);
-		pnlCad.add(pnlCad_2, "wrap");
-		pnlCad.add(pnlRecorrencia, "wrap, growx");
-		pnlCad.add(getPanelAcao(), "growx, spanx 2");
+		pnlCad.add(new JLabel("Descrição:"));
+		pnlCad.add(txtDescricao, "wrap, spanx2");
+		pnlCad.add(new JLabel("Vencimento:"));
+		pnlCad.add(txtVencimento);
+		pnlCad.add(new JLabel("Valor (R$):"));
+		pnlCad.add(txtValor, "wrap");
+		pnlCad.add(new JLabel("Categoria:"));
+		pnlCad.add(txtCategoria, "grow");
+		pnlCad.add(new JLabel("Conta Bancária:"));
+		pnlCad.add(txtContaBancaria, "grow, wrap");
+		pnlCad.add(new JLabel("Pago:"));
+		pnlCad.add(txtPago);
+		pnlCad.add(new JLabel("Forma Pagamento:"));
+		pnlCad.add(txtFormaPagamento, "grow, wrap");
+		pnlCad.add(new JLabel("Pagamento:"));
+		pnlCad.add(txtPagamento);
+		pnlCad.add(pnlRecorrencia, "wrap, growx, span 2 2");
+		pnlCad.add(new JLabel("Observações:"));
+		pnlCad.add(txtObservacoes, "wrap");
+		pnlCad.add(getPanelAcao(), "growx, spanx 4, gapbottom 10");
 
 		add(pnlCad);
 	}
