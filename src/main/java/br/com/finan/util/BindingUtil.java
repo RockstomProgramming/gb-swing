@@ -18,6 +18,7 @@ import org.jdesktop.swingbinding.SwingBindings;
 
 import br.com.finan.validator.MaxLengthValidator;
 
+@SuppressWarnings({ "unchecked", "rawtypes"})
 public class BindingUtil {
 
 	private final BindingGroup bindingGroup;

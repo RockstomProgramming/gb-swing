@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 
-import br.com.finan.entidade.enumerator.EnumStatus;
+import br.com.finan.enumerator.EnumStatus;
 
 /**
  *

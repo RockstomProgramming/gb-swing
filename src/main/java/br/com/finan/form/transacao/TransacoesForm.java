@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -34,7 +35,7 @@ import org.jdesktop.beansbinding.BindingGroup;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;
-import br.com.finan.entidade.enumerator.TipoConta;
+import br.com.finan.enumerator.TipoConta;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BankingUtil;
 import br.com.finan.util.BindingUtil;
@@ -66,8 +67,8 @@ public class TransacoesForm extends JInternalFrame {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void iniciarComponentes() {
-		btnAbrir = new JButton("Abrir");
-		btnSalvar = new JButton("Salvar");
+		btnAbrir = new JButton("Abrir", new ImageIcon(getClass().getResource("/icon/Folder.png")));
+		btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
 		cmbCategoria = new JComboBox<Categoria>();
 		cmbContaBancaria = new JComboBox<ContaBancaria>();
 		model = new TransacaoTableModel(null, new String[] { "Descrição", "Data", "Valor" });
@@ -103,7 +104,7 @@ public class TransacoesForm extends JInternalFrame {
 		final JPanel pnl = new JPanel(new MigLayout("wrap 1"));
 		pnl.add(pnlAcao);
 		pnl.add(pnlDados, "growx");
-		pnl.add(scroll, "growx");
+		pnl.add(scroll, "grow, push");
 
 		add(pnl);
 		setMaximizable(true);

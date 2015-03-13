@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import br.com.finan.entidade.annotation.Unique;
+import br.com.finan.annotation.Unique;
 
 @Entity
 @Table(name = "tb_conta_bancaria")

@@ -1,7 +1,6 @@
-package br.com.finan.form.conta;
+package br.com.finan.dto;
 
-import br.com.finan.dto.DTO;
-import br.com.finan.entidade.annotation.ColunaTabela;
+import br.com.finan.annotation.ColunaTabela;
 
 public class ContaBancariaDTO extends DTO {
 	

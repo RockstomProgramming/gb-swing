@@ -1,7 +1,7 @@
 package br.com.finan.form.receita;
 
 import br.com.finan.entidade.Conta;
-import br.com.finan.entidade.enumerator.TipoConta;
+import br.com.finan.enumerator.TipoConta;
 import br.com.finan.form.principal.CadastroContaForm;
 
 /**

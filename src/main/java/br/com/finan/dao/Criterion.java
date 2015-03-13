@@ -9,7 +9,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.sql.JoinType;
 
-import br.com.finan.entidade.enumerator.EnumStatus;
+import br.com.finan.enumerator.EnumStatus;
 
 /**
  * Arquivo: Criterion.java <br/>

@@ -15,8 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.finan.entidade.enumerator.FormaPagamento;
-import br.com.finan.entidade.enumerator.TipoConta;
+import br.com.finan.enumerator.FormaPagamento;
+import br.com.finan.enumerator.TipoConta;
 
 @Entity
 @Table(name = "tb_conta")

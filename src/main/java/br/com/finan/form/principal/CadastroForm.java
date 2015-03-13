@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -40,6 +41,7 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 
 	public CadastroForm() {
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setIcon(new ImageIcon(getClass().getResource("/icon/Save.png")));
 		btnSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {

@@ -1,15 +1,30 @@
 package br.com.finan.form.principal;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.WindowConstants;
+import javax.swing.border.EtchedBorder;
 
+import net.miginfocom.swing.MigLayout;
 import br.com.finan.form.categoria.CadastroCategoriaForm;
 import br.com.finan.form.conta.CadastroContaBancariaForm;
 import br.com.finan.form.despesa.CadastroDespesaForm;
@@ -22,38 +37,45 @@ import br.com.finan.form.transacao.TransacoesForm;
  *
  * @author Wesley Luiz
  */
-public class PrincipalForm extends javax.swing.JFrame {
+public class PrincipalForm extends JFrame {
 
 	/** Atributo serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
+	
+	private JButton btnImportar;
+	private JDesktopPane desktop;
+	private JMenuBar jMenuBar1;
+	private JMenuItem menuCadDespsea;
+	private JMenuItem menuCadReceita;
+	private JMenu menuCadastro;
+	private JMenuItem menuListDespesa;
+	private JMenuItem menuListReceita;
+	private JMenu menuListagens;
+	private JMenu menuSair;
+	private JMenuItem menuCadCategoria;
+	private JMenuItem menuCadContaBancaria;
+	
 	/**
 	 * Creates new form Main
 	 */
 	public PrincipalForm() {
 		initComponents();
 		iniciarDados();
-		abrirFrame(CadastroContaBancariaForm.class, NomeFrame.CADASTRO_CONTA_BANCARIA_FRAME.toString());
 	}
 
 	private void initComponents() {
+		desktop = new JDesktopPane();
+		btnImportar = new JButton();
+		jMenuBar1 = new JMenuBar();
+		menuCadastro = new JMenu();
+		menuCadReceita = new JMenuItem();
+		menuCadDespsea = new JMenuItem();
+		menuListagens = new JMenu();
+		menuListReceita = new JMenuItem();
+		menuListDespesa = new JMenuItem();
+		menuSair = new JMenu();
 
-		desktop = new javax.swing.JDesktopPane();
-		btnImportar = new javax.swing.JButton();
-		jMenuBar1 = new javax.swing.JMenuBar();
-		menuCadastro = new javax.swing.JMenu();
-		menuCadReceita = new javax.swing.JMenuItem();
-		menuCadDespsea = new javax.swing.JMenuItem();
-		menuListagens = new javax.swing.JMenu();
-		menuListReceita = new javax.swing.JMenuItem();
-		menuListDespesa = new javax.swing.JMenuItem();
-		menuSair = new javax.swing.JMenu();
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-		desktop.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-		btnImportar.setText("Importar");
+		desktop.setBorder(BorderFactory.createEtchedBorder());
 
 		menuCadastro.setText("Cadastros");
 
@@ -64,6 +86,14 @@ public class PrincipalForm extends javax.swing.JFrame {
 		menuCadastro.add(menuCadDespsea);
 
 		jMenuBar1.add(menuCadastro);
+		
+		menuCadastro.add(new JSeparator());
+		
+		menuCadCategoria = new JMenuItem("Categoria");
+		menuCadastro.add(menuCadCategoria);
+		
+		menuCadContaBancaria = new JMenuItem("Conta Bancaria");
+		menuCadastro.add(menuCadContaBancaria);
 
 		menuListagens.setText("Listagens");
 
@@ -77,30 +107,26 @@ public class PrincipalForm extends javax.swing.JFrame {
 
 		menuSair.setText("Sair");
 		jMenuBar1.add(menuSair);
-
+		
+		btnImportar.setText("Importar (*.ofx)");
+		btnImportar.setIcon(new ImageIcon(getClass().getResource("/icon/Arrow_Down.png")));
+		
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		
+		JPanel pnlAtalhos = new JPanel(new MigLayout());
+		pnlAtalhos.setBorder(new EtchedBorder());
+		pnlAtalhos.add(btnImportar);
+		
 		setJMenuBar(jMenuBar1);
-
-		final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 946, Short.MAX_VALUE)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(btnImportar).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addGap(8, 8, 8).addComponent(btnImportar).addGap(18, 18, 18).addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)));
+		getContentPane().setLayout(new MigLayout());
+		getContentPane().add(pnlAtalhos, "growx, wrap");
+		getContentPane().add(desktop, "push, grow, wrap");
+		getContentPane().setPreferredSize(new Dimension(800, 600));
 
 		pack();
 	}
 	
-	private javax.swing.JButton btnImportar;
-	private javax.swing.JDesktopPane desktop;
-	private javax.swing.JMenuBar jMenuBar1;
-	private javax.swing.JMenuItem menuCadDespsea;
-	private javax.swing.JMenuItem menuCadReceita;
-	private javax.swing.JMenu menuCadastro;
-	private javax.swing.JMenuItem menuListDespesa;
-	private javax.swing.JMenuItem menuListReceita;
-	private javax.swing.JMenu menuListagens;
-	private javax.swing.JMenu menuSair;
-
 	private void iniciarDados() {
 		menuListDespesa.addActionListener(new ActionListener() {
 			@Override
@@ -129,7 +155,21 @@ public class PrincipalForm extends javax.swing.JFrame {
 				abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
 			}
 		});
+		
+		menuCadCategoria.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				abrirFrame(CadastroCategoriaForm.class, NomeFrame.CADASTRO_CATEGORIA_FRAME.toString());
+			}
+		});
 
+		menuCadContaBancaria.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				abrirFrame(CadastroContaBancariaForm.class, NomeFrame.CADASTRO_CONTA_BANCARIA_FRAME.toString());
+			}
+		});
+		
 		btnImportar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -162,6 +202,11 @@ public class PrincipalForm extends javax.swing.JFrame {
 		final Component[] components = desktop.getComponents();
 		for (final Component comp : components) {
 			if (comp.getName().equals(nomeFrame)) {
+				try {
+					((JInternalFrame) comp).setSelected(true);
+				} catch (PropertyVetoException e) {
+					e.printStackTrace();
+				}
 				return true;
 			}
 		}

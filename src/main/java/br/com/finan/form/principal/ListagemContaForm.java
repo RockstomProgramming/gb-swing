@@ -18,7 +18,7 @@ import org.jdesktop.beansbinding.BindingGroup;
 
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Conta;
-import br.com.finan.entidade.enumerator.Mes;
+import br.com.finan.enumerator.Mes;
 import br.com.finan.util.BindingUtil;
 
 /**
@@ -75,7 +75,7 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 
 		JPanel panel = new JPanel(new MigLayout());
 		panel.add(pnlNav, "wrap, growx");
-		panel.add(getPanelPaginacao(), "growx");
+		panel.add(getPanelPaginacao(), "push, grow");
 
 		add(panel);
 		binding.bind();
@@ -105,8 +105,7 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		cmbMes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				buscarDados(1);
-				validarBtnPaginacao();
+				iniciarDados();
 			}
 		});
 	}

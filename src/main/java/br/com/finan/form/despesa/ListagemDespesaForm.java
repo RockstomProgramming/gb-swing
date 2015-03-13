@@ -6,7 +6,7 @@ import org.hibernate.sql.JoinType;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaDTO;
 import br.com.finan.entidade.Conta;
-import br.com.finan.entidade.enumerator.TipoConta;
+import br.com.finan.enumerator.TipoConta;
 import br.com.finan.form.principal.ListagemContaForm;
 import br.com.finan.util.HibernateUtil;
 

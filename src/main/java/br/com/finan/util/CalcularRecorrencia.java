@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import br.com.finan.entidade.enumerator.Frequencia;
+import br.com.finan.enumerator.Frequencia;
 
 /**
  * Arquivo: CalcularRecorrencia.java Criado em: 21/08/2014

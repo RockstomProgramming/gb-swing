@@ -14,9 +14,11 @@ import net.miginfocom.swing.MigLayout;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.form.principal.CadastroForm;
 import br.com.finan.util.BindingUtil;
+import br.com.finan.validator.MaxLengthValidator;
 
 public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria> {
 
+	private static final String TITULO_FRAME = "Cadastro de Contas Bancárias";
 	private static final long serialVersionUID = 1L;
 	private JPanel pnlCadastro;
 	private JTextField txtDescricao;
@@ -46,13 +48,14 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria> {
 		
 		BindingGroup bindingGroup = new BindingGroup();
 		BindingUtil.create(bindingGroup)
-			.add(this, "${entidade.descricao}", txtDescricao)
-			.add(this, "${entidade.numero}", txtNumero)
-			.add(this, "${entidade.agencia}", txtAgencia);
+			.add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(20))
+			.add(this, "${entidade.numero}", txtNumero, new MaxLengthValidator(20))
+			.add(this, "${entidade.agencia}", txtAgencia, new MaxLengthValidator(10));
 		
 		bindingGroup.bind();
 		add(panel);
 		setClosable(true);
+		setTitle(TITULO_FRAME);
 		pack();
 		
 		panel.add(lstContaForm.getPanelPaginacao(), "growx");

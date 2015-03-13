@@ -32,8 +32,8 @@ import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.entidade.Entidade;
-import br.com.finan.entidade.enumerator.FormaPagamento;
-import br.com.finan.entidade.enumerator.Frequencia;
+import br.com.finan.enumerator.FormaPagamento;
+import br.com.finan.enumerator.Frequencia;
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.receita.CadastroReceitaForm;
 import br.com.finan.util.BindingUtil;
@@ -91,8 +91,6 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 		addBinding().bind();
 		montarTela();
 		setClosable(true);
-		setMaximizable(true);
-		setResizable(true);
 		setSize(900, 500);
 		pack();
 

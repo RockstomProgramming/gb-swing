@@ -8,7 +8,7 @@ import org.hibernate.Session;
 
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.entidade.Entidade;
-import br.com.finan.entidade.enumerator.EnumStatus;
+import br.com.finan.enumerator.EnumStatus;
 
 /**
  *

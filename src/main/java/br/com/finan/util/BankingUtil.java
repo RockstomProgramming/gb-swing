@@ -21,10 +21,6 @@ import net.sf.ofx4j.io.AggregateUnmarshaller;
  */
 public final class BankingUtil {
 
-	private static final String MSG_SEM_TRANSACOES = "msg.sem.transacoes";
-	private static final String MSG_ARQUIVO_OFX_INVALIDO = "msg.arquivo.ofx.invalido";
-	private static final String REGEX_EXTENSAO_OFX = ".*ofx$";
-
 	/**
 	 * Método responsável por obter a lista de transações de um arquivo com a
 	 * extensão <i>ofx</i> informado.
@@ -36,8 +32,6 @@ public final class BankingUtil {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static List<Transaction> obterTransacoesArquivoOfx(final InputStream arquivo) {
-		// validarArquivoOfx(arquivo);
-
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 		try {
 			final AggregateUnmarshaller a = new AggregateUnmarshaller(ResponseEnvelope.class);
@@ -50,10 +44,6 @@ public final class BankingUtil {
 				bank = ((BankingResponseMessageSet) message).getStatementResponses();
 
 				for (final BankStatementResponseTransaction b : bank) {
-					if (!ObjetoUtil.isReferencia(b.getMessage().getTransactionList(), b.getMessage().getTransactionList().getTransactions())) {
-						// throw new ArquivoUploadException(MSG_SEM_TRANSACOES);
-					}
-
 					for (final Transaction transaction : b.getMessage().getTransactionList().getTransactions()) {
 						transactions.add(transaction);
 					}
@@ -65,20 +55,4 @@ public final class BankingUtil {
 
 		return transactions;
 	}
-
-	/**
-	 * Método responsável por validar o tipo de arquivo contendo as transações
-	 * bancárias.
-	 *
-	 * @author Wesley Luiz
-	 * @since 29/09/2014
-	 * @param arquivo
-	 * @throws ArquivoUploadException
-	 */
-	// public static void validarArquivoOfx(final Part arquivo) throws
-	// ArquivoUploadException {
-	// if (!AnexoUtil.getNomeArquivo(arquivo).matches(REGEX_EXTENSAO_OFX)) {
-	// throw new ArquivoUploadException(MSG_ARQUIVO_OFX_INVALIDO);
-	// }
-	// }
 }

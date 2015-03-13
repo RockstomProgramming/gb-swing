@@ -2,6 +2,7 @@ package br.com.finan.form.principal;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +16,14 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,9 +31,9 @@ import net.miginfocom.swing.MigLayout;
 
 import org.hibernate.criterion.Projections;
 
+import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
-import br.com.finan.entidade.annotation.ColunaTabela;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
 import br.com.finan.util.StringUtil;
@@ -35,7 +43,7 @@ import br.com.finan.util.StringUtil;
  * @author Wesley Luiz
  * @param <T>
  */
-public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalFrame {
+public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 
 	/** Atributo serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -45,28 +53,30 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 	private final DefaultTableModel model;
 	protected final int MAX_REGISTROS = 15;
 
-	protected javax.swing.JButton btnAnterior;
-	protected javax.swing.JButton btnExcluir;
-	protected javax.swing.JButton btnPrimeiro;
-	protected javax.swing.JButton btnProximo;
-	protected javax.swing.JButton btnSalvar;
-	protected javax.swing.JButton btnUltimo;
-	protected javax.swing.JScrollPane scroll;
-	protected javax.swing.JLabel lbPaginacao;
-	protected javax.swing.JPanel pnlPaginacao;
-	protected javax.swing.JTable tabela;
+	protected JButton btnAnterior;
+	protected JButton btnExcluir;
+	protected JButton btnPrimeiro;
+	protected JButton btnProximo;
+	protected JButton btnSalvar;
+	protected JButton btnUltimo;
+	protected JScrollPane scroll;
+	protected JLabel lbPaginacao;
+	protected JPanel pnlPaginacao;
+	protected JTable tabela;
+	protected JButton btnAtualizar;
 
 	public ListagemForm() {
-		scroll = new javax.swing.JScrollPane();
-		tabela = new javax.swing.JTable();
-		btnSalvar = new javax.swing.JButton();
-		btnExcluir = new javax.swing.JButton();
-		pnlPaginacao = new javax.swing.JPanel();
-		lbPaginacao = new javax.swing.JLabel();
-		btnAnterior = new javax.swing.JButton();
-		btnProximo = new javax.swing.JButton();
-		btnUltimo = new javax.swing.JButton();
-		btnPrimeiro = new javax.swing.JButton();
+		scroll = new JScrollPane();
+		tabela = new JTable();
+		btnSalvar = new JButton();
+		btnExcluir = new JButton();
+		pnlPaginacao = new JPanel();
+		lbPaginacao = new JLabel();
+		btnAnterior = new JButton();
+		btnProximo = new JButton();
+		btnUltimo = new JButton();
+		btnPrimeiro = new JButton();
+		btnAtualizar = new JButton();
 		
 		scroll.setViewportView(tabela);
 		scroll.setPreferredSize(new Dimension(800, 280));
@@ -74,50 +84,60 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		setTitle(getTituloFrame());
 
 		btnSalvar.setText("Salvar");
-		btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+		btnSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {}
 		});
 
 		btnExcluir.setText("Excluir");
-		btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+		btnExcluir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				inativarDados(getNomeEntidade());
 			}
 		});
 
-		btnPrimeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/first.png")));
-		btnPrimeiro.addActionListener(new java.awt.event.ActionListener() {
+		btnPrimeiro.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Rewind.png")));
+		btnPrimeiro.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irPrimeiraPagina();
 			}
 		});
 
-		btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/rewind.png")));
-		btnAnterior.addActionListener(new java.awt.event.ActionListener() {
+		btnAnterior.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play_Reversed.png")));
+		btnAnterior.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irPaginaAnterior();
 			}
 		});
 
-		btnProximo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/forward.png")));
-		btnProximo.addActionListener(new java.awt.event.ActionListener() {
+		btnProximo.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play.png")));
+		btnProximo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irProximaPagina();
 			}
 		});
 
-		btnUltimo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/last.png")));
-		btnUltimo.addActionListener(new java.awt.event.ActionListener() {
+		btnUltimo.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_FastForward.png")));
+		btnUltimo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irUltimaPagina();
 			}
 		});
+		
+		btnAtualizar.setIcon(new ImageIcon(getClass().getResource("/icon/refresh.png")));
+		btnAtualizar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				setPagina(1);
+				iniciarDados();
+			}
+		});
+		
 
 		final Map<Integer, Field> campos = getCamposTabela();
 		final List<String> titulos = new ArrayList<String>();
@@ -127,7 +147,8 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		}
 
 		model = new DefaultTableModel(new Object[][] {}, titulos.toArray());
-
+		
+		tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tabela.setModel(model);
 	}
 
@@ -180,7 +201,7 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 		btnAnterior.setEnabled(btnPrimeiro.isEnabled());
 		btnProximo.setEnabled(!isUltimaPagina());
 		btnUltimo.setEnabled(!isUltimaPagina());
-		lbPaginacao.setText("Exibindo " + getPagina() * MAX_REGISTROS + " de " + getQntRegistros() + " registros");
+		lbPaginacao.setText(getPagina() + " de " + getQntPagina());
 	}
 
 	protected void inativarDados(final String nomeClasse) {
@@ -244,14 +265,15 @@ public abstract class ListagemForm<T extends DTO> extends javax.swing.JInternalF
 	public JPanel getPanelPaginacao() {
 		JPanel panelPaginacao = new JPanel(new MigLayout());
 		panelPaginacao.setBorder(new EtchedBorder());
-		panelPaginacao.add(lbPaginacao);
 		panelPaginacao.add(btnPrimeiro);
 		panelPaginacao.add(btnAnterior);
+		panelPaginacao.add(lbPaginacao);
 		panelPaginacao.add(btnProximo);
-		panelPaginacao.add(btnUltimo);
+		panelPaginacao.add(btnUltimo, "pushx 1");
+		panelPaginacao.add(btnAtualizar);
 
 		JPanel panel = new JPanel(new MigLayout());
-		panel.add(scroll, "wrap, growx");
+		panel.add(scroll, "wrap, grow, push");
 		panel.add(panelPaginacao, "growx");
 		
 		return panel;

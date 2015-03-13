@@ -13,7 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
 
-import br.com.finan.entidade.enumerator.EnumStatus;
+import br.com.finan.enumerator.EnumStatus;
 
 /**
  * Arquivo: CriteriaBuilder.java <br/>
@@ -28,12 +28,6 @@ public class CriteriaBuilder implements Criterion {
 	private ProjectionList proj;
 	private Class<?> aliasToBean;
 	private PropertiesBuilderCriteria propertiesBuilder;
-	private static final String EQ = "=";
-	private static final String LE = "<=";
-	private static final String GE = ">=";
-	private static final String QUOTES = "'";
-	private static final String FUNCTION_DATE = "date(dataEmissao)";
-	private static final String DATE_PATTERN = "yyyy-MM-dd";
 
 	public CriteriaBuilder(final Criteria criteria) {
 		this.criteria = criteria;

@@ -1,6 +1,7 @@
 package br.com.finan.form.conta;
 
 import br.com.finan.dao.CriteriaBuilder;
+import br.com.finan.dto.ContaBancariaDTO;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.form.principal.ListagemForm;
 import br.com.finan.util.HibernateUtil;
