@@ -14,8 +14,8 @@ public class CadastroDespesaForm extends CadastroContaForm<Conta> {
 
 	@Override
 	protected void iniciarDados() {
-		getEntidade().setTipo(TipoConta.DESPESA);
 		super.iniciarDados();
+		getEntidade().setTipo(TipoConta.DESPESA);
 	}
 	
 	@Override

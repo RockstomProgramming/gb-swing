@@ -35,8 +35,12 @@ public final class NumberUtil {
 	 * @return
 	 */
 	public static String obterNumeroFormatado(final Object value) {
-		configurarFormato();
-		return format.format(value);
+		if (ObjetoUtil.isReferencia(value)) {
+			configurarFormato();
+			return format.format(value);
+		}
+		
+		return "0,00";
 	}
 
 	/**

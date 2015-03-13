@@ -109,6 +109,7 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 
 	protected void iniciarDados() {
 		limparCampos();
+		iniciarEntidade();
 	}
 
 	protected JPanel getPanelAcao() {

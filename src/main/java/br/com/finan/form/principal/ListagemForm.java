@@ -45,7 +45,6 @@ import br.com.finan.util.StringUtil;
  */
 public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 
-	/** Atributo serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	private List<T> dados;
 	private int pagina = 1;

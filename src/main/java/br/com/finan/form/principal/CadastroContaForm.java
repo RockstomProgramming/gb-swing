@@ -36,6 +36,7 @@ import br.com.finan.enumerator.FormaPagamento;
 import br.com.finan.enumerator.Frequencia;
 import br.com.finan.form.despesa.CadastroDespesaForm;
 import br.com.finan.form.receita.CadastroReceitaForm;
+import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.CalcularRecorrencia;
 import br.com.finan.util.HibernateUtil;
@@ -178,6 +179,7 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 		}
 
 		iniciarDados();
+		AppUtil.exibirMsgSalvarSucesso(this);
 	}
 
 	@Override

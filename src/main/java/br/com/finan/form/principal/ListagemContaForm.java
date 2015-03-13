@@ -1,25 +1,34 @@
 package br.com.finan.form.principal;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.hibernate.criterion.Projections;
 import org.jdesktop.beansbinding.BindingGroup;
 
+import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.enumerator.Mes;
+import br.com.finan.enumerator.TipoConta;
+import br.com.finan.form.despesa.ListagemDespesaForm;
 import br.com.finan.util.BindingUtil;
+import br.com.finan.util.HibernateUtil;
+import br.com.finan.util.NumberUtil;
 
 /**
  *
@@ -36,9 +45,13 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 	private javax.swing.JButton btnMesProximo;
 	private javax.swing.JTextField txtAno;
 	private javax.swing.JComboBox<Mes> cmbMes;
+	private JLabel lbQntAberto;
+	private JLabel lbQntPago;
+	private JLabel lbTotal;
 
 	private Mes mesSelecionado;
 	private String ano;
+
 
 	public ListagemContaForm() {
 		mesSelecionado = Mes.JANEIRO;
@@ -53,6 +66,9 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		btnMesProximo = new javax.swing.JButton();
 		cmbMes = new javax.swing.JComboBox<Mes>();
 		txtAno = new javax.swing.JTextField(20);
+		lbQntAberto = new JLabel();
+		lbQntPago = new JLabel();
+		lbTotal = new JLabel();
 		
 		txtAno.setText(ano);
 		btnMesAnterior.setText("<");
@@ -73,8 +89,18 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		pnlNav.add(btnMesProximo);
 		pnlNav.add(txtAno);
 
+		JPanel pnlRel = new JPanel(new MigLayout());
+		pnlRel.setBorder(new EtchedBorder());
+		pnlRel.add(addBoldLabel(new JLabel("Em Aberto:")));
+		pnlRel.add(lbQntAberto, "gapright 20");
+		pnlRel.add(addBoldLabel(new JLabel("Pago:")));
+		pnlRel.add(lbQntPago, "gapright 20");
+		pnlRel.add(addBoldLabel(new JLabel("Total:")));
+		pnlRel.add(lbTotal);
+
 		JPanel panel = new JPanel(new MigLayout());
 		panel.add(pnlNav, "wrap, growx");
+		panel.add(pnlRel, "wrap, growx");
 		panel.add(getPanelPaginacao(), "push, grow");
 
 		add(panel);
@@ -85,6 +111,11 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		setResizable(true);
 
 		pack();
+	}
+
+	private JLabel addBoldLabel(JLabel label) {
+		label.setFont(new Font(null, Font.BOLD, 12));
+		return label;
 	}
 
 	private void addAcoes() {
@@ -139,6 +170,29 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		txtMes.setSelectedItem(Mes.getMesPorReferencia(mes));
 		buscarDados(1);
 		validarBtnPaginacao();
+	}
+	
+	@Override
+	protected void buscarDados(int primResultado) {
+		super.buscarDados(primResultado);
+		
+		BigDecimal qntAberto = (BigDecimal) getBuilderRel().eq("isPago", false)
+				.getCriteria().setProjection(Projections.sum("valor")).uniqueResult();
+
+		BigDecimal qntPago = (BigDecimal) getBuilderRel().eq("isPago", true)
+				.getCriteria().setProjection(Projections.sum("valor")).uniqueResult();
+		
+		BigDecimal qntTotal = (BigDecimal) getBuilderRel()
+				.getCriteria().setProjection(Projections.sum("valor")).uniqueResult();
+		
+		lbQntAberto.setText(NumberUtil.obterNumeroFormatado(qntAberto));
+		lbQntPago.setText(NumberUtil.obterNumeroFormatado(qntPago));
+		lbTotal.setText(NumberUtil.obterNumeroFormatado(qntTotal));
+	}
+
+	private CriteriaBuilder getBuilderRel() {
+		return HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
+				.eq("tipo", getClass().getSimpleName().equals(ListagemDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA);
 	}
 
 	public Mes getMesSelecionado() {
