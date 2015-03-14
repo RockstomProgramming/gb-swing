@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 
 import br.com.finan.enumerator.EnumStatus;
 
@@ -29,7 +30,8 @@ public class Entidade implements Serializable {
 
 	@Column
 	private EnumStatus status;
-
+	
+	@Transient
 	private transient final PropertyChangeSupport property = new PropertyChangeSupport(this);
 
 	public void addPropertyChangeListener(final PropertyChangeListener listener) {

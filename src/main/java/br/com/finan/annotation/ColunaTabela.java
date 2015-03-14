@@ -16,6 +16,4 @@ public @interface ColunaTabela {
 	int index();
 
 	String titulo();
-	
-	Class<?> tipo() default Object.class;
 }

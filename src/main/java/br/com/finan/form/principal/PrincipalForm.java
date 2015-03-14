@@ -91,9 +91,11 @@ public class PrincipalForm extends JFrame {
 		menuCadastro.add(new JSeparator());
 		
 		menuCadCategoria = new JMenuItem("Categoria");
+		menuCadCategoria.setIcon(new ImageIcon(getClass().getResource("/icon/Paste.png")));
 		menuCadastro.add(menuCadCategoria);
 		
 		menuCadContaBancaria = new JMenuItem("Conta Bancaria");
+		menuCadContaBancaria.setIcon(new ImageIcon(getClass().getResource("/icon/User.png")));
 		menuCadastro.add(menuCadContaBancaria);
 
 		menuListagens.setText("Listagens");

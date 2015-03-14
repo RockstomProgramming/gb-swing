@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +32,7 @@ import net.sf.ofx4j.domain.data.common.TransactionType;
 import org.jdesktop.beansbinding.BindingGroup;
 
 import br.com.finan.entidade.Categoria;
+import br.com.finan.entidade.Config;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.enumerator.TipoConta;
@@ -140,15 +140,14 @@ public class TransacoesForm extends JInternalFrame {
 
 	private void abrirSelecionadorDeArquivos(final TransacaoTableModel<Transaction> model) {
 		final JFileChooser fc = new JFileChooser();
+		Config conf = (Config) HibernateUtil.getCriteriaBuilder(Config.class).uniqueResult();
 		
-		try {
-			Properties prop = AppUtil.getPropertyConfig(getClass());
-			String path = prop.getProperty(AppUtil.PROP_CONF_FILECHOOSER);
-			
-			if (!path.isEmpty()) {
-					fc.setCurrentDirectory(new File(path));
-			}
-		} catch (Exception e) {
+		if (!ObjetoUtil.isReferencia(conf)) {
+			conf = new Config();
+		}
+		
+		if (ObjetoUtil.isReferencia(conf.getPath()) && !conf.getPath().isEmpty()) {
+			fc.setCurrentDirectory(new File(conf.getPath()));
 		}
 		
 		fc.addChoosableFileFilter(new FileNameExtensionFilter("ofx", "ofx"));
@@ -169,7 +168,8 @@ public class TransacoesForm extends JInternalFrame {
 					model.addRow(new Object[] { t.getMemo(), new SimpleDateFormat("dd/MM/yyyy").format(t.getDatePosted()), NumberUtil.obterNumeroFormatado(t.getAmount()) });
 				}
 				
-				AppUtil.setPropertyConfig(getClass(), file.getAbsolutePath());
+				conf.setPath(file.getAbsolutePath());
+				HibernateUtil.salvarOuAlterar(conf);
 				
 			} catch (final FileNotFoundException ex) {
 				Logger.getLogger(TransacoesForm.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,8 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -28,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.criterion.Projections;
 
 import br.com.finan.annotation.ColunaTabela;
@@ -36,7 +38,7 @@ import br.com.finan.dto.DTO;
 import br.com.finan.util.FieldUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
-import br.com.finan.util.StringUtil;
+import br.com.finan.util.ObjetoUtil;
 
 /**
  *
@@ -88,7 +90,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			public void actionPerformed(final ActionEvent e) {}
 		});
 
-		btnExcluir.setText("Excluir");
+		btnExcluir.setIcon(new ImageIcon(getClass().getResource("/icon/Delete.png")));
 		btnExcluir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -137,15 +139,11 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			}
 		});
 		
-
 		final Map<Integer, Field> campos = getCamposTabela();
 		final List<String> titulos = new ArrayList<String>();
-		final List<ColunaTabela> anotacoes = new ArrayList<ColunaTabela>();
 
 		for (final Field f : campos.values()) {
-			ColunaTabela a = f.getAnnotation(ColunaTabela.class);
-			titulos.add(a.titulo());
-			anotacoes.add(a);
+			titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
 		}
 
 		model = new DefaultTableModel(new Object[][] {}, titulos.toArray()) {
@@ -157,7 +155,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 					return Boolean.class;
 				}
 				
-				return anotacoes.get(columnIndex).tipo();
+				return Object.class;
 			}
 		};
 		
@@ -218,15 +216,20 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 	}
 
 	protected void inativarDados(final String nomeClasse) {
-		for (int i = 0; i < tabela.getRowCount(); i++) {
-			final boolean b = (boolean) tabela.getValueAt(i, 0);
-			if (b) {
-				final T dto = getDados().get(i);
-				HibernateUtil.inativar(dto.getId(), nomeClasse);
+		if (tabela.getRowCount() > 0) {
+		int result = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esse(s) dado(s)?");
+			if (result == JOptionPane.YES_OPTION) {
+				for (int i = 0; i < tabela.getRowCount(); i++) {
+					final boolean b = (boolean) tabela.getValueAt(i, 0);
+					if (b) {
+						final T dto = getDados().get(i);
+						HibernateUtil.inativar(dto.getId(), nomeClasse);
+					}
+				}
 			}
+	
+			iniciarDados();
 		}
-
-		iniciarDados();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -241,18 +244,32 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			final List<Object> valores = new ArrayList<>();
 			for (final Field f : campos.values()) {
 				try {
-					final String ini = f.getType().getName().equals("boolean") ? "is" : "get";
-					final Method m = d.getClass().getDeclaredMethod(ini + StringUtil.toPrimeiraLetraMaiuscula(f.getName()));
-					final Object v = m.invoke(d);
-					valores.add(formatarTipos(v));
+					Object property = BeanUtils.getProperty(d, f.getName());
+					
+					if (ObjetoUtil.isReferencia(property)) {
+						String str = property.toString();
+						if (str.equalsIgnoreCase(Boolean.TRUE.toString()) ||
+								str.equalsIgnoreCase(Boolean.FALSE.toString())) {
+							property = new Boolean(str);
+						} else if (str.matches("\\d{4}-\\d{2}-\\d{2}")) {
+							Date data = new SimpleDateFormat("yyyy-MM-dd").parse(str);
+							property = new SimpleDateFormat("dd/MM/yyyy").format(data);
+						} else if (str.matches("^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\\.[0-9]{2})?$")) {
+							property = NumberUtil.obterNumeroFormatado(new BigDecimal(str));
+						}
+					}
+					
+					valores.add(property);
 				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 					Logger.getLogger(ListagemForm.class.getName()).log(Level.SEVERE, null, ex);
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 			}
 			getModel().addRow(valores.toArray());
 		}
 	}
-
+	
 	private Map<Integer, Field> getCamposTabela() throws SecurityException {
 		final Map<Integer, Field> campos = new TreeMap<Integer, Field>();
 		final Class<T> clazz = obterTipoDaClasse();
@@ -283,6 +300,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		panelPaginacao.add(lbPaginacao);
 		panelPaginacao.add(btnProximo);
 		panelPaginacao.add(btnUltimo, "pushx 1");
+		panelPaginacao.add(btnExcluir);
 		panelPaginacao.add(btnAtualizar);
 
 		JPanel panel = new JPanel(new MigLayout());
@@ -292,16 +310,6 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		return panel;
 	}
 	
-	private Object formatarTipos(final Object v) {
-		if (v instanceof BigDecimal) {
-			return NumberUtil.obterNumeroFormatado(v);
-		} else if (v instanceof Date) {
-			return new SimpleDateFormat("dd/MM/yyyy").format(v);
-		}
-
-		return v;
-	}
-
 	protected abstract CriteriaBuilder getBuilderListagem();
 
 	protected abstract CriteriaBuilder getBuilderQntRegistros();

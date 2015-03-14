@@ -25,6 +25,14 @@ public final class HibernateUtil {
 	public static CriteriaBuilder getCriteriaBuilder(final Class<? extends Entidade> entidade) {
 		return new CriteriaBuilder(getSessao().createCriteria(entidade));
 	}
+	
+	public static void salvarOuAlterar(final Entidade entidade) {
+		if (ObjetoUtil.isReferencia(entidade.getId())) {
+			alterar(entidade);
+		} else {
+			salvar(entidade);
+		}
+	}
 
 	public static void salvar(final Entidade entidade) {
 		final EntityManager em = factory.createEntityManager();

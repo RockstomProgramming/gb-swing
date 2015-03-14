@@ -10,18 +10,18 @@ import br.com.finan.annotation.ColunaTabela;
  * @author Wesley Luiz
  */
 public class ContaDTO extends DTO {
-
+	
 	@ColunaTabela(index = 1, titulo = "Descrição")
 	private String descricao;
 
 	@ColunaTabela(index = 2, titulo = "Categoria")
 	private String categoria;
-
-	@ColunaTabela(index = 4, titulo = "Valor", tipo = BigDecimal.class)
-	private BigDecimal valor;
-
+	
 	@ColunaTabela(index = 3, titulo = "Vencimento")
 	private Date vencimento;
+
+	@ColunaTabela(index = 4, titulo = "Valor")
+	private BigDecimal valor;
 
 	private Integer parcela;
 
