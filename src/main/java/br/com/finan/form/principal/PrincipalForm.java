@@ -1,5 +1,6 @@
 package br.com.finan.form.principal;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -77,6 +78,7 @@ public class PrincipalForm extends JFrame {
 		menuSair = new JMenu();
 
 		desktop.setBorder(BorderFactory.createEtchedBorder());
+		desktop.setBackground(Color.WHITE);
 
 		menuCadastro.setText("Cadastros");
 

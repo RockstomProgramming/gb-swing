@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,16 +43,18 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 
 	protected static final String MASK_YEAR = "yyyy";
 
-	private javax.swing.JButton btnMesAnterior;
-	private javax.swing.JButton btnMesProximo;
-	private javax.swing.JTextField txtAno;
-	private javax.swing.JComboBox<Mes> cmbMes;
+	private JButton btnMesAnterior;
+	private JButton btnMesProximo;
+	private JTextField txtAno;
+	private JComboBox<Mes> cmbMes;
 	private JLabel lbQntAberto;
 	private JLabel lbQntPago;
 	private JLabel lbTotal;
+	private JButton btnPesquisar;
 
 	private Mes mesSelecionado;
 	private String ano;
+
 
 
 	public ListagemContaForm() {
@@ -62,17 +66,16 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 	}
 
 	private void initComponents() {
-		btnMesAnterior = new javax.swing.JButton();
-		btnMesProximo = new javax.swing.JButton();
-		cmbMes = new javax.swing.JComboBox<Mes>();
-		txtAno = new javax.swing.JTextField(20);
+		btnMesAnterior = new JButton();
+		btnMesProximo = new JButton();
+		cmbMes = new JComboBox<Mes>();
+		txtAno = new JTextField(20);
 		lbQntAberto = new JLabel();
 		lbQntPago = new JLabel();
 		lbTotal = new JLabel();
+		btnPesquisar = new JButton();
 		
 		txtAno.setText(ano);
-		btnMesAnterior.setText("<");
-		btnMesProximo.setText(">");
 		txtAno.setEnabled(false);
 		cmbMes.setPreferredSize(new Dimension(150, 0));
 
@@ -87,7 +90,8 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		pnlNav.add(btnMesAnterior);
 		pnlNav.add(cmbMes);
 		pnlNav.add(btnMesProximo);
-		pnlNav.add(txtAno);
+		pnlNav.add(txtAno, "pushx");
+		pnlNav.add(btnPesquisar);
 
 		JPanel pnlRel = new JPanel(new MigLayout());
 		pnlRel.setBorder(new EtchedBorder());
@@ -119,6 +123,7 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 	}
 
 	private void addAcoes() {
+		btnMesAnterior.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play_Reversed.png")));
 		btnMesAnterior.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt) {
@@ -126,6 +131,7 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 			}
 		});
 
+		btnMesProximo.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play.png")));
 		btnMesProximo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final java.awt.event.ActionEvent evt) {
@@ -136,9 +142,22 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		cmbMes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				iniciarDados();
+//				iniciarDados();
 			}
 		});
+		
+		btnPesquisar.setIcon(new ImageIcon(getClass().getResource("/icon/Search.png")));
+		btnPesquisar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				abrirModalPesquisa();
+			}
+		});
+	}
+	
+	private void abrirModalPesquisa() {
+		new DialogPesquisaConta().setVisible(true);
+		iniciarDados();
 	}
 
 	@Override
