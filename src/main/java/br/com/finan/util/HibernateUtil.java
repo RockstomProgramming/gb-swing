@@ -22,7 +22,7 @@ public final class HibernateUtil {
 		return (Session) factory.createEntityManager().getDelegate();
 	}
 
-	public static CriteriaBuilder getCriteriaBuilder(final Class<? extends Entidade> entidade) {
+	public static CriteriaBuilder getCriteriaBuilder(final Class<?> entidade) {
 		return new CriteriaBuilder(getSessao().createCriteria(entidade));
 	}
 	

@@ -3,6 +3,8 @@ package br.com.finan.form.conta;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaBancariaDTO;
 import br.com.finan.entidade.ContaBancaria;
+import br.com.finan.entidade.Entidade;
+import br.com.finan.form.principal.CadastroForm;
 import br.com.finan.form.principal.ListagemForm;
 import br.com.finan.util.HibernateUtil;
 
@@ -29,13 +31,18 @@ public class ListagemContaBancariaForm extends ListagemForm<ContaBancariaDTO> {
 	}
 
 	@Override
-	protected String getNomeEntidade() {
-		return ContaBancaria.class.getSimpleName();
+	protected Class<ContaBancaria> getEntidade() {
+		return ContaBancaria.class;
 	}
-
+	
 	@Override
 	protected String getTituloFrame() {
 		return "";
+	}
+
+	@Override
+	protected Class<? extends CadastroForm<? extends Entidade>> getFormCadastro() {
+		return null;
 	}
 
 }

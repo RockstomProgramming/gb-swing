@@ -36,4 +36,9 @@ public class ListagemReceitaForm extends ListagemContaForm<ContaDTO> {
 		return HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo().eq("tipo", TipoConta.RECEITA).sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado().getReferencia()).sqlRestrictions("YEAR(dataVencimento) = " + getAno());
 	}
 
+	@Override
+	protected Class<CadastroReceitaForm> getFormCadastro() {
+		return CadastroReceitaForm.class;
+	}
+
 }

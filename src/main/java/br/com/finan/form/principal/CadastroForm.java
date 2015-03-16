@@ -130,8 +130,12 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 		this.entidade = entidade;
 	}
 
+	@SuppressWarnings("unchecked")
+	public void setEntidade(Object entidade) {
+		this.entidade = (T) entidade;
+	}
+
 	public Formatters getFormatters() {
 		return formatters;
 	}
-
 }

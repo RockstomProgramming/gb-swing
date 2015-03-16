@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +25,8 @@ import javax.swing.text.MaskFormatter;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 
 import br.com.finan.component.JMoneyField;
@@ -154,6 +158,14 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 				.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
 				.add(txtPago, "${selected}", txtPagamento, "enabled")
 				.add(txtPago, "${selected}", txtFormaPagamento, "enabled");
+			
+			for (Binding b : bindingGroup.getBindings()) {
+				Map<String, String> mp = new HashMap<String, String>();
+				if  (b instanceof AutoBinding) {
+					b.getTargetProperty();
+					b.getSourceProperty();
+				}
+			}
 
 		return bindingGroup;
 	}
@@ -203,6 +215,10 @@ public abstract class CadastroContaForm<T extends Entidade> extends CadastroForm
 
 	public void setRecorrencia(final Frequencia recorrencia) {
 		this.recorrencia = recorrencia;
+	}
+	
+	public JTextField getTxtDescricao() {
+		return txtDescricao;
 	}
 
 }

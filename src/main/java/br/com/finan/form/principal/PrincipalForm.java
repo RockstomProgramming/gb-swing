@@ -44,8 +44,8 @@ public class PrincipalForm extends JFrame {
 	/** Atributo serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
+	public static JDesktopPane desktop;
 	private JButton btnImportar;
-	private JDesktopPane desktop;
 	private JMenuBar jMenuBar1;
 	private JMenuItem menuCadDespsea;
 	private JMenuItem menuCadReceita;

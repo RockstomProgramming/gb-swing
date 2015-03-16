@@ -12,7 +12,7 @@ public class DTO {
 	
 	@ColunaTabela(index = 0, titulo = "")
 	private boolean selecionado;
-
+	
 	public Long getId() {
 		return id;
 	}

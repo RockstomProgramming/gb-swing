@@ -54,6 +54,7 @@ public class BindingUtil {
 
 	public BindingUtil add(final Object source, final String el, final JComponent component, final String bean, final Converter converter, final Validator validator) {
 		final Binding b = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, source, ELProperty.create(el), component, BeanProperty.create(bean));
+		
 		if (ObjetoUtil.isReferencia(converter)) {
 			b.setConverter(converter);
 		}

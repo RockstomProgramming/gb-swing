@@ -40,12 +40,17 @@ public class ListagemCategoriaForm extends ListagemForm<CategoriaDTO> {
 	}
 
 	@Override
-	protected String getNomeEntidade() {
-		return Categoria.class.getSimpleName();
+	protected Class<Categoria> getEntidade() {
+		return Categoria.class;
 	}
-
+	
 	@Override
 	protected String getTituloFrame() {
 		return "";
+	}
+
+	@Override
+	protected Class<CadastroCategoriaForm> getFormCadastro() {
+		return CadastroCategoriaForm.class;
 	}
 }

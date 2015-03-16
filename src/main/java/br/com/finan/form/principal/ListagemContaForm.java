@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,6 +25,7 @@ import org.hibernate.criterion.Projections;
 import org.jdesktop.beansbinding.BindingGroup;
 
 import br.com.finan.dao.CriteriaBuilder;
+import br.com.finan.dto.ContaFiltroDTO;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.enumerator.Mes;
@@ -50,12 +53,9 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 	private JLabel lbQntAberto;
 	private JLabel lbQntPago;
 	private JLabel lbTotal;
-	private JButton btnPesquisar;
 
 	private Mes mesSelecionado;
 	private String ano;
-
-
 
 	public ListagemContaForm() {
 		mesSelecionado = Mes.JANEIRO;
@@ -73,7 +73,6 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 		lbQntAberto = new JLabel();
 		lbQntPago = new JLabel();
 		lbTotal = new JLabel();
-		btnPesquisar = new JButton();
 		
 		txtAno.setText(ano);
 		txtAno.setEnabled(false);
@@ -145,24 +144,26 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 //				iniciarDados();
 			}
 		});
-		
-		btnPesquisar.setIcon(new ImageIcon(getClass().getResource("/icon/Search.png")));
-		btnPesquisar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				abrirModalPesquisa();
-			}
-		});
 	}
 	
-	private void abrirModalPesquisa() {
-		new DialogPesquisaConta().setVisible(true);
-		iniciarDados();
+	@Override
+	protected Map<String, Object> getMapaFiltros() {
+		ContaFiltroDTO filtro = (ContaFiltroDTO) modalPesquisa.getFiltro();
+		Map<String, Object> mp = new HashMap<String, Object>();
+		mp.put("descricao", filtro.getDescricao());
+		mp.put("categoria.id", filtro.getCategoria());
+		mp.put("contaBancaria.id", filtro.getConta());
+		return mp;
+	}
+	
+	@Override
+	protected Class<DialogPesquisaConta> getModalPesquisa() {
+		return DialogPesquisaConta.class;
 	}
 
 	@Override
-	protected String getNomeEntidade() {
-		return Conta.class.getSimpleName();
+	protected Class<Conta> getEntidade() {
+		return Conta.class;
 	}
 
 	protected void irMesAnterior(final JComboBox<Mes> txtMes, final JTextField txtAno) {
@@ -210,10 +211,12 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 	}
 
 	private CriteriaBuilder getBuilderRel() {
-		return HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
+		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
 				.eq("tipo", getClass().getSimpleName().equals(ListagemDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA);
+		montarRestricaoFiltro(builder);
+		return builder;
 	}
-
+	
 	public Mes getMesSelecionado() {
 		return mesSelecionado;
 	}

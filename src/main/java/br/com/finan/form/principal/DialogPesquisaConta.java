@@ -1,49 +1,54 @@
 package br.com.finan.form.principal;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JDialog;
-
-import br.com.finan.form.principal.PanelPesquisaConta.PesquisaDTO;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
-public class DialogPesquisaConta extends JDialog {
+import org.jdesktop.beansbinding.BindingGroup;
+
+import br.com.finan.dto.ContaFiltroDTO;
+import br.com.finan.entidade.Categoria;
+import br.com.finan.entidade.ContaBancaria;
+import br.com.finan.util.BindingUtil;
+import br.com.finan.util.HibernateUtil;
+
+public class DialogPesquisaConta extends DialogPesquisa<ContaFiltroDTO> {
 
 	private static final long serialVersionUID = 1L;
-	private PanelPesquisaConta pnlPesquisa;
+	
+	private JTextField txtDescricao;
+	private JComboBox<Categoria> cmbCategoria;
+	private JComboBox<ContaBancaria> cmbContaBancaria;
 
 	public DialogPesquisaConta() {
-		pnlPesquisa = new PanelPesquisaConta();
-
-		pnlPesquisa.getBtnCancelar().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-			}
-		});
+		txtDescricao = new JTextField(20);
+		cmbCategoria = new JComboBox<Categoria>();
+		cmbContaBancaria = new JComboBox<ContaBancaria>();
 		
-		pnlPesquisa.getBtnSelecionar().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PesquisaDTO dto = pnlPesquisa.getPesquisaDTO();
-			}
-		});
+		JPanel pnlFiltro = new JPanel(new MigLayout("wrap 2"));
+		pnlFiltro.add(new JLabel("Descrição:"));
+		pnlFiltro.add(txtDescricao, "growx");
+		pnlFiltro.add(new JLabel("Categoria:"));
+		pnlFiltro.add(cmbCategoria, "growx");
+		pnlFiltro.add(new JLabel("Conta Bancária:"));
+		pnlFiltro.add(cmbContaBancaria, "growx");
+		
+		BindingGroup bindingGroup = new BindingGroup();
+		BindingUtil.create(bindingGroup)
+			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
+			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria)
+			.add(this, "${filtro.descricao}", txtDescricao)
+			.add(this, "${filtro.categoria}", cmbCategoria, "selectedItem")
+			.add(this, "${filtro.conta}", cmbContaBancaria, "selectedItem");
 
-		final Toolkit toolkit = Toolkit.getDefaultToolkit();
-		final Dimension screenSize = toolkit.getScreenSize();
-		final int x = (screenSize.width - getWidth()) / 2;
-		final int y = (screenSize.height - getHeight()) / 2;
-		setLocation(x, y);
+		bindingGroup.bind();
+		
+		add(pnlFiltro, "wrap");
+		add(pnlAcao, "growx");
 
-		add(pnlPesquisa);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		getContentPane().setLayout(new MigLayout());
-		setTitle("Pesquisa");
-		setModal(true);
 		pack();
 	}
 }

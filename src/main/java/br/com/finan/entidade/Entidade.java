@@ -41,6 +41,18 @@ public class Entidade implements Serializable {
 	public void removePropertyChangeListener(final PropertyChangeListener listener) {
 		property.removePropertyChangeListener(listener);
 	}
+	
+	public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+		property.addPropertyChangeListener(propertyName, listener);
+	}
+	
+	public void removePropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+		property.removePropertyChangeListener(propertyName, listener);
+	}
+	
+	protected void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
+		property.firePropertyChange(propertyName, oldValue, newValue);
+	}
 
 	@PrePersist
 	public void preSalvar() {

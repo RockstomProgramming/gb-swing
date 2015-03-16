@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,16 +26,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.criterion.Projections;
 
 import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.dao.CriteriaBuilder;
+import br.com.finan.dao.Criterion;
 import br.com.finan.dto.DTO;
+import br.com.finan.dto.FiltroDTO;
+import br.com.finan.entidade.Entidade;
 import br.com.finan.util.FieldUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
@@ -51,7 +58,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 	private List<T> dados;
 	private int pagina = 1;
 	private Long qntRegistros = 0L;
-	private final DefaultTableModel model;
+	private final ListagemTableModel model;
 	protected final int MAX_REGISTROS = 15;
 
 	protected JButton btnAnterior;
@@ -65,6 +72,9 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 	protected JPanel pnlPaginacao;
 	protected JTable tabela;
 	protected JButton btnAtualizar;
+	protected JButton btnEditar;
+	protected JButton btnPesquisar;
+	protected DialogPesquisa<? extends FiltroDTO> modalPesquisa;
 
 	public ListagemForm() {
 		scroll = new JScrollPane();
@@ -78,12 +88,12 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		btnUltimo = new JButton();
 		btnPrimeiro = new JButton();
 		btnAtualizar = new JButton();
+		btnEditar = new JButton();
+		btnPesquisar = new JButton();
 		
 		scroll.setViewportView(tabela);
 		scroll.setPreferredSize(new Dimension(800, 280));
 		
-		setTitle(getTituloFrame());
-
 		btnSalvar.setText("Salvar");
 		btnSalvar.addActionListener(new ActionListener() {
 			@Override
@@ -94,7 +104,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		btnExcluir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				inativarDados(getNomeEntidade());
+				inativarDados(getEntidade().getSimpleName());
 			}
 		});
 
@@ -139,6 +149,36 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			}
 		});
 		
+		btnEditar.setIcon(new ImageIcon(getClass().getResource("/icon/Edit-Document-icon.png")));
+		btnEditar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				abrirFormularioEdicao();
+			}
+		});
+		
+		btnPesquisar.setIcon(new ImageIcon(getClass().getResource("/icon/Search.png")));
+		btnPesquisar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					modalPesquisa = getModalPesquisa().newInstance();
+					modalPesquisa.btnSelecionar.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							buscarDados(0);
+							validarBtnPaginacao();
+							modalPesquisa.setVisible(false);
+						}
+					});
+					
+					modalPesquisa.setVisible(true);
+				} catch (InstantiationException | IllegalAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
 		final Map<Integer, Field> campos = getCamposTabela();
 		final List<String> titulos = new ArrayList<String>();
 
@@ -146,23 +186,62 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			titulos.add(f.getAnnotation(ColunaTabela.class).titulo());
 		}
 
-		model = new DefaultTableModel(new Object[][] {}, titulos.toArray()) {
-			private static final long serialVersionUID = 1L;
-
+		model = new ListagemTableModel(new Object[][] {}, titulos.toArray());
+		model.addTableModelListener(new TableModelListener() {
+			
 			@Override
-			public Class<?> getColumnClass(int columnIndex) {
-				if (columnIndex == 0) {
-					return Boolean.class;
-				}
+			public void tableChanged(TableModelEvent e) {
+				boolean selecionado = isObjetoSelecionadoNaTabela();
+				btnExcluir.setEnabled(selecionado);
+				btnEditar.setEnabled(selecionado);
 				
-				return Object.class;
+				if (tabela.getRowCount() > 0) {
+					int selectedRow = tabela.getSelectedRow();
+					if (selectedRow > -1) {
+						model.getValueAt(selectedRow).setSelecionado((boolean) tabela.getValueAt(selectedRow, 0));
+					}
+				}
 			}
-		};
+		});
 		
 		tabela.setModel(model);
 		tabela.getColumnModel().getColumn(0).setPreferredWidth(5);
+		
+		setTitle(getTituloFrame());
+	}
+	
+	protected void filtrarDados() {
+		
+	}
+	
+	protected Class<? extends DialogPesquisa<? extends FiltroDTO>> getModalPesquisa() {
+		return null;
+	}
+	
+	protected Map<String, Object> getMapaFiltros() {
+		Map<String, Object> mp = new java.util.HashMap<>();
+		return mp;
 	}
 
+	protected void abrirFormularioEdicao() {
+		Class<? extends CadastroForm<? extends Entidade>> formCadastro = getFormCadastro();
+		if (ObjetoUtil.isReferencia(formCadastro)) {
+			for (T d : getDados()) {
+				if (d.isSelecionado()) {
+					try {
+						CadastroForm<? extends Entidade> form = formCadastro.newInstance();
+						form.setEntidade(HibernateUtil.getCriteriaBuilder(getEntidade()).eqId(d.getId()).uniqueResult());
+						PropertyUtils.setProperty(form, "txtDescricao.text", "Teste");
+						PrincipalForm.desktop.add(form);
+						form.show();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
 	public void iniciarDados() {
 		buscarDados(0);
 		validarBtnPaginacao();
@@ -217,12 +296,11 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 
 	protected void inativarDados(final String nomeClasse) {
 		if (tabela.getRowCount() > 0) {
-		int result = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esse(s) dado(s)?");
+			int result = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir esse(s) dado(s)?");
 			if (result == JOptionPane.YES_OPTION) {
 				for (int i = 0; i < tabela.getRowCount(); i++) {
-					final boolean b = (boolean) tabela.getValueAt(i, 0);
-					if (b) {
-						final T dto = getDados().get(i);
+					T dto = model.getValueAt(i);
+					if (dto.isSelecionado()) {
 						HibernateUtil.inativar(dto.getId(), nomeClasse);
 					}
 				}
@@ -231,12 +309,12 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			iniciarDados();
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	protected void buscarDados(final int primResultado) {
-		limparTabela();
-		setDados(getBuilderListagem().getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
-		setQntRegistros((Long) getBuilderQntRegistros().getCriteria().setProjection(Projections.rowCount()).uniqueResult());
+	protected void buscarDados(final int primResultado, final CriteriaBuilder builderListagem, final CriteriaBuilder builderQntDados) {
+		getModel().limparTabela();
+		setDados(builderListagem.getCriteria().setFirstResult(primResultado).setMaxResults(MAX_REGISTROS).list());
+		setQntRegistros((Long) builderQntDados.getCriteria().setProjection(Projections.rowCount()).uniqueResult());
 
 		final Map<Integer, Field> campos = getCamposTabela();
 
@@ -254,7 +332,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 						} else if (str.matches("\\d{4}-\\d{2}-\\d{2}")) {
 							Date data = new SimpleDateFormat("yyyy-MM-dd").parse(str);
 							property = new SimpleDateFormat("dd/MM/yyyy").format(data);
-						} else if (str.matches("^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\\.[0-9]{2})?$")) {
+						} else if (str.matches("^[+-]?[0-9]{1,3}(?:[0-9]{3})*(\\.[0-9]{2})$")) {
 							property = NumberUtil.obterNumeroFormatado(new BigDecimal(str));
 						}
 					}
@@ -269,6 +347,33 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 			getModel().addRow(valores.toArray());
 		}
 	}
+
+	protected void buscarDados(final int primResultado) {
+		CriteriaBuilder builderListagem = getBuilderListagem();
+		CriteriaBuilder builderQntDados = getBuilderQntRegistros();
+		
+		montarRestricaoFiltro(builderListagem);
+		montarRestricaoFiltro(builderQntDados);
+		
+		buscarDados(primResultado, builderListagem, builderQntDados);
+	}
+
+	protected final void montarRestricaoFiltro(CriteriaBuilder builder) {
+		if (ObjetoUtil.isReferencia(modalPesquisa)) {
+			Map<String, Object> mp = getMapaFiltros();
+			for (Entry<String, Object> entry :  mp.entrySet()) {
+				Object value = entry.getValue();
+				if (ObjetoUtil.isReferencia(value)) {
+					if (value instanceof String)
+						builder.ilike(entry.getKey(), value.toString(), Criterion.ANYWHERE);
+					else if (value instanceof Entidade)
+						builder.eq(entry.getKey(), ((Entidade) value).getId());
+					else
+						builder.eq(entry.getKey(), value);
+				}
+			}
+		}
+	}
 	
 	private Map<Integer, Field> getCamposTabela() throws SecurityException {
 		final Map<Integer, Field> campos = new TreeMap<Integer, Field>();
@@ -280,11 +385,15 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		}
 		return campos;
 	}
-
-	protected void limparTabela() {
-		while (getModel().getRowCount() > 0) {
-			getModel().removeRow(0);
+	
+	private boolean isObjetoSelecionadoNaTabela() {
+		for (int i = 0; i < tabela.getRowCount(); i++) {
+			if ((boolean) tabela.getValueAt(i, 0)) {
+				return true;
+			}
 		}
+		
+		return false;
 	}
 
 	@SuppressWarnings({ "unchecked", "restriction" })
@@ -300,6 +409,7 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		panelPaginacao.add(lbPaginacao);
 		panelPaginacao.add(btnProximo);
 		panelPaginacao.add(btnUltimo, "pushx 1");
+		panelPaginacao.add(btnEditar);
 		panelPaginacao.add(btnExcluir);
 		panelPaginacao.add(btnAtualizar);
 
@@ -314,10 +424,40 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 
 	protected abstract CriteriaBuilder getBuilderQntRegistros();
 
-	protected abstract String getNomeEntidade();
+	protected abstract Class<?> getEntidade();
 
 	protected abstract String getTituloFrame();
+	
+	protected abstract Class<? extends CadastroForm<? extends Entidade>> getFormCadastro();
 
+	class ListagemTableModel extends DefaultTableModel {
+
+		private static final long serialVersionUID = 1L;
+		
+		public ListagemTableModel(Object[][] objects, Object[] array) {
+			super(objects, array);
+		}
+
+		@Override
+		public Class<?> getColumnClass(int columnIndex) {
+			if (columnIndex == 0) {
+				return Boolean.class;
+			}
+			
+			return Object.class;
+		}
+		
+		public T getValueAt(int row) {
+			return getDados().get(row);
+		}
+		
+		public void limparTabela() {
+			while (getRowCount() > 0) {
+				removeRow(0);
+			}
+		}
+	}
+	
 	public List<T> getDados() {
 		return dados;
 	}
@@ -342,7 +482,8 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 		this.qntRegistros = qntRegistros;
 	}
 
-	public DefaultTableModel getModel() {
+	public ListagemTableModel getModel() {
 		return model;
 	}
+	
 }
