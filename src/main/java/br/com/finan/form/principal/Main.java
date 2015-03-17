@@ -6,7 +6,7 @@ import javax.swing.UIManager;
 import br.com.finan.util.HibernateUtil;
 
 public class Main {
-
+	
 	public static void main(final String args[]) {
 		HibernateUtil.factory = Persistence.createEntityManagerFactory("finan-unit");
 
@@ -20,6 +20,7 @@ public class Main {
 			@Override
 			public void run() {
 				new PrincipalForm().setVisible(true);
+//				new TesteForm().setVisible(true);
 			}
 		});
 	}

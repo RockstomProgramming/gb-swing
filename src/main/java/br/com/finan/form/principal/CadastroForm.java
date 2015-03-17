@@ -15,10 +15,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.text.JTextComponent;
 
 import net.miginfocom.swing.MigLayout;
-
 import br.com.finan.entidade.Entidade;
 import br.com.finan.util.AppUtil;
-import br.com.finan.util.Formatters;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
 
@@ -37,8 +35,6 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 	private JButton btnSalvar;
 	private JPanel pnlAcao;
 
-	private final Formatters formatters;
-
 	public CadastroForm() {
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.setIcon(new ImageIcon(getClass().getResource("/icon/Save.png")));
@@ -55,7 +51,6 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 		
 		iniciarEntidade();
 		iniciarComponentes();
-		formatters = new Formatters();
 	}
 
 	protected void salvar() {
@@ -133,9 +128,5 @@ public abstract class CadastroForm<T extends Entidade> extends javax.swing.JInte
 	@SuppressWarnings("unchecked")
 	public void setEntidade(Object entidade) {
 		this.entidade = (T) entidade;
-	}
-
-	public Formatters getFormatters() {
-		return formatters;
 	}
 }

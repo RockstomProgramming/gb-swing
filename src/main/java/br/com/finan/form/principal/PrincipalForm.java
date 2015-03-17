@@ -63,6 +63,8 @@ public class PrincipalForm extends JFrame {
 	public PrincipalForm() {
 		initComponents();
 		iniciarDados();
+		
+		abrirFrame(br.com.arq.form.CadastroContaBancariaForm.class, "Teste");
 	}
 
 	private void initComponents() {

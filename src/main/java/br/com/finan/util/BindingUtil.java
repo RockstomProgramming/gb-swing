@@ -3,10 +3,11 @@ package br.com.finan.util;
 import java.util.List;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -14,6 +15,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.Converter;
 import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.beansbinding.Validator;
+import org.jdesktop.swingbinding.JTableBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 
 import br.com.finan.validator.MaxLengthValidator;
@@ -36,24 +38,58 @@ public class BindingUtil {
 		return this;
 	}
 
-	public BindingUtil add(final Object source, final String el, final JComponent component) {
-		return add(source, el, component, "text", null, null);
+	public ColumnBinding addJTableBinding(List<?> list, JTable jtable) {
+		JTableBinding tableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, jtable);
+		ColumnBinding columnBinding = new ColumnBinding(this, tableBinding);
+		
+		bindingGroup.addBinding(tableBinding);
+		
+		return columnBinding;
+	}
+	
+	public class ColumnBinding {
+		
+		private JTableBinding tableBinding;
+		private BindingUtil bindingUtil;
+		
+		public ColumnBinding(BindingUtil bindingUtil, JTableBinding tableBinding) {
+			this.tableBinding = tableBinding;
+			this.bindingUtil = bindingUtil;
+		}
+
+		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn) {
+			tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
+			return this;
+		}
+
+		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn, Class<?> columnClass) {
+			tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn).setColumnClass(columnClass);
+			return this;
+		}
+		
+		public BindingUtil close() {
+			return bindingUtil;
+		}
+	}
+	
+	public BindingUtil add(final Object source, final String sourceEl, final Object target) {
+		return add(source, sourceEl, target, "text", null, null);
 	}
 
-	public BindingUtil add(final Object source, final String el, final JComponent component, final String bean) {
-		return add(source, el, component, bean, null, null);
+	public BindingUtil add(final Object source, final String sourceEl, final Object target, final String targetEl) {
+		return add(source, sourceEl, target, targetEl, null, null);
 	}
 
-	public BindingUtil add(final Object source, final String el, final JComponent component, final Converter converter) {
-		return add(source, el, component, "text", converter, null);
+	public BindingUtil add(final Object source, final String sourceEl, final Object target, final Converter converter) {
+		return add(source, sourceEl, target, "text", converter, null);
 	}
 
-	public BindingUtil add(final Object source, final String el, final JComponent component, final Validator validator) {
-		return add(source, el, component, "text", null, validator);
+	public BindingUtil add(final Object source, final String sourceEl, final Object target, final Validator validator) {
+		return add(source, sourceEl, target, "text", null, validator);
 	}
 
-	public BindingUtil add(final Object source, final String el, final JComponent component, final String bean, final Converter converter, final Validator validator) {
-		final Binding b = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, source, ELProperty.create(el), component, BeanProperty.create(bean));
+	public BindingUtil add(final Object source, final String sourceEl, final Object target, String targetEl, final Converter converter, final Validator validator) {
+		final Binding b = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, source, ELProperty.create(sourceEl), target, BeanProperty.create(targetEl));
 		
 		if (ObjetoUtil.isReferencia(converter)) {
 			b.setConverter(converter);
@@ -61,11 +97,16 @@ public class BindingUtil {
 
 		if (ObjetoUtil.isReferencia(validator)) {
 			if (validator instanceof MaxLengthValidator) {
-				((MaxLengthValidator) validator).setComp((JTextComponent) component);
+				((MaxLengthValidator) validator).setComp((JTextComponent) target);
 			}
 			b.setValidator(validator);
 		}
+		
 		bindingGroup.addBinding(b);
 		return this;
+	}
+	
+	public BindingGroup getBindingGroup() {
+		return bindingGroup;
 	}
 }

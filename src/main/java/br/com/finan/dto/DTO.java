@@ -1,6 +1,6 @@
 package br.com.finan.dto;
 
-import br.com.finan.annotation.ColunaTabela;
+
 
 /**
  *
@@ -10,7 +10,7 @@ public class DTO {
 
 	private Long id;
 	
-	@ColunaTabela(index = 0, titulo = "")
+//	@ColunaTabela(index = 0, titulo = "")
 	private boolean selecionado;
 	
 	public Long getId() {

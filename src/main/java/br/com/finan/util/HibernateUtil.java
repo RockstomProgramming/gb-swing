@@ -1,5 +1,8 @@
 package br.com.finan.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -42,6 +45,7 @@ public final class HibernateUtil {
 			em.getTransaction().commit();
 		} catch (final Exception ex) {
 			em.getTransaction().rollback();
+			Logger.getLogger(HibernateUtil.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
 			em.close();
 		}
@@ -51,10 +55,11 @@ public final class HibernateUtil {
 		final EntityManager em = factory.createEntityManager();
 		em.getTransaction().begin();
 		try {
-			em.refresh(entidade);
+			em.merge(entidade);
 			em.getTransaction().commit();
 		} catch (final Exception ex) {
 			em.getTransaction().rollback();
+			Logger.getLogger(HibernateUtil.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
 			em.close();
 		}
@@ -68,6 +73,7 @@ public final class HibernateUtil {
 			em.getTransaction().commit();
 		} catch (final Exception ex) {
 			em.getTransaction().rollback();
+			Logger.getLogger(HibernateUtil.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
 			em.close();
 		}
