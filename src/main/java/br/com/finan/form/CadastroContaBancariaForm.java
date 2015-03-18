@@ -15,6 +15,7 @@ import br.com.finan.util.HibernateUtil;
 
 public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, ContaBancariaDTO> {
 
+	private static final String TITULO_FRAME = "Cadastro de Contas Bancárias";
 	private static final long serialVersionUID = 1L;
 	private JPanel pnlCadastro;
 	
@@ -53,7 +54,7 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 	
 	@Override
 	protected String getTituloFrame() {
-		return null;
+		return TITULO_FRAME;
 	}
 
 	@Override

@@ -6,8 +6,6 @@ import java.util.logging.Logger;
 
 import javax.swing.text.MaskFormatter;
 
-import br.com.finan.form.CadastroDespesaForm;
-
 /**
  *
  * @author Wesley Luiz
@@ -20,7 +18,7 @@ public class Formatters {
 		try {
 			dateFormatter = new MaskFormatter("##/##/####");
 		} catch (final ParseException ex) {
-			Logger.getLogger(CadastroDespesaForm.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(Formatters.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 

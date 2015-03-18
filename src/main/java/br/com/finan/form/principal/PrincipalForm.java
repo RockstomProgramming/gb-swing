@@ -28,10 +28,7 @@ import javax.swing.border.EtchedBorder;
 import net.miginfocom.swing.MigLayout;
 import br.com.finan.form.CadastroCategoriaForm;
 import br.com.finan.form.CadastroContaBancariaForm;
-import br.com.finan.form.CadastroDespesaForm;
-import br.com.finan.form.CadastroReceitaForm;
-import br.com.finan.form.ListagemDespesaForm;
-import br.com.finan.form.ListagemReceitaForm;
+import br.com.finan.form.CadastroContaForm;
 import br.com.finan.form.TransacoesForm;
 import br.com.finan.util.ObjetoUtil;
 
@@ -50,9 +47,6 @@ public class PrincipalForm extends JFrame {
 	private JMenuItem menuCadDespsea;
 	private JMenuItem menuCadReceita;
 	private JMenu menuCadastro;
-	private JMenuItem menuListDespesa;
-	private JMenuItem menuListReceita;
-	private JMenu menuListagens;
 	private JMenu menuSair;
 	private JMenuItem menuCadCategoria;
 	private JMenuItem menuCadContaBancaria;
@@ -72,9 +66,6 @@ public class PrincipalForm extends JFrame {
 		menuCadastro = new JMenu();
 		menuCadReceita = new JMenuItem();
 		menuCadDespsea = new JMenuItem();
-		menuListagens = new JMenu();
-		menuListReceita = new JMenuItem();
-		menuListDespesa = new JMenuItem();
 		menuSair = new JMenu();
 
 		desktop.setBorder(BorderFactory.createEtchedBorder());
@@ -100,16 +91,6 @@ public class PrincipalForm extends JFrame {
 		menuCadContaBancaria.setIcon(new ImageIcon(getClass().getResource("/icon/User.png")));
 		menuCadastro.add(menuCadContaBancaria);
 
-		menuListagens.setText("Listagens");
-
-		menuListReceita.setText("Receitas");
-		menuListagens.add(menuListReceita);
-
-		menuListDespesa.setText("Despesas");
-		menuListagens.add(menuListDespesa);
-
-		jMenuBar1.add(menuListagens);
-
 		menuSair.setText("Sair");
 		jMenuBar1.add(menuSair);
 		
@@ -133,31 +114,23 @@ public class PrincipalForm extends JFrame {
 	}
 	
 	private void iniciarDados() {
-		menuListDespesa.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				abrirFrame(ListagemDespesaForm.class, NomeFrame.LISTAGEM_DESPESA_FRAME.toString());
-			}
-		});
-
-		menuListReceita.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				abrirFrame(ListagemReceitaForm.class, NomeFrame.LISTAGEM_RECEITA_FRAME.toString());
-			}
-		});
-
 		menuCadDespsea.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				abrirFrame(CadastroDespesaForm.class, NomeFrame.CADASTRO_DESPESA_FRAME.toString());
+//				abrirFrame(CadastroDespesaForm.class, NomeFrame.CADASTRO_DESPESA_FRAME.toString());
+				CadastroContaForm form = new CadastroContaForm(true);
+				desktop.add(form);
+				form.show();
 			}
 		});
 
 		menuCadReceita.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
+//				abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
+				CadastroContaForm form = new CadastroContaForm(false);
+				desktop.add(form);
+				form.show();
 			}
 		});
 		
@@ -224,8 +197,6 @@ public class PrincipalForm extends JFrame {
 		CADASTRO_RECEITA_FRAME,
 		CADASTRO_CATEGORIA_FRAME,
 		CADASTRO_CONTA_BANCARIA_FRAME,
-		LISTAGEM_DESPESA_FRAME, 
-		LISTAGEM_RECEITA_FRAME, 
 		TRANSACOES_FRAME;
 	}
 }

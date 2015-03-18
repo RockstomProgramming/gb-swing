@@ -80,6 +80,9 @@ public final class HibernateUtil {
 	}
 
 	public static void inativar(final Long id, final String classe) {
+		if (!ObjetoUtil.isReferencia(id)) 
+			throw new RuntimeException("O id da entidade está nulo");
+		
 		final Query query = getSessao().createQuery("UPDATE ".concat(classe).concat(" SET status = :status WHERE id = :id"));
 		query.setParameter("status", EnumStatus.INATIVO);
 		query.setParameter("id", id);

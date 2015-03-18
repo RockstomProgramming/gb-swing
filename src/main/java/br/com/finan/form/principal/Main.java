@@ -20,7 +20,6 @@ public class Main {
 			@Override
 			public void run() {
 				new PrincipalForm().setVisible(true);
-//				new TesteForm().setVisible(true);
 			}
 		});
 	}

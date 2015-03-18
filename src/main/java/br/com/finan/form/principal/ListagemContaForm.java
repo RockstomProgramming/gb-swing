@@ -30,7 +30,6 @@ import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.enumerator.Mes;
 import br.com.finan.enumerator.TipoConta;
-import br.com.finan.form.ListagemDespesaForm;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
@@ -211,10 +210,10 @@ public abstract class ListagemContaForm<T extends DTO> extends ListagemForm<T> {
 	}
 
 	private CriteriaBuilder getBuilderRel() {
-		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
+		/*CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
 				.eq("tipo", getClass().getSimpleName().equals(ListagemDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA);
-		montarRestricaoFiltro(builder);
-		return builder;
+		montarRestricaoFiltro(builder);*/
+		return null;
 	}
 	
 	public Mes getMesSelecionado() {

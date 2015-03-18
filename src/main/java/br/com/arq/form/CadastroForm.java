@@ -67,6 +67,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle(getTituloFrame());
 		setClosable(true);
+		setResizable(true);
 
 		BindingGroup bindingGroup = new BindingGroup();
 		binding = BindingUtil.create(bindingGroup);
@@ -160,11 +161,10 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		panelAcoes.add(btnProximo);
 		panelAcoes.add(btnUltimo);
 
-		add(scroll, "wrap, push");
+		add(scroll, "wrap, push, growx");
 		add(panelAcoes, "wrap, growx");
 
 		pack();
-		
 	}
 	
 	protected void irProximaPagina() {
@@ -224,7 +224,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		return campos;
 	}
 
-	private void iniciarDados() {
+	protected void iniciarDados() {
 		setIdSelecionado(null);
 		
 		try {
