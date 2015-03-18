@@ -17,10 +17,10 @@ public class ContaDTO extends DTO {
 	@ColunaTabela(index = 1, titulo = "Categoria")
 	private String categoria;
 	
-	@ColunaTabela(index = 2, titulo = "Vencimento")
+	@ColunaTabela(index = 2, titulo = "Vencimento", tipo = Date.class)
 	private Date vencimento;
 
-	@ColunaTabela(index = 3, titulo = "Valor")
+	@ColunaTabela(index = 3, titulo = "Valor", tipo = BigDecimal.class)
 	private BigDecimal valor;
 
 	private Integer parcela;

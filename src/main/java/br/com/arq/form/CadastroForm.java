@@ -308,10 +308,14 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		return idSelecionado;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void setIdSelecionado(Long idSelecionado) {
-		setEntidade((T) HibernateUtil.getCriteriaBuilder(obterTipoDaClasse(0)).eqId(idSelecionado).uniqueResult());
+		popularInterface(idSelecionado);
 		this.idSelecionado = idSelecionado;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void popularInterface(Long idSelecionado) {
+		setEntidade((T) HibernateUtil.getCriteriaBuilder(obterTipoDaClasse(0)).eqId(idSelecionado).uniqueResult());
 	}
 
 	public T getEntidade() {

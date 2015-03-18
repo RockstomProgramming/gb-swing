@@ -1,6 +1,5 @@
 package br.com.finan.form;
 
-import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -40,6 +39,7 @@ import br.com.finan.enumerator.TipoConta;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.CalcularRecorrencia;
 import br.com.finan.util.HibernateUtil;
+import br.com.finan.util.ObjetoUtil;
 import br.com.finan.validator.IntegerValidator;
 import br.com.finan.validator.MaxLengthValidator;
 
@@ -55,9 +55,9 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 	private JFormattedTextField txtVencimento;
 	private JFormattedTextField txtPagamento;
 	private JMoneyField txtValor;
-	private JComboBox<Categoria> txtCategoria;
-	private JComboBox<ContaBancaria> txtContaBancaria;
-	private JComboBox<FormaPagamento> txtFormaPagamento;
+	private JComboBox<Categoria> cmbCategoria;
+	private JComboBox<ContaBancaria> cmbContaBancaria;
+	private JComboBox<FormaPagamento> cmbFormaPagamento;
 	private JComboBox<Frequencia> txtRecorrencia;
 	private JTextField txtMaximo;
 	private JPanel pnlCad;
@@ -75,9 +75,9 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 			txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txtPagamento = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txtValor = new JMoneyField();
-			txtCategoria = new JComboBox<Categoria>();
-			txtContaBancaria = new JComboBox<ContaBancaria>();
-			txtFormaPagamento = new JComboBox<FormaPagamento>();
+			cmbCategoria = new JComboBox<Categoria>();
+			cmbContaBancaria = new JComboBox<ContaBancaria>();
+			cmbFormaPagamento = new JComboBox<FormaPagamento>();
 			txtRecorrencia = new JComboBox<Frequencia>();
 			txtMaximo = new JTextField(10);
 			txtPago = new JCheckBox("Sim");
@@ -105,13 +105,13 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 		pnlCad.add(new JLabel("Valor (R$):"));
 		pnlCad.add(txtValor, "wrap");
 		pnlCad.add(new JLabel("Categoria:"));
-		pnlCad.add(txtCategoria, "grow");
+		pnlCad.add(cmbCategoria, "grow");
 		pnlCad.add(new JLabel("Conta Bancária:"));
-		pnlCad.add(txtContaBancaria, "grow, wrap");
+		pnlCad.add(cmbContaBancaria, "grow, wrap");
 		pnlCad.add(new JLabel("Pago:"));
 		pnlCad.add(txtPago);
 		pnlCad.add(new JLabel("Forma Pagamento:"));
-		pnlCad.add(txtFormaPagamento, "grow, wrap");
+		pnlCad.add(cmbFormaPagamento, "grow, wrap");
 		pnlCad.add(new JLabel("Pagamento:"));
 		pnlCad.add(txtPagamento);
 		pnlCad.add(pnlRecorrencia, "wrap, growx, span 2 2");
@@ -122,12 +122,12 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 		add(pnlCad);
 		
 		getBinding().addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
-			.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), txtFormaPagamento)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), txtCategoria)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), txtContaBancaria)
-			.add(this, "${entidade.categoria}", txtCategoria, "selectedItem")
-			.add(this, "${entidade.contaBancaria}", txtContaBancaria, "selectedItem")
-			.add(this, "${entidade.formaPagamento}", txtFormaPagamento, "selectedItem")
+			.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), cmbFormaPagamento)
+			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
+			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria)
+			.add(this, "${entidade.categoria}", cmbCategoria, "selectedItem")
+			.add(this, "${entidade.contaBancaria}", cmbContaBancaria, "selectedItem")
+			.add(this, "${entidade.formaPagamento}", cmbFormaPagamento, "selectedItem")
 			.add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
 			.add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
 			.add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
@@ -137,10 +137,30 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 			.add(this, "${recorrencia}", txtRecorrencia, "selectedItem")
 			.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
 			.add(txtPago, "${selected}", txtPagamento, "enabled")
-			.add(txtPago, "${selected}", txtFormaPagamento, "enabled")
+			.add(txtPago, "${selected}", cmbFormaPagamento, "enabled")
+			
+			.add(tabela, "${selectedElement.descricao}", txtDescricao)
+			.add(tabela, "${selectedElement.observacoes}", txtObservacoes)
+			.add(tabela, "${selectedElement.valor}", txtValor)
+			.add(tabela, "${selectedElement.isPago}", txtPago, "selected")
+			.add(tabela, "${selectedElement.vencimento}", txtVencimento, new DateConverter())
+//			.add(tabela, "${selectedElement}", cmbCategoria)
+//			.add(tabela, "${selectedElement}", cmbContaBancaria)
+//			.add(tabela, "${selectedElement}", cmbFormaPagamento)
 			.getBindingGroup().bind();
-		
-		setPreferredSize(new Dimension(800, 0));
+			
+			
+	}
+	
+	@Override
+	protected void popularInterface(Long idSelecionado) {
+		super.popularInterface(idSelecionado);
+		if (ObjetoUtil.isReferencia(getEntidade())) {
+			txtPago.setSelected(getEntidade().isIsPago());
+			cmbCategoria.setSelectedItem(getEntidade().getCategoria());
+			cmbContaBancaria.setSelectedItem(getEntidade().getContaBancaria());
+			cmbFormaPagamento.setSelectedItem(getEntidade().getFormaPagamento());
+		}
 	}
 	
 	protected void salvar() {
@@ -176,7 +196,7 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 
 	@Override
 	protected CriteriaBuilder getBuilderListagem() {
-		return getBuilderQntDados().addProjection("descricao", "descricao").addProjection("valor", "valor")
+		return getBuilderQntDados().addProjection("id").addProjection("descricao").addProjection("valor")
 				.addProjection("categoria.nome", "categoria").addProjection("dataVencimento", "vencimento")
 				.addAliases("categoria", "categoria", Criterion.LEFT_JOIN).addAliasToBean(ContaDTO.class).close();
 	}
@@ -188,7 +208,7 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 	}
 
 	@Override
-	protected JPanel getPanelCadastro() {
+	protected JPanel getPanelCadastro() {	
 		return pnlCad;
 	}
 

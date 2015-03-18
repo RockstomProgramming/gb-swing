@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import org.jdesktop.beansbinding.Converter;
 
+import br.com.finan.util.NumberUtil;
+
 /**
  *
  * @author Wesley Luiz
@@ -25,7 +27,7 @@ public class BigDecimalConverter extends Converter<BigDecimal, String> {
 
 	@Override
 	public String convertForward(final BigDecimal s) {
-		return s.toString();
+		return NumberUtil.obterNumeroFormatado(s);
 	}
 
 	@Override

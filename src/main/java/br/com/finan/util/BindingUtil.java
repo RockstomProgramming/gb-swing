@@ -1,5 +1,7 @@
 package br.com.finan.util;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -18,6 +20,8 @@ import org.jdesktop.beansbinding.Validator;
 import org.jdesktop.swingbinding.JTableBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 
+import br.com.finan.converter.BigDecimalConverter;
+import br.com.finan.converter.DateConverter;
 import br.com.finan.validator.MaxLengthValidator;
 
 @SuppressWarnings({ "unchecked", "rawtypes"})
@@ -63,7 +67,12 @@ public class BindingUtil {
 		}
 
 		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn, Class<?> columnClass) {
-			tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn).setColumnClass(columnClass);
+			JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn).setColumnClass(Object.class);
+			if (columnClass.equals(Date.class)) {
+				columnBinding.setConverter(new DateConverter());
+			} else if (columnClass.equals(BigDecimal.class)) {
+				columnBinding.setConverter(new BigDecimalConverter());
+			}
 			return this;
 		}
 		
