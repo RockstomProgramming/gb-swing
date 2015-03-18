@@ -1,4 +1,4 @@
-package br.com.finan.form.transacao;
+package br.com.finan.form;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;

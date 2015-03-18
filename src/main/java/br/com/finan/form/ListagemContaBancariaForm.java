@@ -1,4 +1,4 @@
-package br.com.finan.form.conta;
+package br.com.finan.form;
 
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaBancariaDTO;

@@ -1,4 +1,4 @@
-package br.com.finan.form.despesa;
+package br.com.finan.form;
 
 import org.hibernate.criterion.Order;
 import org.hibernate.sql.JoinType;

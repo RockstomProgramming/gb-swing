@@ -1,4 +1,4 @@
-package br.com.finan.form.conta;
+package br.com.finan.form;
 
 import java.awt.Dimension;
 
