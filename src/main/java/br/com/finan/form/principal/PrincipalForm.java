@@ -26,13 +26,13 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
-import br.com.finan.form.categoria.CadastroCategoriaForm;
-import br.com.finan.form.conta.CadastroContaBancariaForm;
-import br.com.finan.form.despesa.CadastroDespesaForm;
-import br.com.finan.form.despesa.ListagemDespesaForm;
-import br.com.finan.form.receita.CadastroReceitaForm;
-import br.com.finan.form.receita.ListagemReceitaForm;
-import br.com.finan.form.transacao.TransacoesForm;
+import br.com.finan.form.CadastroCategoriaForm;
+import br.com.finan.form.CadastroContaBancariaForm;
+import br.com.finan.form.CadastroDespesaForm;
+import br.com.finan.form.CadastroReceitaForm;
+import br.com.finan.form.ListagemDespesaForm;
+import br.com.finan.form.ListagemReceitaForm;
+import br.com.finan.form.TransacoesForm;
 import br.com.finan.util.ObjetoUtil;
 
 /**
@@ -63,8 +63,6 @@ public class PrincipalForm extends JFrame {
 	public PrincipalForm() {
 		initComponents();
 		iniciarDados();
-		
-		abrirFrame(br.com.arq.form.CadastroContaBancariaForm.class, "Teste");
 	}
 
 	private void initComponents() {

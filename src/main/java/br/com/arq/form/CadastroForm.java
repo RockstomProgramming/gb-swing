@@ -64,7 +64,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 
 	public CadastroForm() {
 		getContentPane().setLayout(new MigLayout());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle(getTituloFrame());
 		setClosable(true);
 

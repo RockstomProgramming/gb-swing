@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import javax.swing.text.MaskFormatter;
 
-import br.com.finan.form.despesa.CadastroDespesaForm;
+import br.com.finan.form.CadastroDespesaForm;
 
 /**
  *

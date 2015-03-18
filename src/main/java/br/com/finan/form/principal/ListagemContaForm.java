@@ -30,7 +30,7 @@ import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.enumerator.Mes;
 import br.com.finan.enumerator.TipoConta;
-import br.com.finan.form.despesa.ListagemDespesaForm;
+import br.com.finan.form.ListagemDespesaForm;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
