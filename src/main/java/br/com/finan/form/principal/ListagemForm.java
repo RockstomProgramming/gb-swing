@@ -61,15 +61,15 @@ public abstract class ListagemForm<T extends DTO> extends JInternalFrame {
 	private final ListagemTableModel model;
 	protected final int MAX_REGISTROS = 15;
 
-	protected JButton btnAnterior;
 	protected JButton btnExcluir;
+	protected JButton btnSalvar;
+	protected JButton btnAnterior;
 	protected JButton btnPrimeiro;
 	protected JButton btnProximo;
-	protected JButton btnSalvar;
 	protected JButton btnUltimo;
-	protected JScrollPane scroll;
 	protected JLabel lbPaginacao;
 	protected JPanel pnlPaginacao;
+	protected JScrollPane scroll;
 	protected JTable tabela;
 	protected JButton btnAtualizar;
 	protected JButton btnEditar;

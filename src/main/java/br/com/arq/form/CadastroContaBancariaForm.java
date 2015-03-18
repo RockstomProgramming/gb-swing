@@ -57,7 +57,12 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 
 	@Override
 	protected CriteriaBuilder getBuilderListagem() {
-		return HibernateUtil.getCriteriaBuilder(ContaBancaria.class).addProjection("id", "descricao", "numero", "agencia").addAliasToBean(ContaBancariaDTO.class).close().eqStatusAtivo();
+		return getBuilderQntDados().addProjection("id", "descricao", "numero", "agencia").addAliasToBean(ContaBancariaDTO.class).close();
+	}
+	
+	@Override
+	protected CriteriaBuilder getBuilderQntDados() {
+		return HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo();
 	}
 
 }
