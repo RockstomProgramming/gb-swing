@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyVetoException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +30,8 @@ import javax.swing.border.EtchedBorder;
 import net.miginfocom.swing.MigLayout;
 import br.com.finan.form.CadastroCategoriaForm;
 import br.com.finan.form.CadastroContaBancariaForm;
-import br.com.finan.form.CadastroContaForm;
+import br.com.finan.form.CadastroDespesaForm;
+import br.com.finan.form.CadastroReceitaForm;
 import br.com.finan.form.TransacoesForm;
 import br.com.finan.util.ObjetoUtil;
 
@@ -117,20 +120,14 @@ public class PrincipalForm extends JFrame {
 		menuCadDespsea.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-//				abrirFrame(CadastroDespesaForm.class, NomeFrame.CADASTRO_DESPESA_FRAME.toString());
-				CadastroContaForm form = new CadastroContaForm(true);
-				desktop.add(form);
-				form.show();
+				abrirFrame(CadastroDespesaForm.class, NomeFrame.CADASTRO_DESPESA_FRAME.toString());
 			}
 		});
 
 		menuCadReceita.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-//				abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
-				CadastroContaForm form = new CadastroContaForm(false);
-				desktop.add(form);
-				form.show();
+				abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
 			}
 		});
 		
@@ -163,10 +160,23 @@ public class PrincipalForm extends JFrame {
 		});
 	}
 
-	private void abrirFrame(final Class<? extends JInternalFrame> clazz, final String nome) {
-		if (!contemFrame(nome)) {
+	private void abrirFrame(final Class<? extends JInternalFrame> clazz, final String nome, Object... args) {
+		if (!ObjetoUtil.isReferencia(getFrameDesktop(nome))) {
 			try {
-				final JInternalFrame frame = clazz.newInstance();
+				JInternalFrame frame = null;
+				if (args.length > 0) {
+					List<Class<?>> tipos = new ArrayList<>();
+					for (Object arg : args) {
+						tipos.add(arg.getClass());
+					}
+					try {
+						frame = clazz.getDeclaredConstructor(tipos.toArray(new Class<?>[tipos.size()])).newInstance(args);
+					} catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				} else {
+					frame = clazz.newInstance();
+				}
 				frame.setName(nome);
 				desktop.add(frame);
 				frame.show();
@@ -175,21 +185,21 @@ public class PrincipalForm extends JFrame {
 			}
 		}
 	}
-
-	public boolean contemFrame(final String nomeFrame) {
+	
+	public Component getFrameDesktop(final String nomeFrame) {
 		final Component[] components = desktop.getComponents();
 		for (final Component comp : components) {
 			if (ObjetoUtil.isReferencia(comp.getName()) && comp.getName().equals(nomeFrame)) {
-				try {
-					((JInternalFrame) comp).setSelected(true);
-				} catch (PropertyVetoException e) {
-					e.printStackTrace();
-				}
-				return true;
+//				try {
+//					((JInternalFrame) comp).setSelected(true);
+//				} catch (PropertyVetoException e) {
+//					e.printStackTrace();
+//				}
+				return comp;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	enum NomeFrame {

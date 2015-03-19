@@ -6,12 +6,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import br.com.arq.form.CadastroForm;
 import br.com.finan.dao.CriteriaBuilder;
-import br.com.finan.dao.Criterion;
 import br.com.finan.dto.CategoriaDTO;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.util.BindingUtil;
+import br.com.finan.util.CriterionInfo;
 import br.com.finan.util.HibernateUtil;
 
 public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO> {
@@ -49,8 +48,7 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 
 	@Override
 	protected CriteriaBuilder getBuilderListagem() {
-		return getBuilderQntDados().addProjection("id", "id").addProjection("nome", "nome").addAliases("superCategoria", "superCategoria", Criterion.LEFT_JOIN)
-				.addProjection("superCategoria.nome", "supCategoria").addAliasToBean(CategoriaDTO.class).close();
+		return CriterionInfo.getInstance(getBuilderQntDados(), CategoriaDTO.class);
 	}
 
 	@Override

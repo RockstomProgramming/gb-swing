@@ -1,16 +1,14 @@
 package br.com.finan.form;
 
-import java.awt.Dimension;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import br.com.arq.form.CadastroForm;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaBancariaDTO;
 import br.com.finan.entidade.ContaBancaria;
+import br.com.finan.util.CriterionInfo;
 import br.com.finan.util.HibernateUtil;
 
 public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, ContaBancariaDTO> {
@@ -32,11 +30,7 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 		pnlCadastro.add(new JLabel("Agência:"));
 		pnlCadastro.add(txtAgencia);
 
-		JPanel panel = new JPanel(new MigLayout("wrap 1"));
-		panel.setPreferredSize(new Dimension(500, 400));
-		panel.add(pnlCadastro, "growx");
-
-		add(panel);
+		add(pnlCadastro, "growx");
 
 		getBinding()
 			.add(tabela, "${selectedElement.descricao}", txtDescricao)
@@ -59,7 +53,7 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 
 	@Override
 	protected CriteriaBuilder getBuilderListagem() {
-		return getBuilderQntDados().addProjection("id", "descricao", "numero", "agencia").addAliasToBean(ContaBancariaDTO.class).close();
+		return CriterionInfo.getInstance(getBuilderQntDados(), ContaBancariaDTO.class);
 	}
 	
 	@Override

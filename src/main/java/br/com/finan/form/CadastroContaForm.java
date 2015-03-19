@@ -23,19 +23,15 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import br.com.arq.form.CadastroForm;
 import br.com.finan.component.JMoneyField;
 import br.com.finan.converter.BigDecimalConverter;
 import br.com.finan.converter.DateConverter;
-import br.com.finan.dao.CriteriaBuilder;
-import br.com.finan.dao.Criterion;
 import br.com.finan.dto.ContaDTO;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.enumerator.FormaPagamento;
 import br.com.finan.enumerator.Frequencia;
-import br.com.finan.enumerator.TipoConta;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.CalcularRecorrencia;
 import br.com.finan.util.HibernateUtil;
@@ -43,10 +39,9 @@ import br.com.finan.util.ObjetoUtil;
 import br.com.finan.validator.IntegerValidator;
 import br.com.finan.validator.MaxLengthValidator;
 
-public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
+public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> extends CadastroForm<T, D> {
 
 	private static final long serialVersionUID = 1L;
-	private boolean isDespesa;
 	
 	public static final String TITULO_CAD_RECEITA = "Cadastro de Receita";
 	public static final String TITULO_CAD_DESPESA = "Cadastro de Despesa";
@@ -67,9 +62,7 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 	private int limite = 1;
 	private Frequencia recorrencia = Frequencia.MENSAL;
 	
-	public CadastroContaForm(boolean isDespesa) {
-		this.isDespesa = isDespesa;
-		
+	public CadastroContaForm() {
 		try {
 			txtDescricao = new JTextField(20);
 			txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
@@ -117,7 +110,6 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 		pnlCad.add(pnlRecorrencia, "wrap, growx, span 2 2");
 		pnlCad.add(new JLabel("Observações:"));
 		pnlCad.add(txtObservacoes, "wrap");
-//		pnlCad.add(getPanelAcao(), "growx, spanx 4, gapbottom 10");
 
 		add(pnlCad);
 		
@@ -144,11 +136,8 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 			.add(tabela, "${selectedElement.valor}", txtValor)
 			.add(tabela, "${selectedElement.isPago}", txtPago, "selected")
 			.add(tabela, "${selectedElement.vencimento}", txtVencimento, new DateConverter())
-//			.add(tabela, "${selectedElement}", cmbCategoria)
-//			.add(tabela, "${selectedElement}", cmbContaBancaria)
-//			.add(tabela, "${selectedElement}", cmbFormaPagamento)
+			.add(tabela, "${selectedElement.pagamento}", txtPagamento, new DateConverter())
 			.getBindingGroup().bind();
-			
 			
 	}
 	
@@ -184,30 +173,6 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 	}
 	
 	@Override
-	protected void iniciarDados() {
-		super.iniciarDados();
-		getEntidade().setTipo(isDespesa ? TipoConta.DESPESA : TipoConta.RECEITA);
-	}
-	
-	@Override
-	protected String getTituloFrame() {
-		return isDespesa ? TITULO_CAD_DESPESA : TITULO_CAD_RECEITA;
-	}
-
-	@Override
-	protected CriteriaBuilder getBuilderListagem() {
-		return getBuilderQntDados().addProjection("id").addProjection("descricao").addProjection("valor")
-				.addProjection("categoria.nome", "categoria").addProjection("dataVencimento", "vencimento")
-				.addAliases("categoria", "categoria", Criterion.LEFT_JOIN).addAliasToBean(ContaDTO.class).close();
-	}
-
-	@Override
-	protected CriteriaBuilder getBuilderQntDados() {
-		return HibernateUtil.getCriteriaBuilder(Conta.class)
-				.eq("tipo", isDespesa ? TipoConta.DESPESA : TipoConta.RECEITA).eqStatusAtivo();
-	}
-
-	@Override
 	protected JPanel getPanelCadastro() {	
 		return pnlCad;
 	}
@@ -227,5 +192,4 @@ public class CadastroContaForm extends CadastroForm<Conta, ContaDTO> {
 	public void setRecorrencia(Frequencia recorrencia) {
 		this.recorrencia = recorrencia;
 	}
-
 }
