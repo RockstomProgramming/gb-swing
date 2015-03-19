@@ -2,6 +2,7 @@ package br.com.finan.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -31,6 +32,29 @@ public final class FieldUtil {
 		return field.isAnnotationPresent(anotacao);
 	}
 
+	public static Method[] getAllMethodsWithAnnotation(final Class<?> clazz, final Class<? extends Annotation> ann) {
+		Set<Method> metodos = new HashSet<>();
+		for (Method m : getAllMethods(clazz)) {
+			if (m.isAnnotationPresent(ann)) {
+				metodos.add(m);
+			}
+		}
+		
+		return metodos.toArray(new Method[metodos.size()]);
+	}
+	
+	public static Method[] getAllMethods(final Class<?> clazz) {
+		List<Class<?>> classes = getAllSuperclasses(clazz);
+		classes.add(clazz);
+		
+		Set<Method> metodos = new HashSet<>();
+		for (Class<?> c : classes) {
+			metodos.addAll(Arrays.asList(c.getDeclaredMethods()));
+		}
+		
+		return metodos.toArray(new Method[metodos.size()]);
+	}
+	
 	/**
 	 * Return a list of all fields (whatever access status, and on whatever
 	 * superclass they were defined) that can be found on this class. This is

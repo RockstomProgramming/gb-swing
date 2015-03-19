@@ -1,5 +1,7 @@
 package br.com.finan.dto;
 
+import br.com.finan.annotation.ProjectionEntityProperty;
+
 
 
 /**
@@ -8,6 +10,7 @@ package br.com.finan.dto;
  */
 public class DTO {
 
+	@ProjectionEntityProperty("id")
 	private Long id;
 	
 //	@ColunaTabela(index = 0, titulo = "")

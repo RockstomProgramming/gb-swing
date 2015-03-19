@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,6 +28,7 @@ import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 
 import br.com.finan.annotation.ColunaTabela;
+import br.com.finan.annotation.PostLoadTable;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Entidade;
@@ -61,6 +64,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 	protected JButton btnUltimo;
 	protected JLabel lbPaginacao;
 	protected JPanel pnlPaginacao;
+	protected JPanel pnlFiltro;
 
 	public CadastroForm() {
 		getContentPane().setLayout(new MigLayout());
@@ -72,7 +76,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		BindingGroup bindingGroup = new BindingGroup();
 		binding = BindingUtil.create(bindingGroup);
 
-		btnExcluir = new JButton("Excluir");
+		btnExcluir = new JButton("Excluir", new ImageIcon(getClass().getResource("/icon/Delete.png")));
 		btnExcluir.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -80,7 +84,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 			}
 		});
 
-		btnNovo = new JButton("Novo");
+		btnNovo = new JButton("Novo", new ImageIcon(getClass().getResource("/icon/Add.png")));
 		btnNovo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -88,7 +92,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 			}
 		});
 
-		btnSalvar = new JButton("Salvar");
+		btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
 		btnSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -160,7 +164,11 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		panelAcoes.add(lbPaginacao);
 		panelAcoes.add(btnProximo);
 		panelAcoes.add(btnUltimo);
-
+		
+		pnlFiltro = new JPanel(new MigLayout());
+		pnlFiltro.setBorder(new EtchedBorder());
+		
+		add(pnlFiltro, "wrap, growx, push");
 		add(scroll, "wrap, push, growx");
 		add(panelAcoes, "wrap, growx");
 		
@@ -191,7 +199,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		final int max = getPagina() * MAX_REGISTROS;
 		final int min = max - MAX_REGISTROS;
 		buscarDados(min);
-		validarBtnPaginacao();
 	}
 
 	protected int getQntPagina() {
@@ -251,6 +258,23 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		qntRegistros = (Long) getBuilderQntDados().getCriteria().setProjection(Projections.rowCount()).uniqueResult();
 		
 		validarBtnPaginacao();
+		executarMetodosPosCarregamento();
+	}
+
+	private void executarMetodosPosCarregamento() {
+		List<Class<?>> superclasses = FieldUtil.getAllSuperclasses(this.getClass());
+		superclasses.add(this.getClass());
+		for (Class<?> c : superclasses) {
+			for (Method method : c.getDeclaredMethods()) {
+				if (method.isAnnotationPresent(PostLoadTable.class)) {
+					try {
+						method.invoke(this);
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 	
 	protected void limparCampos() {
@@ -271,7 +295,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 			}
 		}
 	}
-	
 
 	protected void salvar() {
 		entidade.setId(getIdSelecionado());

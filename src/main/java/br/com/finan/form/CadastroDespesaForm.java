@@ -23,9 +23,11 @@ public class CadastroDespesaForm extends CadastroContaForm<Conta, ContaDTO> {
 
 	@Override
 	protected CriteriaBuilder getBuilderQntDados() {
-		return HibernateUtil.getCriteriaBuilder(Conta.class).eq("tipo", TipoConta.DESPESA).eqStatusAtivo();
+		return HibernateUtil.getCriteriaBuilder(Conta.class).eq("tipo", TipoConta.DESPESA)
+				.eqStatusAtivo().sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
+				.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado());
 	}
-	
+
 	@Override
 	protected void iniciarDados() {
 		super.iniciarDados();

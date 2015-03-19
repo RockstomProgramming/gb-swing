@@ -3,31 +3,51 @@ package br.com.finan.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.sql.JoinType;
+
+import br.com.finan.annotation.Aliases;
 import br.com.finan.annotation.ColunaTabela;
+import br.com.finan.annotation.CreateAlias;
+import br.com.finan.annotation.ProjectionEntityProperty;
 
 /**
  *
  * @author Wesley Luiz
  */
+@Aliases({ 
+	@CreateAlias(alias = "categoria", associationPath = "categoria", joinType = JoinType.LEFT_OUTER_JOIN),
+	@CreateAlias(alias = "contaBancaria", associationPath = "contaBancaria", joinType = JoinType.LEFT_OUTER_JOIN) 
+})
 public class ContaDTO extends DTO {
 	
+	@ProjectionEntityProperty("descricao")
 	@ColunaTabela(index = 0, titulo = "Descrição")
 	private String descricao;
 
+	@ProjectionEntityProperty("categoria.nome")
 	@ColunaTabela(index = 1, titulo = "Categoria")
 	private String categoria;
 	
-	@ColunaTabela(index = 2, titulo = "Vencimento", tipo = Date.class)
+	@ProjectionEntityProperty("contaBancaria.descricao")
+	@ColunaTabela(index = 2, titulo = "Conta Bancária")
+	private String contaBancaria;
+
+	@ProjectionEntityProperty("dataVencimento")
+	@ColunaTabela(index = 3, titulo = "Vencimento", tipo = Date.class)
 	private Date vencimento;
 
-	@ColunaTabela(index = 3, titulo = "Valor", tipo = BigDecimal.class)
+	@ProjectionEntityProperty("valor")
+	@ColunaTabela(index = 4, titulo = "Valor", tipo = BigDecimal.class)
 	private BigDecimal valor;
+	
+	@ProjectionEntityProperty("dataPagamento")
+	private Date pagamento;
 
+	@ProjectionEntityProperty("parcela")
 	private Integer parcela;
 
+	@ProjectionEntityProperty("totalParcelas")
 	private Integer totalParcela;
-
-	private boolean editado;
 
 	public String getDescricao() {
 		return descricao;
@@ -53,14 +73,6 @@ public class ContaDTO extends DTO {
 		this.vencimento = vencimento;
 	}
 
-	public boolean isEditado() {
-		return editado;
-	}
-
-	public void setEditado(final boolean editado) {
-		this.editado = editado;
-	}
-
 	public String getCategoria() {
 		return categoria;
 	}
@@ -83,5 +95,21 @@ public class ContaDTO extends DTO {
 
 	public void setTotalParcela(final Integer totalParcela) {
 		this.totalParcela = totalParcela;
+	}
+
+	public String getContaBancaria() {
+		return contaBancaria;
+	}
+
+	public void setContaBancaria(String contaBancaria) {
+		this.contaBancaria = contaBancaria;
+	}
+
+	public Date getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(Date pagamento) {
+		this.pagamento = pagamento;
 	}
 }

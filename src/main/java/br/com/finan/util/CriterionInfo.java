@@ -20,9 +20,12 @@ public final class CriterionInfo {
 	private CriterionInfo() {
 	}
 	
-
 	public static CriteriaBuilder getInstance(Class<?> entidade, Class<? extends DTO> dto) {
 		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(entidade);
+		return gerarProjecoes(builder, dto);
+	}
+	
+	public static CriteriaBuilder getInstance(CriteriaBuilder builder, Class<? extends DTO> dto) {
 		return gerarProjecoes(builder, dto);
 	}
 
@@ -46,6 +49,6 @@ public final class CriterionInfo {
 			}
 		}
 		
-		return builder;
+		return builder.addAliasToBean(dto).close();
 	}
 }
