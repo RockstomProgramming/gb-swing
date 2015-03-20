@@ -35,6 +35,7 @@ import br.com.finan.entidade.Entidade;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.BindingUtil.ColumnBinding;
+import br.com.finan.util.CriterionInfo;
 import br.com.finan.util.FieldUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
@@ -231,11 +232,12 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		return campos;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void iniciarDados() {
 		setIdSelecionado(null);
 		
 		try {
-			entidade = obterTipoDaClasse(0).newInstance();
+			entidade = (T) obterTipoDaClasse(0).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
@@ -246,7 +248,11 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 
 	@SuppressWarnings("unchecked")
 	protected void buscarDados(int primeiroResultado) {
-		List<D> lista = getBuilderListagem().getCriteria().setFirstResult(primeiroResultado).setMaxResults(MAX_REGISTROS).list();
+		
+		Class<D> dto = (Class<D>) obterTipoDaClasse(1);
+		
+//		List<D> lista = getBuilderListagem().getCriteria().setFirstResult(primeiroResultado).setMaxResults(MAX_REGISTROS).list();
+		List<D> lista = CriterionInfo.getInstance(getBuilder(), dto).getCriteria().setFirstResult(primeiroResultado).setMaxResults(MAX_REGISTROS).list();
 		
 		if (!ObjetoUtil.isReferencia(dados)) {
 			dados = ObservableCollections.observableList(lista);
@@ -255,10 +261,25 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 			dados.addAll(lista);
 		}
 		
-		qntRegistros = (Long) getBuilderQntDados().getCriteria().setProjection(Projections.rowCount()).uniqueResult();
+		qntRegistros = (Long) getBuilder().getCriteria().setProjection(Projections.rowCount()).uniqueResult();
 		
 		validarBtnPaginacao();
 		executarMetodosPosCarregamento();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private CriteriaBuilder getBuilder() {
+		Class<T> entidade = (Class<T>) obterTipoDaClasse(0);
+		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(entidade);
+		builder.eqStatusAtivo();
+		
+		adicionarRestricoes(builder);
+		
+		return builder;
+	}
+
+	protected void adicionarRestricoes(CriteriaBuilder builder) {
+		// TODO Auto-generated method stub
 	}
 
 	private void executarMetodosPosCarregamento() {
@@ -310,16 +331,16 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked", "restriction" })
-	protected Class<T> obterTipoDaClasse(int index) {
-		return (Class<T>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
+	@SuppressWarnings({ "restriction" })
+	protected Class<?> obterTipoDaClasse(int index) {
+		return (Class<?>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
 	}
 	
 	protected abstract String getTituloFrame();
 
-	protected abstract CriteriaBuilder getBuilderListagem();
+//	protected abstract CriteriaBuilder getBuilderListagem();
 	
-	protected abstract CriteriaBuilder getBuilderQntDados();
+//	protected abstract CriteriaBuilder getBuilderQntDados();
 	
 	protected abstract JPanel getPanelCadastro();
 	

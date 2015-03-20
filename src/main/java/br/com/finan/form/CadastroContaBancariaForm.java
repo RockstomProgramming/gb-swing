@@ -5,11 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaBancariaDTO;
 import br.com.finan.entidade.ContaBancaria;
-import br.com.finan.util.CriterionInfo;
-import br.com.finan.util.HibernateUtil;
 
 public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, ContaBancariaDTO> {
 
@@ -50,15 +47,4 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 	protected String getTituloFrame() {
 		return TITULO_FRAME;
 	}
-
-	@Override
-	protected CriteriaBuilder getBuilderListagem() {
-		return CriterionInfo.getInstance(getBuilderQntDados(), ContaBancariaDTO.class);
-	}
-	
-	@Override
-	protected CriteriaBuilder getBuilderQntDados() {
-		return HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo();
-	}
-
 }

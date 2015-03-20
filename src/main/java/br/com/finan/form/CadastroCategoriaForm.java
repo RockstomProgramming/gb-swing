@@ -6,11 +6,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.CategoriaDTO;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.util.BindingUtil;
-import br.com.finan.util.CriterionInfo;
 import br.com.finan.util.HibernateUtil;
 
 public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO> {
@@ -44,16 +42,6 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 	@Override
 	protected String getTituloFrame() {
 		return TITULO_FRAME;
-	}
-
-	@Override
-	protected CriteriaBuilder getBuilderListagem() {
-		return CriterionInfo.getInstance(getBuilderQntDados(), CategoriaDTO.class);
-	}
-
-	@Override
-	protected CriteriaBuilder getBuilderQntDados() {
-		return HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo();
 	}
 
 	@Override

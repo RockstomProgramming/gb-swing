@@ -4,8 +4,6 @@ import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaDTO;
 import br.com.finan.entidade.Conta;
 import br.com.finan.enumerator.TipoConta;
-import br.com.finan.util.CriterionInfo;
-import br.com.finan.util.HibernateUtil;
 
 public class CadastroReceitaForm extends CadastroContaForm<Conta, ContaDTO> {
 
@@ -17,20 +15,14 @@ public class CadastroReceitaForm extends CadastroContaForm<Conta, ContaDTO> {
 	}
 
 	@Override
-	protected CriteriaBuilder getBuilderListagem() {
-		return CriterionInfo.getInstance(getBuilderQntDados(), ContaDTO.class);
-	}
-
-	@Override
-	protected CriteriaBuilder getBuilderQntDados() {
-		return HibernateUtil.getCriteriaBuilder(Conta.class).eq("tipo", TipoConta.RECEITA)
-				.eqStatusAtivo().sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
-				.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado());
-	}
-
-	@Override
 	protected void iniciarDados() {
 		super.iniciarDados();
 		getEntidade().setTipo(TipoConta.RECEITA);
+	}
+	
+	@Override
+	protected void adicionarRestricoes(CriteriaBuilder builder) {
+		builder.sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
+			.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado());
 	}
 }
