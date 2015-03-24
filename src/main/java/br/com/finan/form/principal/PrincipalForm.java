@@ -40,7 +40,7 @@ import br.com.finan.util.ObjetoUtil;
  */
 public class PrincipalForm extends JFrame {
 
-	/** Atributo serialVersionUID. */
+	private static final String TITULO_FRAME = "Gerenciador Financeiro";
 	private static final long serialVersionUID = 1L;
 	
 	public static JDesktopPane desktop;
@@ -101,6 +101,7 @@ public class PrincipalForm extends JFrame {
 		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setTitle(TITULO_FRAME);
 		
 		JPanel pnlAtalhos = new JPanel(new MigLayout());
 		pnlAtalhos.setBorder(new EtchedBorder());

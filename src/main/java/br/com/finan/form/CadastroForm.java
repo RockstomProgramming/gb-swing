@@ -150,6 +150,15 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 			}
 		});
 
+		btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.setIcon(new ImageIcon(getClass().getResource("/icon/refresh.png")));
+		btnAtualizar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				paginar();
+			}
+		});
+
 		iniciarDados();
 		
 		tabela = new JTable();
@@ -170,7 +179,8 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		panelAcoes.setBorder(new EtchedBorder());
 		panelAcoes.add(btnNovo);
 		panelAcoes.add(btnSalvar);
-		panelAcoes.add(btnExcluir, "push");
+		panelAcoes.add(btnExcluir);
+		panelAcoes.add(btnAtualizar, "push");
 		panelAcoes.add(btnPrimeiro);
 		panelAcoes.add(btnAnterior);
 		panelAcoes.add(lbPaginacao);
