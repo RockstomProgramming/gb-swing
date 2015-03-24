@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.criterion.Projections;
 import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
 
 import br.com.finan.annotation.PostLoadTable;
 import br.com.finan.component.JMoneyField;
@@ -75,12 +77,17 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	private JCheckBox txtPago;
 	private JTextArea txtObservacoes;
 	private PainelFiltro pnlNavegacao;
+	
+	private List<Categoria> categorias;
+	private List<ContaBancaria> contasBancarias;
 
 	private int limite = 1;
 	private Frequencia recorrencia = Frequencia.MENSAL;
 	
 	public CadastroContaForm() {
 		pnlNavegacao = new PainelFiltro();
+		categorias = ObservableCollections.observableList(new ArrayList<Categoria>());
+		contasBancarias = ObservableCollections.observableList(new ArrayList<ContaBancaria>());
 		
 		try {
 			txtDescricao = new JTextField(20);
@@ -134,8 +141,8 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		
 		getBinding().addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
 			.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), cmbFormaPagamento)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria)
+			.addJComboBoxBinding(categorias, cmbCategoria)
+			.addJComboBoxBinding(contasBancarias, cmbContaBancaria)
 			.add(this, "${entidade.categoria}", cmbCategoria, "selectedItem")
 			.add(this, "${entidade.contaBancaria}", cmbContaBancaria, "selectedItem")
 			.add(this, "${entidade.formaPagamento}", cmbFormaPagamento, "selectedItem")
@@ -159,6 +166,16 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			.getBindingGroup().bind();
 		
 		calcularContas();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void onGanharFoco() {
+		this.categorias.clear();
+		this.categorias.addAll(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list());
+	
+		this.contasBancarias.clear();
+		this.contasBancarias.addAll(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list());
 	}
 	
 	@Override

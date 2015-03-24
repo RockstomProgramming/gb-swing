@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.CategoriaDTO;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.util.BindingUtil;
@@ -47,6 +48,12 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 	@Override
 	protected JPanel getPanelCadastro() {
 		return pnlCadastro;
+	}
+
+	@Override
+	protected void adicionarRestricoes(CriteriaBuilder builder) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

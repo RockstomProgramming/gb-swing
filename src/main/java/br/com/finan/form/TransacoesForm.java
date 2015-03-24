@@ -52,7 +52,7 @@ public class TransacoesForm extends JInternalFrame {
 	/** Atributo serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	private static final String TITULO_FRAME = "Transações Bancárias";
-	
+
 	private JComboBox<Categoria> cmbCategoria;
 	private JComboBox<ContaBancaria> cmbContaBancaria;
 	private JButton btnSalvar;
@@ -60,10 +60,11 @@ public class TransacoesForm extends JInternalFrame {
 	private JTable tabela;
 	private JScrollPane scroll;
 	private TransacaoTableModel<Transaction> model;
-	
+
 	public TransacoesForm() {
 		iniciarComponentes();
 	}
+	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void iniciarComponentes() {
@@ -77,25 +78,25 @@ public class TransacoesForm extends JInternalFrame {
 
 		cmbCategoria.setPreferredSize(new Dimension(200, 0));
 		cmbContaBancaria.setPreferredSize(new Dimension(200, 0));
-		
+
 		scroll.setViewportView(tabela);
 		scroll.setSize(800, 800);
 
 		addAcoes(model);
 		addBinding().bind();
-		
+
 		final JPanel pnlAcao = new JPanel(new MigLayout());
 		pnlAcao.add(btnAbrir);
 		pnlAcao.add(btnSalvar);
-		
+
 		JPanel pnlDados_1 = new JPanel(new MigLayout());
 		pnlDados_1.add(new JLabel("Categoria:"));
 		pnlDados_1.add(cmbCategoria);
-		
+
 		JPanel pnlDados_2 = new JPanel(new MigLayout());
 		pnlDados_2.add(new JLabel("Conta Bancária:"));
 		pnlDados_2.add(cmbContaBancaria);
-		
+
 		JPanel pnlDados = new JPanel(new MigLayout());
 		pnlDados.setBorder(new EtchedBorder());
 		pnlDados.add(pnlDados_1, "growx");
@@ -116,9 +117,7 @@ public class TransacoesForm extends JInternalFrame {
 
 	private BindingGroup addBinding() {
 		BindingGroup bindingGroup = new BindingGroup();
-			BindingUtil.create(bindingGroup)
-				.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
-				.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria);
+		BindingUtil.create(bindingGroup).addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria).addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria);
 		return bindingGroup;
 	}
 
@@ -141,18 +140,18 @@ public class TransacoesForm extends JInternalFrame {
 	private void abrirSelecionadorDeArquivos(final TransacaoTableModel<Transaction> model) {
 		final JFileChooser fc = new JFileChooser();
 		Config conf = (Config) HibernateUtil.getCriteriaBuilder(Config.class).uniqueResult();
-		
+
 		if (!ObjetoUtil.isReferencia(conf)) {
 			conf = new Config();
 		}
-		
+
 		if (ObjetoUtil.isReferencia(conf.getPath()) && !conf.getPath().isEmpty()) {
 			fc.setCurrentDirectory(new File(conf.getPath()));
 		}
-		
+
 		fc.addChoosableFileFilter(new FileNameExtensionFilter("ofx", "ofx"));
 		final int result = fc.showOpenDialog(this);
-		
+
 		if (result == JFileChooser.APPROVE_OPTION) {
 			final File file = fc.getSelectedFile();
 			try {
@@ -167,16 +166,16 @@ public class TransacoesForm extends JInternalFrame {
 					}
 					model.addRow(new Object[] { t.getMemo(), new SimpleDateFormat("dd/MM/yyyy").format(t.getDatePosted()), NumberUtil.obterNumeroFormatado(t.getAmount()) });
 				}
-				
+
 				conf.setPath(file.getAbsolutePath());
 				HibernateUtil.salvarOuAlterar(conf);
-				
+
 			} catch (final FileNotFoundException ex) {
 				Logger.getLogger(TransacoesForm.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 	}
-	
+
 	private void salvar(final TransacaoTableModel<Transaction> model) {
 		for (final Transaction t : model.getDados()) {
 			final Conta conta = new Conta();
@@ -184,7 +183,11 @@ public class TransacoesForm extends JInternalFrame {
 			conta.setDescricao(t.getMemo());
 			conta.setIsPago(true);
 			conta.setValor(new BigDecimal(t.getAmount()));
-			conta.setTipo(t.getTransactionType().equals(TransactionType.DEBIT) ? TipoConta.DESPESA : TipoConta.RECEITA);
+			if (t.getTransactionType().equals(TransactionType.DEBIT)) {
+				conta.setTipo(TipoConta.DESPESA);
+			} else if (t.getTransactionType().equals(TransactionType.CREDIT)) {
+				conta.setTipo(TipoConta.RECEITA);
+			}
 			conta.setCategoria((Categoria) cmbCategoria.getSelectedItem());
 			conta.setContaBancaria((ContaBancaria) cmbContaBancaria.getSelectedItem());
 			HibernateUtil.salvar(conta);

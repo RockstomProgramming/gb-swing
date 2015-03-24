@@ -9,6 +9,10 @@ public class CadastroDespesaForm extends CadastroContaForm<Conta, ContaDTO> {
 
 	private static final long serialVersionUID = 1L;
 	
+//	public CadastroDespesaForm() {
+//		buscarDados(0);
+//	}
+	
 	@Override
 	protected String getTituloFrame() {
 		return CadastroDespesaForm.TITULO_CAD_DESPESA;
@@ -23,7 +27,7 @@ public class CadastroDespesaForm extends CadastroContaForm<Conta, ContaDTO> {
 	@Override
 	protected void adicionarRestricoes(CriteriaBuilder builder) {
 		builder.sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
-			.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado());
+			.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado()).eq("tipo", TipoConta.DESPESA);
 	}
 	
 }

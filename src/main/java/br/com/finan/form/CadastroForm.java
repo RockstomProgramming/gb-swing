@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.text.JTextComponent;
 
 import net.miginfocom.swing.MigLayout;
@@ -32,6 +33,7 @@ import br.com.finan.annotation.PostLoadTable;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Entidade;
+import br.com.finan.listener.FocoListener;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.BindingUtil.ColumnBinding;
@@ -58,6 +60,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 	protected JButton btnSalvar;
 	protected JButton btnNovo;
 	protected JButton btnExcluir;
+	protected JButton btnAtualizar;
 	
 	protected JButton btnAnterior;
 	protected JButton btnPrimeiro;
@@ -73,7 +76,15 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		setTitle(getTituloFrame());
 		setClosable(true);
 		setResizable(true);
-
+		setMaximizable(true);
+		
+		addInternalFrameListener(new FocoListener() {
+			@Override
+			public void internalFrameActivated(InternalFrameEvent e) {
+				onGanharFoco();
+			}
+		});
+		
 		BindingGroup bindingGroup = new BindingGroup();
 		binding = BindingUtil.create(bindingGroup);
 
@@ -176,6 +187,10 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		pack();
 	}
 	
+	protected void onGanharFoco() {
+		// TODO Auto-generated method stub
+	}
+
 	protected void irProximaPagina() {
 		setPagina(getPagina() + 1);
 		paginar();
@@ -232,18 +247,21 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		return campos;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void iniciarDados() {
 		setIdSelecionado(null);
 		
+		iniciarEntidade();
+		paginar();
+		limparCampos();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void iniciarEntidade() {
 		try {
 			entidade = (T) obterTipoDaClasse(0).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		
-		paginar();
-		limparCampos();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -276,10 +294,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		adicionarRestricoes(builder);
 		
 		return builder;
-	}
-
-	protected void adicionarRestricoes(CriteriaBuilder builder) {
-		// TODO Auto-generated method stub
 	}
 
 	private void executarMetodosPosCarregamento() {
@@ -337,6 +351,8 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 	}
 	
 	protected abstract String getTituloFrame();
+	
+	protected abstract void adicionarRestricoes(CriteriaBuilder builder);
 
 //	protected abstract CriteriaBuilder getBuilderListagem();
 	
