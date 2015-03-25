@@ -34,6 +34,7 @@ import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Entidade;
 import br.com.finan.listener.FocoListener;
+import br.com.finan.service.ContaService;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.BindingUtil.ColumnBinding;
@@ -50,6 +51,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 	private T entidade;
 	private List<D> dados;
 	private Long idSelecionado;
+	private ContaService contaService;
 	
 	private int pagina = 1;
 	private Long qntRegistros = 0L;
@@ -77,6 +79,8 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		setClosable(true);
 		setResizable(true);
 		setMaximizable(true);
+		
+		contaService = new ContaService();
 		
 		addInternalFrameListener(new FocoListener() {
 			@Override
@@ -167,6 +171,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 
 		ColumnBinding columnBinding = 
 				binding.add(tabela, "${selectedElement != null}", btnExcluir, "enabled")
+					.add(tabela, "${selectedElement != null}", btnNovo, "enabled")
 					.add(tabela, "${selectedElement.id}", this, "idSelecionado")
 					.addJTableBinding(dados, tabela);
 		
@@ -190,8 +195,8 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		pnlFiltro = new JPanel(new MigLayout());
 		pnlFiltro.setBorder(new EtchedBorder());
 		
-		add(pnlFiltro, "wrap, growx, push");
-		add(scroll, "wrap, push, growx");
+		add(pnlFiltro, "wrap, growx, pushx");
+		add(scroll, "wrap, push, grow");
 		add(panelAcoes, "wrap, growx");
 		
 		pack();
@@ -276,10 +281,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 
 	@SuppressWarnings("unchecked")
 	protected void buscarDados(int primeiroResultado) {
-		
 		Class<D> dto = (Class<D>) obterTipoDaClasse(1);
-		
-//		List<D> lista = getBuilderListagem().getCriteria().setFirstResult(primeiroResultado).setMaxResults(MAX_REGISTROS).list();
 		List<D> lista = CriterionInfo.getInstance(getBuilder(), dto).getCriteria().setFirstResult(primeiroResultado).setMaxResults(MAX_REGISTROS).list();
 		
 		if (!ObjetoUtil.isReferencia(dados)) {
@@ -363,10 +365,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 	protected abstract String getTituloFrame();
 	
 	protected abstract void adicionarRestricoes(CriteriaBuilder builder);
-
-//	protected abstract CriteriaBuilder getBuilderListagem();
-	
-//	protected abstract CriteriaBuilder getBuilderQntDados();
 	
 	protected abstract JPanel getPanelCadastro();
 	
@@ -406,5 +404,9 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 
 	public Long getQntRegistros() {
 		return qntRegistros;
+	}
+
+	public ContaService getContaService() {
+		return contaService;
 	}
 }

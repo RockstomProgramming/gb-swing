@@ -37,6 +37,8 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 			.add(this, "${entidade.descricao}", txtDescricao)
 			.add(this, "${entidade.agencia}", txtAgencia)
 			.add(this, "${entidade.numero}", txtNumero).getBindingGroup().bind();
+		
+		remove(pnlFiltro);
 	}
 	
 	@Override

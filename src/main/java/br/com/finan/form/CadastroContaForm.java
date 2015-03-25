@@ -71,7 +71,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	private JComboBox<Categoria> cmbCategoria;
 	private JComboBox<ContaBancaria> cmbContaBancaria;
 	private JComboBox<FormaPagamento> cmbFormaPagamento;
-	private JComboBox<Frequencia> txtRecorrencia;
+	private JComboBox<Frequencia> cmbRecorrencia;
 	private JTextField txtMaximo;
 	private JPanel pnlCad;
 	private JCheckBox txtPago;
@@ -97,7 +97,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			cmbCategoria = new JComboBox<Categoria>();
 			cmbContaBancaria = new JComboBox<ContaBancaria>();
 			cmbFormaPagamento = new JComboBox<FormaPagamento>();
-			txtRecorrencia = new JComboBox<Frequencia>();
+			cmbRecorrencia = new JComboBox<Frequencia>();
 			txtMaximo = new JTextField(10);
 			txtPago = new JCheckBox("Sim");
 			txtObservacoes = new JTextArea(5, 15);
@@ -112,7 +112,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		final JPanel pnlRecorrencia = new JPanel(new MigLayout());
 		pnlRecorrencia.setBorder(new TitledBorder(new EtchedBorder(), "Repetir lançamento"));
 		pnlRecorrencia.add(new JLabel("Recorrência:"));
-		pnlRecorrencia.add(txtRecorrencia, "wrap, grow");
+		pnlRecorrencia.add(cmbRecorrencia, "wrap, grow");
 		pnlRecorrencia.add(new JLabel("Limite:"));
 		pnlRecorrencia.add(txtMaximo);
 		
@@ -139,7 +139,10 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 
 		add(pnlCad, "wrap");
 		
-		getBinding().addJComboBoxBinding(Arrays.asList(Frequencia.values()), txtRecorrencia)
+		getBinding().addJComboBoxBinding(Arrays.asList(Frequencia.values()), cmbRecorrencia)
+			.add(tabela, "${selectedElement == null}", pnlRecorrencia, "enabled")
+			.add(tabela, "${selectedElement == null}", cmbRecorrencia, "enabled")
+			.add(tabela, "${selectedElement == null}", txtMaximo, "enabled")
 			.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), cmbFormaPagamento)
 			.addJComboBoxBinding(categorias, cmbCategoria)
 			.addJComboBoxBinding(contasBancarias, cmbContaBancaria)
@@ -152,7 +155,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			.add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
 			.add(this, "${entidade.isPago}", txtPago, "selected")
 			.add(this, "${entidade.observacoes}", txtObservacoes, new MaxLengthValidator(225))
-			.add(this, "${recorrencia}", txtRecorrencia, "selectedItem")
+			.add(this, "${recorrencia}", cmbRecorrencia, "selectedItem")
 			.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
 			.add(txtPago, "${selected}", txtPagamento, "enabled")
 			.add(txtPago, "${selected}", cmbFormaPagamento, "enabled")
@@ -183,6 +186,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		super.popularInterface(idSelecionado);
 		if (ObjetoUtil.isReferencia(getEntidade())) {
 			txtPago.setSelected(getEntidade().isIsPago());
+			txtObservacoes.setText(getEntidade().getObservacoes());
 			cmbCategoria.setSelectedItem(getEntidade().getCategoria());
 			cmbContaBancaria.setSelectedItem(getEntidade().getContaBancaria());
 			cmbFormaPagamento.setSelectedItem(getEntidade().getFormaPagamento());
@@ -222,23 +226,34 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	}
 	
 	protected void salvar() {
-		final List<Date> vencimentos = new CalcularRecorrencia(getRecorrencia(), ((Conta) getEntidade()).getDataVencimento(), getLimite()).obterVencimentos();
-
-		for (int i = 0; i < getLimite(); i++) {
-			try {
-				final Conta conta = new Conta();
-				BeanUtils.copyProperties(conta, getEntidade());
-				conta.setParcela(i + 1);
-				conta.setTotalParcelas(getLimite());
-				conta.setDataVencimento(vencimentos.get(i));
-				HibernateUtil.salvar(conta);
-			} catch (IllegalAccessException | InvocationTargetException ex) {
-				Logger.getLogger(CadastroContaForm.class.getName()).log(Level.SEVERE, null, ex);
+		
+		if (ObjetoUtil.isReferencia(getEntidade().getId())) {
+			
+			HibernateUtil.alterar(getEntidade());
+			AppUtil.exibirMsgAlterarSucesso(this);
+			
+		} else {
+		
+			final List<Date> vencimentos = new CalcularRecorrencia(getRecorrencia(), ((Conta) getEntidade()).getDataVencimento(), getLimite()).obterVencimentos();
+	
+			for (int i = 0; i < getLimite(); i++) {
+				try {
+					final Conta conta = new Conta();
+					BeanUtils.copyProperties(conta, getEntidade());
+					conta.setParcela(i + 1);
+					conta.setTotalParcelas(getLimite());
+					conta.setDataVencimento(vencimentos.get(i));
+					HibernateUtil.salvar(conta);
+				} catch (IllegalAccessException | InvocationTargetException ex) {
+					Logger.getLogger(CadastroContaForm.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			}
+	
+			AppUtil.exibirMsgSalvarSucesso(this);
 		}
-
+		
 		iniciarDados();
-		AppUtil.exibirMsgSalvarSucesso(this);
+		getContaService().atualizarSaldoFramePrincipal();
 	}
 	
 	public class PainelFiltro {
@@ -279,14 +294,12 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 				.add(this, "${ano}", txtAno);
 			
 			JPanel pnlNav = new JPanel(new MigLayout());
-//			pnlNav.setBorder(new EtchedBorder());
 			pnlNav.add(btnMesAnterior);
 			pnlNav.add(cmbMes);
 			pnlNav.add(btnMesProximo);
 			pnlNav.add(txtAno, "pushx");
 			
 			JPanel pnlRel = new JPanel(new MigLayout());
-//			pnlRel.setBorder(new EtchedBorder());
 			pnlRel.add(addBoldLabel(new JLabel("Em Aberto:")));
 			pnlRel.add(lbQntAberto, "gapright 20");
 			pnlRel.add(addBoldLabel(new JLabel("Pago:")));
@@ -353,8 +366,8 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			}
 
 			txtMes.setSelectedItem(Mes.getMesPorReferencia(mes));
-			buscarDados(1);
-			validarBtnPaginacao();
+			setPagina(1);
+			buscarDados(0);
 		}
 
 		public Mes getMesSelecionado() {
@@ -372,32 +385,26 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		public void setAno(String ano) {
 			this.ano = ano;
 		}
-
 		
 		public JLabel getLbQntAberto() {
 			return lbQntAberto;
 		}
 		
-
 		public void setLbQntAberto(JLabel lbQntAberto) {
 			this.lbQntAberto = lbQntAberto;
 		}
-		
 
 		public JLabel getLbQntPago() {
 			return lbQntPago;
 		}
-		
 
 		public void setLbQntPago(JLabel lbQntPago) {
 			this.lbQntPago = lbQntPago;
 		}
 		
-
 		public JLabel getLbTotal() {
 			return lbTotal;
 		}
-		
 
 		public void setLbTotal(JLabel lbTotal) {
 			this.lbTotal = lbTotal;

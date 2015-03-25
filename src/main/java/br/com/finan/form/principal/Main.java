@@ -3,6 +3,7 @@ package br.com.finan.form.principal;
 import javax.persistence.Persistence;
 import javax.swing.UIManager;
 
+import br.com.finan.service.ContaService;
 import br.com.finan.util.HibernateUtil;
 
 public class Main {
@@ -20,6 +21,7 @@ public class Main {
 			@Override
 			public void run() {
 				new PrincipalForm().setVisible(true);
+				new ContaService().atualizarSaldoFramePrincipal();
 			}
 		});
 	}

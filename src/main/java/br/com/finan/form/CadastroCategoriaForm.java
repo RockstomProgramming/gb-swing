@@ -38,6 +38,8 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 			.add(this, "${entidade.superCategoria}", cmbSupCategoria, "selectedItem")
 			.add(this, "${entidade.nome}", txtNome)
 			.getBindingGroup().bind();
+		
+		remove(pnlFiltro);
 	}
 	
 	@Override

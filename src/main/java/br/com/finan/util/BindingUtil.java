@@ -22,6 +22,7 @@ import org.jdesktop.swingbinding.SwingBindings;
 
 import br.com.finan.converter.BigDecimalConverter;
 import br.com.finan.converter.DateConverter;
+import br.com.finan.converter.DoubleConverter;
 import br.com.finan.validator.MaxLengthValidator;
 
 @SuppressWarnings({ "unchecked", "rawtypes"})
@@ -65,6 +66,12 @@ public class BindingUtil {
 			tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
 			return this;
 		}
+		
+		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn, Converter converter) {
+			JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
+			columnBinding.setConverter(converter);
+			return this;
+		}
 
 		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn, Class<?> columnClass) {
 			JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn).setColumnClass(Object.class);
@@ -72,6 +79,8 @@ public class BindingUtil {
 				columnBinding.setConverter(new DateConverter());
 			} else if (columnClass.equals(BigDecimal.class)) {
 				columnBinding.setConverter(new BigDecimalConverter());
+			} else if (columnClass.equals(Double.class)) {
+				columnBinding.setConverter(new DoubleConverter());
 			}
 			return this;
 		}

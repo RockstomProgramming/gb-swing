@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -31,6 +32,7 @@ import br.com.finan.form.CadastroCategoriaForm;
 import br.com.finan.form.CadastroContaBancariaForm;
 import br.com.finan.form.CadastroDespesaForm;
 import br.com.finan.form.CadastroReceitaForm;
+import br.com.finan.form.RelatorioContaForm;
 import br.com.finan.form.TransacoesForm;
 import br.com.finan.util.ObjetoUtil;
 
@@ -43,7 +45,6 @@ public class PrincipalForm extends JFrame {
 	private static final String TITULO_FRAME = "Gerenciador Financeiro";
 	private static final long serialVersionUID = 1L;
 	
-	public static JDesktopPane desktop;
 	private JButton btnImportar;
 	private JMenuBar jMenuBar1;
 	private JMenuItem menuCadDespsea;
@@ -52,6 +53,11 @@ public class PrincipalForm extends JFrame {
 	private JMenu menuSair;
 	private JMenuItem menuCadCategoria;
 	private JMenuItem menuCadContaBancaria;
+	
+	public static JDesktopPane desktop;
+	public static JLabel lbSaldo;
+	private JMenu menuRelatorio;
+	private JMenuItem menuExtrato;
 	
 	/**
 	 * Creates new form Main
@@ -69,6 +75,7 @@ public class PrincipalForm extends JFrame {
 		menuCadReceita = new JMenuItem();
 		menuCadDespsea = new JMenuItem();
 		menuSair = new JMenu();
+		lbSaldo = new JLabel();
 
 		desktop.setBorder(BorderFactory.createEtchedBorder());
 		desktop.setBackground(Color.WHITE);
@@ -92,6 +99,12 @@ public class PrincipalForm extends JFrame {
 		menuCadContaBancaria = new JMenuItem("Conta Bancaria");
 		menuCadContaBancaria.setIcon(new ImageIcon(getClass().getResource("/icon/User.png")));
 		menuCadastro.add(menuCadContaBancaria);
+		
+		menuRelatorio = new JMenu("Relatórios");
+		jMenuBar1.add(menuRelatorio);
+		
+		menuExtrato = new JMenuItem("Extrato");
+		menuRelatorio.add(menuExtrato);
 
 		menuSair.setText("Sair");
 		jMenuBar1.add(menuSair);
@@ -105,7 +118,8 @@ public class PrincipalForm extends JFrame {
 		
 		JPanel pnlAtalhos = new JPanel(new MigLayout());
 		pnlAtalhos.setBorder(new EtchedBorder());
-		pnlAtalhos.add(btnImportar);
+		pnlAtalhos.add(btnImportar, "push");
+		pnlAtalhos.add(lbSaldo);
 		
 		setJMenuBar(jMenuBar1);
 		getContentPane().setLayout(new MigLayout());
@@ -144,6 +158,13 @@ public class PrincipalForm extends JFrame {
 				abrirFrame(CadastroContaBancariaForm.class, NomeFrame.CADASTRO_CONTA_BANCARIA_FRAME.toString());
 			}
 		});
+
+		menuExtrato.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				abrirFrame(RelatorioContaForm.class, NomeFrame.RELATORIO_CONTA_FRAME.toString());
+			}
+		});
 		
 		btnImportar.addActionListener(new ActionListener() {
 			@Override
@@ -177,6 +198,7 @@ public class PrincipalForm extends JFrame {
 				} else {
 					frame = clazz.newInstance();
 				}
+				frame.setFrameIcon(new ImageIcon(getClass().getResource("/icon/Stats.png")));
 				frame.setName(nome);
 				desktop.add(frame);
 				frame.show();
@@ -209,6 +231,7 @@ public class PrincipalForm extends JFrame {
 		CADASTRO_RECEITA_FRAME,
 		CADASTRO_CATEGORIA_FRAME,
 		CADASTRO_CONTA_BANCARIA_FRAME,
-		TRANSACOES_FRAME;
+		TRANSACOES_FRAME,
+		RELATORIO_CONTA_FRAME;
 	}
 }
