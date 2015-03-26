@@ -31,6 +31,10 @@ public class GraficoContaForm extends Formulario {
 	private JRadioButton rdConta;
 	
 	private List<RelatorioGraficoDTO> dados;
+
+	private JRadioButton rdReceita;
+
+	private JRadioButton rdDespesa;
 	
 	public GraficoContaForm() {
 		getContentPane().setLayout(new MigLayout());
@@ -43,27 +47,35 @@ public class GraficoContaForm extends Formulario {
 		rdCategoria = new JRadioButton("Categoria", true);
 		rdDescricao = new JRadioButton("Descrição");
 		rdConta = new JRadioButton("Conta");
+		rdReceita = new JRadioButton("Receita", true);
+		rdDespesa = new JRadioButton("Despesa");
 		dados = new ArrayList<>();
 		
-		ButtonGroup bg = new ButtonGroup();
+		ButtonGroup grupo = new ButtonGroup();
+		ButtonGroup tipoGrupo = new ButtonGroup();
 		JButton btnGerar = new JButton("Gerar");
 		
-		bg.add(rdConta);
-		bg.add(rdDescricao);
-		bg.add(rdCategoria);
+		grupo.add(rdConta);
+		grupo.add(rdDescricao);
+		grupo.add(rdCategoria);
+		
+		tipoGrupo.add(rdReceita);
+		tipoGrupo.add(rdDespesa);
 		
 		btnGerar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dados.clear();
 				
+				TipoConta tipoConta = rdReceita.isSelected() ? TipoConta.RECEITA : TipoConta.DESPESA;
+				
 				if (rdCategoria.isSelected()) {
 					for (Categoria cat : getCategoriaService().obterCategorias()) {
-						adicionarDados(cat.getNome(), getContaService().obterSomaPorCategoria(cat.getId(), TipoConta.DESPESA, null, null));
+						adicionarDados(cat.getNome(), getContaService().obterSomaPorCategoria(cat.getId(), tipoConta, null, null));
 					}
 				} else if (rdConta.isSelected()) {
 					for (ContaBancaria conta : getContaBancariaService().obterContasBancarias()) {
-						adicionarDados(conta.getDescricao(), getContaService().obterSomaPorContaBancaria(conta.getId(), TipoConta.RECEITA, null, null));
+						adicionarDados(conta.getDescricao(), getContaService().obterSomaPorContaBancaria(conta.getId(), tipoConta, null, null));
 					}
 				} else {
 					
@@ -82,7 +94,10 @@ public class GraficoContaForm extends Formulario {
 		});
 		
 		JPanel panel = new JPanel(new MigLayout());
-		panel.add(new JLabel("Gerar gráfico por:"), "wrap");
+		panel.add(new JLabel("Tipo de gráfico:"), "wrap, spanx2");
+		panel.add(rdReceita);
+		panel.add(rdDespesa, "wrap");
+		panel.add(new JLabel("Gerar gráfico por:"), "wrap, spanx2");
 		panel.add(rdCategoria);
 		panel.add(rdConta);
 		panel.add(rdDescricao, "wrap");
