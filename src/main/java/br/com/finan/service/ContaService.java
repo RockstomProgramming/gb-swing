@@ -25,14 +25,44 @@ public class ContaService {
 
 	private static final String REGEX_DATE = "dd/MM/yyyy";
 
+	public BigDecimal obterSomaPorContaBancaria(final Long idConta, final TipoConta tipo, final String dataInicio, final String dataFim) {
+		final CriteriaBuilder builder = obterBuilderSomaPorTipo(dataInicio, dataFim, tipo);
+		builder.eq("contaBancaria.id", idConta);
+		return getResultadoValido(builder);
+	}
+
+	public BigDecimal obterSomaPorCategoria(final Long idCategoria, final TipoConta tipo, final String dataInicio, final String dataFim) {
+		final CriteriaBuilder builder = obterBuilderSomaPorTipo(dataInicio, dataFim, tipo);
+		builder.eq("categoria.id", idCategoria);
+		return getResultadoValido(builder);
+	}
+
+	private BigDecimal getResultadoValido(final CriteriaBuilder builder) {
+		BigDecimal res = (BigDecimal) builder.uniqueResult();
+		return ObjetoUtil.isReferencia(res) ? res : new BigDecimal(0);
+	}
+
+	public CriteriaBuilder obterBuilderSomaPorTipo(final String dataInicio, final String dataFim, final TipoConta tipo) {
+		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class);
+		builder.eqStatusAtivo().eq("isPago", true);
+
+		if (!isDataVazia(dataInicio, dataFim)) {
+			builder.between("dataVencimento", dataInicio, dataFim);
+		}
+
+		builder.getCriteria().setProjection(Projections.sum("valor"));
+
+		return builder;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<ContaDTO> obterExtratoPorPeriodo(final String dataInicio, final String dataFim, final Categoria categoria, final ContaBancaria contaBancaria) {
-		final CriteriaBuilder builder = CriterionInfo.getInstance(Conta.class, ContaDTO.class).eqStatusAtivo();
+		final CriteriaBuilder builder = CriterionInfo.getInstance(Conta.class, ContaDTO.class).eqStatusAtivo().eq("isPago", true);
 
 		if (!isDataVazia(dataInicio, dataFim)) {
 			try {
 				builder.between("dataVencimento", new SimpleDateFormat(REGEX_DATE).parse(dataInicio), new SimpleDateFormat(REGEX_DATE).parse(dataFim));
-			} catch (ParseException e) {
+			} catch (final ParseException e) {
 				e.printStackTrace();
 			}
 		}
@@ -47,10 +77,10 @@ public class ContaService {
 
 		return builder.addOrdenacao(Order.asc("dataVencimento")).list();
 	}
-	
-	public boolean isDataVazia(String... datas) {
-		for (String d : datas) {
-			if (d.trim().equals("/  /")) {
+
+	public boolean isDataVazia(final String... datas) {
+		for (final String d : datas) {
+			if (ObjetoUtil.isReferencia(d) && d.trim().equals("/  /")) {
 				return true;
 			}
 		}

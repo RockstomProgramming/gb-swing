@@ -32,6 +32,7 @@ import br.com.finan.form.CadastroCategoriaForm;
 import br.com.finan.form.CadastroContaBancariaForm;
 import br.com.finan.form.CadastroDespesaForm;
 import br.com.finan.form.CadastroReceitaForm;
+import br.com.finan.form.GraficoContaForm;
 import br.com.finan.form.RelatorioContaForm;
 import br.com.finan.form.TransacoesForm;
 import br.com.finan.util.ObjetoUtil;
@@ -58,6 +59,7 @@ public class PrincipalForm extends JFrame {
 	public static JLabel lbSaldo;
 	private JMenu menuRelatorio;
 	private JMenuItem menuExtrato;
+	private JMenuItem menuGrafico;
 	
 	/**
 	 * Creates new form Main
@@ -105,6 +107,9 @@ public class PrincipalForm extends JFrame {
 		
 		menuExtrato = new JMenuItem("Extrato");
 		menuRelatorio.add(menuExtrato);
+		
+		menuGrafico = new JMenuItem("Gráfico");
+		menuRelatorio.add(menuGrafico);
 
 		menuSair.setText("Sair");
 		jMenuBar1.add(menuSair);
@@ -163,6 +168,13 @@ public class PrincipalForm extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				abrirFrame(RelatorioContaForm.class, NomeFrame.RELATORIO_CONTA_FRAME.toString());
+			}
+		});
+		
+		menuGrafico.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				abrirFrame(GraficoContaForm.class, NomeFrame.GRAFICO_CONTA_FRAME.toString());
 			}
 		});
 		
@@ -232,6 +244,7 @@ public class PrincipalForm extends JFrame {
 		CADASTRO_CATEGORIA_FRAME,
 		CADASTRO_CONTA_BANCARIA_FRAME,
 		TRANSACOES_FRAME,
-		RELATORIO_CONTA_FRAME;
+		RELATORIO_CONTA_FRAME,
+		GRAFICO_CONTA_FRAME;
 	}
 }

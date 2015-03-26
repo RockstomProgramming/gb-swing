@@ -75,8 +75,6 @@ public class RelatorioContaForm extends Formulario {
 		txtDataFim.setColumns(10);
 		txtDataInicio.setColumns(10);
 		
-		setPreferredSize(new Dimension(400, 300));
-		
 		cmbCategoria.setPreferredSize(new Dimension(200, 0));
 		cmbContaBancaria.setPreferredSize(new Dimension(200, 0));
 		
@@ -116,8 +114,8 @@ public class RelatorioContaForm extends Formulario {
 		painel.add(cmbCategoria, "spanx2, growx, wrap");
 		painel.add(new JLabel("Conta:"));
 		painel.add(cmbContaBancaria, "wrap, growx, spanx2");
-		painel.add(btnLimpar);
-		painel.add(btnGerar);
+		painel.add(btnLimpar, "spanx2");
+		painel.add(btnGerar, "spanx2");
 		
 		add(painel);
 		pack();
