@@ -9,6 +9,7 @@ import br.com.finan.annotation.Aliases;
 import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.annotation.CreateAlias;
 import br.com.finan.annotation.ProjectionEntityProperty;
+import br.com.finan.enumerator.TipoConta;
 
 /**
  *
@@ -48,6 +49,9 @@ public class ContaDTO extends DTO {
 
 	@ProjectionEntityProperty("totalParcelas")
 	private Integer totalParcela;
+	
+	@ProjectionEntityProperty("tipo")
+	private TipoConta tipo;
 
 	public String getDescricao() {
 		return descricao;
@@ -111,5 +115,13 @@ public class ContaDTO extends DTO {
 
 	public void setPagamento(Date pagamento) {
 		this.pagamento = pagamento;
+	}
+
+	public TipoConta getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoConta tipo) {
+		this.tipo = tipo;
 	}
 }

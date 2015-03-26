@@ -17,7 +17,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,7 +37,6 @@ import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.enumerator.FormaPagamento;
 import br.com.finan.enumerator.TipoConta;
-import br.com.finan.service.ContaService;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BankingUtil;
 import br.com.finan.util.BindingUtil;
@@ -49,7 +47,7 @@ import br.com.finan.util.ObjetoUtil;
  *
  * @author Wesley Luiz
  */
-public class TransacoesForm extends JInternalFrame {
+public class TransacoesForm extends Formulario {
 
 	private static final long serialVersionUID = 1L;
 	private static final String TITULO_FRAME = "Transações Bancárias";
@@ -63,8 +61,6 @@ public class TransacoesForm extends JInternalFrame {
 	private JScrollPane scroll;
 	private List<Transaction> transacoes = ObservableCollections.observableList(new ArrayList<Transaction>());
 	
-	private ContaService contaService;
-
 	public TransacoesForm() {
 		iniciarComponentes();
 	}
@@ -79,7 +75,6 @@ public class TransacoesForm extends JInternalFrame {
 		
 		tabela = new JTable();
 		scroll = new JScrollPane();
-		contaService = new ContaService();
 
 		cmbCategoria.setPreferredSize(new Dimension(200, 0));
 		cmbContaBancaria.setPreferredSize(new Dimension(200, 0));
@@ -128,8 +123,8 @@ public class TransacoesForm extends JInternalFrame {
 				.addColumnBinding(0, "${memo}", "Descrição")
 				.addColumnBinding(1, "${datePosted}", "Vencimento", Date.class)
 				.addColumnBinding(2, "${amount}", "Valor", Double.class).close()
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria);
+			.addJComboBoxBinding(getCategoriaService().obterCategorias(), cmbCategoria)
+			.addJComboBoxBinding(getContaBancariaService().obterContasBancarias(), cmbContaBancaria);
 		return bindingGroup;
 	}
 
@@ -209,11 +204,6 @@ public class TransacoesForm extends JInternalFrame {
 		AppUtil.exibirMsgSalvarSucesso(this);
 		getContaService().atualizarSaldoFramePrincipal();
 	}
-
-	public ContaService getContaService() {
-		return contaService;
-	}
-	
 
 	public List<Transaction> getTransacoes() {
 		return transacoes;

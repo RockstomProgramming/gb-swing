@@ -9,10 +9,6 @@ public class CadastroReceitaForm extends CadastroContaForm<Conta, ContaDTO> {
 
 	private static final long serialVersionUID = 1L;
 	
-//	public CadastroReceitaForm() {
-//		buscarDados(0);
-//	}
-	
 	@Override
 	protected String getTituloFrame() {
 		return CadastroDespesaForm.TITULO_CAD_RECEITA;

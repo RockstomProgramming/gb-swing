@@ -172,13 +172,12 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void onGanharFoco() {
 		this.categorias.clear();
-		this.categorias.addAll(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list());
+		this.categorias.addAll(getCategoriaService().obterCategorias());
 	
 		this.contasBancarias.clear();
-		this.contasBancarias.addAll(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list());
+		this.contasBancarias.addAll(getContaBancariaService().obterContasBancarias());
 	}
 	
 	@Override

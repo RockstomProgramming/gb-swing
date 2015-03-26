@@ -1,6 +1,5 @@
 package br.com.finan.form;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
@@ -13,14 +12,11 @@ import java.util.TreeMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.text.JTextComponent;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -33,8 +29,6 @@ import br.com.finan.annotation.PostLoadTable;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Entidade;
-import br.com.finan.listener.FocoListener;
-import br.com.finan.service.ContaService;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.BindingUtil.ColumnBinding;
@@ -43,7 +37,7 @@ import br.com.finan.util.FieldUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
 
-public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JInternalFrame {
+public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Formulario {
 
 	private static final long serialVersionUID = 1L;
 	private BindingUtil binding;
@@ -51,7 +45,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 	private T entidade;
 	private List<D> dados;
 	private Long idSelecionado;
-	private ContaService contaService;
 	
 	private int pagina = 1;
 	private Long qntRegistros = 0L;
@@ -79,15 +72,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		setClosable(true);
 		setResizable(true);
 		setMaximizable(true);
-		
-		contaService = new ContaService();
-		
-		addInternalFrameListener(new FocoListener() {
-			@Override
-			public void internalFrameActivated(InternalFrameEvent e) {
-				onGanharFoco();
-			}
-		});
 		
 		BindingGroup bindingGroup = new BindingGroup();
 		binding = BindingUtil.create(bindingGroup);
@@ -202,10 +186,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		pack();
 	}
 	
-	protected void onGanharFoco() {
-		// TODO Auto-generated method stub
-	}
-
 	protected void irProximaPagina() {
 		setPagina(getPagina() + 1);
 		paginar();
@@ -331,18 +311,6 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 		}
 	}
 
-	protected void limparCampos(final JPanel container) {
-		for (final Component comp : container.getComponents()) {
-			if (comp instanceof JPanel) {
-				limparCampos((JPanel) comp);
-			}
-			
-			if (comp instanceof JTextComponent) {
-				((JTextComponent) comp).setText(null);
-			}
-		}
-	}
-
 	protected void salvar() {
 		entidade.setId(getIdSelecionado());
 		HibernateUtil.salvarOuAlterar(entidade);
@@ -404,9 +372,5 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends JI
 
 	public Long getQntRegistros() {
 		return qntRegistros;
-	}
-
-	public ContaService getContaService() {
-		return contaService;
 	}
 }
