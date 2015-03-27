@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grafico" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="0.7513148009015779"/>
+	<property name="ireport.zoom" value="0.9090909090909105"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<style name="style1">
+		<box>
+			<pen lineWidth="0.25"/>
+			<topPen lineWidth="0.25"/>
+			<leftPen lineWidth="0.25"/>
+			<bottomPen lineWidth="0.25"/>
+			<rightPen lineWidth="0.25"/>
+		</box>
+	</style>
+	<parameter name="TITULO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -16,23 +26,72 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="87" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="374" height="55"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="55" width="374" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
 	</title>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement style="style1" x="0" y="0" width="305" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Série]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="style1" x="305" y="0" width="202" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement style="style1" x="0" y="0" width="305" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{chave}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement style="style1" x="305" y="0" width="202" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 	<summary>
-		<band height="407">
+		<band height="288">
 			<pieChart>
-				<chart>
-					<reportElement x="14" y="14" width="773" height="380"/>
-					<chartTitle/>
+				<chart isShowLegend="true" theme="default">
+					<reportElement mode="Transparent" x="0" y="82" width="802" height="206"/>
+					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend/>
+					<chartLegend position="Right"/>
 				</chart>
 				<pieDataset>
 					<keyExpression><![CDATA[$F{chave}]]></keyExpression>
 					<valueExpression><![CDATA[$F{valor}]]></valueExpression>
 				</pieDataset>
-				<piePlot>
-					<plot/>
+				<piePlot labelFormat="{0} ({2})">
+					<plot orientation="Horizontal"/>
 					<itemLabel/>
 				</piePlot>
 			</pieChart>

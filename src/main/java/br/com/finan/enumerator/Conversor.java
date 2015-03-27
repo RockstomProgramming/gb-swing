@@ -1,6 +1,8 @@
 package br.com.finan.enumerator;
 
 public enum Conversor {
-	DATA,
-	DINHEIRO;
+	DEFAULT,
+	BIG_DECIMAL,
+	DOUBLE,
+	DATE;
 }

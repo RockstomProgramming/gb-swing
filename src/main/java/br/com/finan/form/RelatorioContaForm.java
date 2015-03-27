@@ -67,8 +67,6 @@ public class RelatorioContaForm extends Formulario {
 		contasBancarias = ObservableCollections.observableList(new ArrayList<ContaBancaria>());
 		
 		setClosable(true);
-		setMaximizable(true);
-		setResizable(true);
 		setTitle(TITULO_FRAME);
 		getContentPane().setLayout(new MigLayout());
 		
@@ -105,6 +103,10 @@ public class RelatorioContaForm extends Formulario {
 			.addJComboBoxBinding(contasBancarias, cmbContaBancaria)
 			.getBindingGroup().bind();
 		
+		JPanel pnlAcao = new JPanel(new MigLayout());
+		pnlAcao.add(btnLimpar, "");
+		pnlAcao.add(btnGerar, "");
+		
 		painel = new JPanel(new MigLayout());
 		painel.add(new JLabel("Data Início:"));
 		painel.add(txtDataInicio);
@@ -114,8 +116,7 @@ public class RelatorioContaForm extends Formulario {
 		painel.add(cmbCategoria, "spanx2, growx, wrap");
 		painel.add(new JLabel("Conta:"));
 		painel.add(cmbContaBancaria, "wrap, growx, spanx2");
-		painel.add(btnLimpar, "spanx2");
-		painel.add(btnGerar, "spanx2");
+		painel.add(pnlAcao, "spanx4");
 		
 		add(painel);
 		pack();

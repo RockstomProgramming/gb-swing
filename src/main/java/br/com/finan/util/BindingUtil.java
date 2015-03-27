@@ -1,7 +1,5 @@
 package br.com.finan.util;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -20,9 +18,6 @@ import org.jdesktop.beansbinding.Validator;
 import org.jdesktop.swingbinding.JTableBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 
-import br.com.finan.converter.BigDecimalConverter;
-import br.com.finan.converter.DateConverter;
-import br.com.finan.converter.DoubleConverter;
 import br.com.finan.validator.MaxLengthValidator;
 
 @SuppressWarnings({ "unchecked", "rawtypes"})
@@ -43,53 +38,69 @@ public class BindingUtil {
 		return this;
 	}
 
-	public ColumnBinding addJTableBinding(List<?> list, JTable jtable) {
-		JTableBinding tableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, jtable);
-		ColumnBinding columnBinding = new ColumnBinding(this, tableBinding);
-		
+	public ColumnBinding addJTableBinding(final List<?> list, final JTable jtable) {
+		final JTableBinding tableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, jtable);
+		final ColumnBinding columnBinding = new ColumnBinding(this, tableBinding);
+
 		bindingGroup.addBinding(tableBinding);
-		
+
 		return columnBinding;
 	}
-	
+
 	public class ColumnBinding {
-		
-		private JTableBinding tableBinding;
-		private BindingUtil bindingUtil;
-		
-		public ColumnBinding(BindingUtil bindingUtil, JTableBinding tableBinding) {
+
+		private final JTableBinding tableBinding;
+		private final BindingUtil bindingUtil;
+
+		public ColumnBinding(final BindingUtil bindingUtil, final JTableBinding tableBinding) {
 			this.tableBinding = tableBinding;
 			this.bindingUtil = bindingUtil;
 		}
 
-		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn) {
-			tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
-			return this;
-		}
-		
-		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn, Converter converter) {
-			JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
-			columnBinding.setConverter(converter);
+		public ColumnBinding addColumnBinding(final int index, final String expression, final String nameColumn) {
+			//			tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
+			addColumnBinding(index, expression, nameColumn, null, null);
 			return this;
 		}
 
-		public ColumnBinding addColumnBinding(int index, String expression, String nameColumn, Class<?> columnClass) {
-			JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn).setColumnClass(Object.class);
-			if (columnClass.equals(Date.class)) {
-				columnBinding.setConverter(new DateConverter());
-			} else if (columnClass.equals(BigDecimal.class)) {
-				columnBinding.setConverter(new BigDecimalConverter());
-			} else if (columnClass.equals(Double.class)) {
-				columnBinding.setConverter(new DoubleConverter());
-			}
+		public ColumnBinding addColumnBinding(final int index, final String expression, final String nameColumn, final Converter converter) {
+			//			JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
+			//			columnBinding.setConverter(converter);
+			addColumnBinding(index, expression, nameColumn, converter, null);
 			return this;
 		}
-		
+
+		public ColumnBinding addColumnBinding(final int index, final String expression, final String nameColumn, final Class<?> columnClass) {
+			addColumnBinding(index, expression, nameColumn, null, columnClass);
+			return this;
+		}
+
+		public ColumnBinding addColumnBinding(final int index, final String expression, final String nameColumn, final Converter converter, final Class<?> columnClass) {
+			final JTableBinding.ColumnBinding columnBinding = tableBinding.addColumnBinding(index, ELProperty.create(expression)).setColumnName(nameColumn);
+
+			if (ObjetoUtil.isReferencia(converter)) {
+				columnBinding.setConverter(converter);
+			}
+
+			if (ObjetoUtil.isReferencia(columnClass)) {
+				columnBinding.setColumnClass(columnClass);
+			}
+
+			//			if (columnClass.equals(Date.class)) {
+			//				columnBinding.setConverter(new DateConverter());
+			//			} else if (columnClass.equals(BigDecimal.class)) {
+			//				columnBinding.setConverter(new BigDecimalConverter());
+			//			} else if (columnClass.equals(Double.class)) {
+			//				columnBinding.setConverter(new DoubleConverter());
+			//			}
+			return this;
+		}
+
 		public BindingUtil close() {
 			return bindingUtil;
 		}
 	}
-	
+
 	public BindingUtil add(final Object source, final String sourceEl, final Object target) {
 		return add(source, sourceEl, target, "text", null, null);
 	}
@@ -106,9 +117,9 @@ public class BindingUtil {
 		return add(source, sourceEl, target, "text", null, validator);
 	}
 
-	public BindingUtil add(final Object source, final String sourceEl, final Object target, String targetEl, final Converter converter, final Validator validator) {
+	public BindingUtil add(final Object source, final String sourceEl, final Object target, final String targetEl, final Converter converter, final Validator validator) {
 		final Binding b = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, source, ELProperty.create(sourceEl), target, BeanProperty.create(targetEl));
-		
+
 		if (ObjetoUtil.isReferencia(converter)) {
 			b.setConverter(converter);
 		}
@@ -119,11 +130,11 @@ public class BindingUtil {
 			}
 			b.setValidator(validator);
 		}
-		
+
 		bindingGroup.addBinding(b);
 		return this;
 	}
-	
+
 	public BindingGroup getBindingGroup() {
 		return bindingGroup;
 	}

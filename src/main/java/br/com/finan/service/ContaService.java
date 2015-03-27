@@ -25,6 +25,20 @@ public class ContaService {
 
 	private static final String REGEX_DATE = "dd/MM/yyyy";
 
+	@SuppressWarnings("unchecked")
+	public List<String> obterContaPorDescricaoAgrupado(final String dataInicio, final String dataFim, final TipoConta tipo) {
+		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class);
+		addRestricoesBasicas(dataInicio, dataFim, tipo, builder);
+		builder.getCriteria().setProjection(Projections.groupProperty("descricao").as("descricao"));
+		return builder.list();
+	}
+
+	public BigDecimal obterSomaPorDescricao(final String descricao, final String dataInicio, final String dataFim, final TipoConta tipo) {
+		final CriteriaBuilder builder = obterBuilderSomaPorTipo(dataInicio, dataFim, tipo);
+		builder.eq("descricao", descricao);
+		return getResultadoValido(builder);
+	}
+
 	public BigDecimal obterSomaPorContaBancaria(final Long idConta, final TipoConta tipo, final String dataInicio, final String dataFim) {
 		final CriteriaBuilder builder = obterBuilderSomaPorTipo(dataInicio, dataFim, tipo);
 		builder.eq("contaBancaria.id", idConta);
@@ -37,21 +51,10 @@ public class ContaService {
 		return getResultadoValido(builder);
 	}
 
-	private BigDecimal getResultadoValido(final CriteriaBuilder builder) {
-		BigDecimal res = (BigDecimal) builder.uniqueResult();
-		return ObjetoUtil.isReferencia(res) ? res : new BigDecimal(0);
-	}
-
 	public CriteriaBuilder obterBuilderSomaPorTipo(final String dataInicio, final String dataFim, final TipoConta tipo) {
 		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class);
-		builder.eqStatusAtivo().eq("isPago", true);
-
-		if (!isDataVazia(dataInicio, dataFim)) {
-			builder.between("dataVencimento", dataInicio, dataFim);
-		}
-
+		addRestricoesBasicas(dataInicio, dataFim, tipo, builder);
 		builder.getCriteria().setProjection(Projections.sum("valor"));
-
 		return builder;
 	}
 
@@ -80,7 +83,7 @@ public class ContaService {
 
 	public boolean isDataVazia(final String... datas) {
 		for (final String d : datas) {
-			if (ObjetoUtil.isReferencia(d) && d.trim().equals("/  /")) {
+			if (!ObjetoUtil.isReferencia(d) || d.trim().equals("/  /")) {
 				return true;
 			}
 		}
@@ -110,6 +113,19 @@ public class ContaService {
 
 	public BigDecimal getSomaDespesa() {
 		return getSomaValores((BigDecimal) getBuilderSaldo().eq("tipo", TipoConta.DESPESA).uniqueResult());
+	}
+
+	private BigDecimal getResultadoValido(final CriteriaBuilder builder) {
+		final BigDecimal res = (BigDecimal) builder.uniqueResult();
+		return ObjetoUtil.isReferencia(res) ? res : new BigDecimal(0);
+	}
+
+	private void addRestricoesBasicas(final String dataInicio, final String dataFim, final TipoConta tipo, final CriteriaBuilder builder) {
+		builder.eqStatusAtivo().eq("isPago", true).eq("tipo", tipo);
+
+		if (!isDataVazia(dataInicio, dataFim)) {
+			builder.between("dataVencimento", dataInicio, dataFim);
+		}
 	}
 
 	private BigDecimal getSomaValores(final BigDecimal valor) {

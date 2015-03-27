@@ -22,13 +22,18 @@ import net.miginfocom.swing.MigLayout;
 
 import org.hibernate.criterion.Projections;
 import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Converter;
 import org.jdesktop.observablecollections.ObservableCollections;
 
 import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.annotation.PostLoadTable;
+import br.com.finan.converter.BigDecimalConverter;
+import br.com.finan.converter.DateConverter;
+import br.com.finan.converter.DoubleConverter;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.DTO;
 import br.com.finan.entidade.Entidade;
+import br.com.finan.enumerator.Conversor;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
 import br.com.finan.util.BindingUtil.ColumnBinding;
@@ -65,6 +70,7 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 	protected JPanel pnlPaginacao;
 	protected JPanel pnlFiltro;
 
+	@SuppressWarnings("rawtypes")
 	public CadastroForm() {
 		getContentPane().setLayout(new MigLayout());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -161,7 +167,18 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		
 		for (Field f : getCamposTabela().values()) {
 			ColunaTabela ann = f.getAnnotation(ColunaTabela.class);
-			columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), ann.tipo());
+			Conversor conversor = ann.conversor();
+			Converter converter = null;
+			if (!conversor.equals(Conversor.DEFAULT)) {
+				switch (conversor) {
+					case DATE: converter = new DateConverter(); break;
+					case BIG_DECIMAL: converter = new BigDecimalConverter(); break;
+					case DOUBLE : converter = new DoubleConverter(); break;
+				}
+				columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), converter, ann.tipo());
+			} else {
+				columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), ann.tipo());
+			}
 		}
 		
 		panelAcoes = new JPanel(new MigLayout());

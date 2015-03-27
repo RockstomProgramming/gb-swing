@@ -9,6 +9,7 @@ import br.com.finan.annotation.Aliases;
 import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.annotation.CreateAlias;
 import br.com.finan.annotation.ProjectionEntityProperty;
+import br.com.finan.enumerator.Conversor;
 import br.com.finan.enumerator.TipoConta;
 
 /**
@@ -38,7 +39,7 @@ public class ContaDTO extends DTO {
 	private Date vencimento;
 
 	@ProjectionEntityProperty("valor")
-	@ColunaTabela(index = 4, titulo = "Valor", tipo = BigDecimal.class)
+	@ColunaTabela(index = 4, titulo = "Valor", tipo = String.class, conversor = Conversor.BIG_DECIMAL)
 	private BigDecimal valor;
 	
 	@ProjectionEntityProperty("dataPagamento")

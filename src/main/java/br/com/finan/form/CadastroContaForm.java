@@ -159,7 +159,6 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
 			.add(txtPago, "${selected}", txtPagamento, "enabled")
 			.add(txtPago, "${selected}", cmbFormaPagamento, "enabled")
-			
 			.add(tabela, "${selectedElement.descricao}", txtDescricao)
 			.add(tabela, "${selectedElement.observacoes}", txtObservacoes)
 			.add(tabela, "${selectedElement.valor}", txtValor)

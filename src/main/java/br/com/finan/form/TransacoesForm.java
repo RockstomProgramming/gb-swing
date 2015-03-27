@@ -8,11 +8,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,6 +31,9 @@ import net.sf.ofx4j.domain.data.common.TransactionType;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 
+import br.com.finan.converter.DateConverter;
+import br.com.finan.converter.DoubleConverter;
+import br.com.finan.dto.TransacaoDTO;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.Config;
 import br.com.finan.entidade.Conta;
@@ -59,7 +62,7 @@ public class TransacoesForm extends Formulario {
 	private JButton btnLimpar;
 	private JTable tabela;
 	private JScrollPane scroll;
-	private List<Transaction> transacoes = ObservableCollections.observableList(new ArrayList<Transaction>());
+	private List<TransacaoDTO> transacoes = ObservableCollections.observableList(new ArrayList<TransacaoDTO>());
 	
 	public TransacoesForm() {
 		iniciarComponentes();
@@ -84,15 +87,13 @@ public class TransacoesForm extends Formulario {
 
 		addAcoes();
 		addBinding().bind();
+		
+		tabela.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(cmbCategoria));
 
 		final JPanel pnlAcao = new JPanel(new MigLayout());
 		pnlAcao.add(btnAbrir);
 		pnlAcao.add(btnSalvar);
 		pnlAcao.add(btnLimpar);
-
-		JPanel pnlDados_1 = new JPanel(new MigLayout());
-		pnlDados_1.add(new JLabel("Categoria:"));
-		pnlDados_1.add(cmbCategoria);
 
 		JPanel pnlDados_2 = new JPanel(new MigLayout());
 		pnlDados_2.add(new JLabel("Conta Bancária:"));
@@ -100,7 +101,6 @@ public class TransacoesForm extends Formulario {
 
 		JPanel pnlDados = new JPanel(new MigLayout());
 		pnlDados.setBorder(new EtchedBorder());
-		pnlDados.add(pnlDados_1, "growx");
 		pnlDados.add(pnlDados_2, "growx");
 
 		final JPanel pnl = new JPanel(new MigLayout("wrap 1"));
@@ -120,11 +120,13 @@ public class TransacoesForm extends Formulario {
 		BindingGroup bindingGroup = new BindingGroup();
 		BindingUtil.create(bindingGroup)
 			.addJTableBinding(transacoes, tabela)
-				.addColumnBinding(0, "${memo}", "Descrição")
-				.addColumnBinding(1, "${datePosted}", "Vencimento", Date.class)
-				.addColumnBinding(2, "${amount}", "Valor", Double.class).close()
+				.addColumnBinding(0, "${descricao}", "Descrição")
+				.addColumnBinding(1, "${data}", "Vencimento", new DateConverter(), String.class)
+				.addColumnBinding(2, "${valor}", "Valor", new DoubleConverter(), String.class)
+				.addColumnBinding(3, "${categoria}", "Categoria", Categoria.class).close()
 			.addJComboBoxBinding(getCategoriaService().obterCategorias(), cmbCategoria)
 			.addJComboBoxBinding(getContaBancariaService().obterContasBancarias(), cmbContaBancaria);
+		
 		return bindingGroup;
 	}
 
@@ -171,7 +173,20 @@ public class TransacoesForm extends Formulario {
 			try {
 				final FileInputStream in = new FileInputStream(file);
 				final List<Transaction> tr = BankingUtil.obterTransacoesArquivoOfx(in);
-				transacoes.addAll(tr);
+				for (Transaction transaction : tr) {
+					TransacaoDTO dto = new TransacaoDTO();
+					dto.setData(transaction.getDatePosted());
+					dto.setDescricao(transaction.getMemo());
+					dto.setValor(transaction.getAmount());
+					
+					if (transaction.getTransactionType().equals(TransactionType.DEBIT)) {
+						dto.setTipo(TipoConta.DESPESA);
+					} else if (transaction.getTransactionType().equals(TransactionType.CREDIT)) {
+						dto.setTipo(TipoConta.RECEITA);
+					}
+					
+					transacoes.add(dto);
+				}
 
 				conf.setPath(file.getAbsolutePath());
 				HibernateUtil.salvarOuAlterar(conf);
@@ -183,20 +198,16 @@ public class TransacoesForm extends Formulario {
 	}
 
 	private void salvar() {
-		for (final Transaction t : transacoes) {
+		for (final TransacaoDTO t : transacoes) {
 			final Conta conta = new Conta();
-			conta.setDataVencimento(t.getDatePosted());
-			conta.setDescricao(t.getMemo());
+			conta.setDataVencimento(t.getData());
+			conta.setDescricao(t.getDescricao());
+			conta.setTipo(t.getTipo());
 			conta.setIsPago(true);
-			conta.setValor(new BigDecimal(t.getAmount()));
-			if (t.getTransactionType().equals(TransactionType.DEBIT)) {
-				conta.setTipo(TipoConta.DESPESA);
-			} else if (t.getTransactionType().equals(TransactionType.CREDIT)) {
-				conta.setTipo(TipoConta.RECEITA);
-			}
-			conta.setCategoria((Categoria) cmbCategoria.getSelectedItem());
+			conta.setValor(new BigDecimal(t.getValor()));
 			conta.setContaBancaria((ContaBancaria) cmbContaBancaria.getSelectedItem());
 			conta.setFormaPagamento(FormaPagamento.AVISTA);
+			conta.setCategoria(t.getCategoria());
 			HibernateUtil.salvar(conta);
 		}
 
@@ -205,7 +216,7 @@ public class TransacoesForm extends Formulario {
 		getContaService().atualizarSaldoFramePrincipal();
 	}
 
-	public List<Transaction> getTransacoes() {
+	public List<TransacaoDTO> getTransacoes() {
 		return transacoes;
 	}
 }
