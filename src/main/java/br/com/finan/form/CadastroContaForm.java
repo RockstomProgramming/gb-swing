@@ -196,7 +196,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	}
 
 	protected Integer getMesSelecionado() {
-		return ObjetoUtil.isReferencia(getPnlNavegacao()) ? getPnlNavegacao().getMesSelecionado().getReferencia() : 1;
+		return ObjetoUtil.isReferencia(getPnlNavegacao()) ? getPnlNavegacao().getMesSelecionado().getReferencia() : getMesAtual().getReferencia();
 	}
 	
 	@PostLoadTable
@@ -221,6 +221,10 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
 				.eq("tipo", getClass().getSimpleName().equals(CadastroDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA);
 		return builder;
+	}
+	
+	private Mes getMesAtual() {
+		return Mes.getMesPorReferencia(Integer.valueOf(new SimpleDateFormat("MM").format(new Date())));
 	}
 	
 	protected void salvar() {
@@ -270,9 +274,9 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		private String ano;
 		
 		public PainelFiltro() {
-			mesSelecionado = Mes.JANEIRO;
+			mesSelecionado = getMesAtual();
 			ano = new SimpleDateFormat(MASK_YEAR).format(new Date());
-
+			
 			btnMesAnterior = new JButton();
 			btnMesProximo = new JButton();
 			cmbMes = new JComboBox<Mes>();
@@ -311,7 +315,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			binding.bind();
 			addAcoes();
 		}
-		
+
 		private JLabel addBoldLabel(JLabel label) {
 			label.setFont(new Font(null, Font.BOLD, 12));
 			return label;

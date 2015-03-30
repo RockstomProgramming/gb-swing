@@ -28,6 +28,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
+import br.com.finan.form.AutenticadorForm;
 import br.com.finan.form.CadastroCategoriaForm;
 import br.com.finan.form.CadastroContaBancariaForm;
 import br.com.finan.form.CadastroDespesaForm;
@@ -60,6 +61,7 @@ public class PrincipalForm extends JFrame {
 	private JMenu menuRelatorio;
 	private JMenuItem menuExtrato;
 	private JMenuItem menuGrafico;
+	private JMenuItem menuSenha;
 	
 	/**
 	 * Creates new form Main
@@ -110,6 +112,12 @@ public class PrincipalForm extends JFrame {
 		
 		menuGrafico = new JMenuItem("Gráfico");
 		menuRelatorio.add(menuGrafico);
+		
+		JMenu menuConfiguracoes = new JMenu("Configurações");
+		jMenuBar1.add(menuConfiguracoes);
+		
+		menuSenha = new JMenuItem("Bloquear com senha");
+		menuConfiguracoes.add(menuSenha);
 
 		menuSair.setText("Sair");
 		jMenuBar1.add(menuSair);
@@ -191,6 +199,13 @@ public class PrincipalForm extends JFrame {
 				System.exit(0);
 			}
 		});
+		
+		menuSenha.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				abrirFrame(AutenticadorForm.class, NomeFrame.AUTENTICADOR_FRAME.toString());
+			}
+		});
 	}
 
 	private void abrirFrame(final Class<? extends JInternalFrame> clazz, final String nome, Object... args) {
@@ -245,6 +260,7 @@ public class PrincipalForm extends JFrame {
 		CADASTRO_CONTA_BANCARIA_FRAME,
 		TRANSACOES_FRAME,
 		RELATORIO_CONTA_FRAME,
-		GRAFICO_CONTA_FRAME;
+		GRAFICO_CONTA_FRAME,
+		AUTENTICADOR_FRAME;
 	}
 }
