@@ -1,8 +1,6 @@
 package br.com.finan.util;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +13,7 @@ public final class JasperUtil {
 
 	public static JasperViewer gerarRelatorio(final String arquivo, final List<?> dados, final Map<String, Object> params) {
 		try {
-			final URL resource = JasperUtil.class.getResource("/relatorios/".concat(arquivo));
-			final InputStream in = new FileInputStream(resource.getFile());
+			final InputStream in = JasperUtil.class.getResourceAsStream("/relatorios/".concat(arquivo));
 			final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(dados);
 			final JasperPrint print = JasperFillManager.fillReport(in, params, dataSource);
 			final JasperViewer viewer = new JasperViewer(print, false);

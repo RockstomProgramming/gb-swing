@@ -12,6 +12,11 @@ public class TransacaoDTO {
 	private Date data;
 	private Categoria categoria;
 	private TipoConta tipo;
+	
+	@Override
+	public String toString() {
+		return getDescricao().concat(" - ").concat(valor.toString());
+	}
 
 	public String getDescricao() {
 		return descricao;

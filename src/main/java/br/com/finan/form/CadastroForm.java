@@ -342,6 +342,13 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		}
 	}
 	
+	protected void excluir() {
+		if (AppUtil.exibirMensagemConfirmacaoInativacao(this)) {
+			HibernateUtil.excluir(idSelecionado, obterTipoDaClasse(0).getSimpleName());
+			iniciarDados();
+		}
+	}
+	
 	@SuppressWarnings({ "restriction" })
 	protected Class<?> obterTipoDaClasse(int index) {
 		return (Class<?>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[index];

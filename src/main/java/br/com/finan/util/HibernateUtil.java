@@ -88,4 +88,10 @@ public final class HibernateUtil {
 		query.setParameter("id", id);
 		query.executeUpdate();
 	}
+
+	public static void excluir(final Long id, final String classe) {
+		Query query = getSessao().createQuery("DELETE FROM ".concat(classe).concat(" WHERE id = :id"));
+		query.setParameter("id", id);
+		query.executeUpdate();
+	}
 }

@@ -3,6 +3,7 @@ package br.com.finan.form;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,6 +104,14 @@ public class GraficoContaForm extends Formulario {
 					}
 					params.put("TITULO", "Gráfico de ".concat(titulo).concat(" por Descrição"));
 				}
+				
+				BigDecimal total = new BigDecimal(0);
+				
+				for (RelatorioGraficoDTO dto : dados) {
+					total = total.add((BigDecimal) dto.getValor());
+				}
+				
+				params.put("TOTAL", total);
 				
 				Collections.sort(dados, new Comparator<RelatorioGraficoDTO>() {
 					@Override

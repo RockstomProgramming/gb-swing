@@ -71,7 +71,7 @@ public class TransacoesForm extends Formulario {
 	public void iniciarComponentes() {
 		btnAbrir = new JButton("Abrir", new ImageIcon(getClass().getResource("/icon/Folder.png")));
 		btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
-		btnLimpar = new JButton("Limpar", new ImageIcon(getClass().getResource("/icon/Delete.png")));
+		btnLimpar = new JButton("Limpar/Remover", new ImageIcon(getClass().getResource("/icon/Delete.png")));
 		
 		cmbCategoria = new JComboBox<Categoria>();
 		cmbContaBancaria = new JComboBox<ContaBancaria>();
@@ -148,7 +148,16 @@ public class TransacoesForm extends Formulario {
 		btnLimpar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				transacoes.clear();
+				int[] lns = tabela.getSelectedRows();
+				if (lns.length > 0) {
+					int q = 0;
+					for (int linha : lns) {
+						transacoes.remove(linha - q);
+						q++;
+					}
+				} else {
+					transacoes.clear();
+				}
 			}
 		});
 	}
