@@ -30,7 +30,7 @@ public class Entidade implements Serializable {
 
 	@Column
 	private EnumStatus status;
-	
+
 	@Transient
 	private transient final PropertyChangeSupport property = new PropertyChangeSupport(this);
 
@@ -41,15 +41,15 @@ public class Entidade implements Serializable {
 	public void removePropertyChangeListener(final PropertyChangeListener listener) {
 		property.removePropertyChangeListener(listener);
 	}
-	
+
 	public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
 		property.addPropertyChangeListener(propertyName, listener);
 	}
-	
+
 	public void removePropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
 		property.removePropertyChangeListener(propertyName, listener);
 	}
-	
+
 	protected void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
 		property.firePropertyChange(propertyName, oldValue, newValue);
 	}
@@ -88,19 +88,24 @@ public class Entidade implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		Entidade other = (Entidade) obj;
+		}
+		final Entidade other = (Entidade) obj;
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		return true;
 	}
 

@@ -17,7 +17,7 @@ public class Config extends Entidade {
 		return path;
 	}
 
-	public void setPath(String path) {
+	public void setPath(final String path) {
 		this.path = path;
 	}
 
@@ -25,7 +25,7 @@ public class Config extends Entidade {
 		return bloquear;
 	}
 
-	public void setBloquear(boolean bloquear) {
+	public void setBloquear(final boolean bloquear) {
 		this.bloquear = bloquear;
 	}
 
@@ -33,7 +33,7 @@ public class Config extends Entidade {
 		return senha;
 	}
 
-	public void setSenha(String senha) {
+	public void setSenha(final String senha) {
 		this.senha = senha;
 	}
 
