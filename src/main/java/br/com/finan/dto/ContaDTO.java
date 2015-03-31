@@ -16,12 +16,12 @@ import br.com.finan.enumerator.TipoConta;
  *
  * @author Wesley Luiz
  */
-@Aliases({ 
+@Aliases({
 	@CreateAlias(alias = "categoria", associationPath = "categoria", joinType = JoinType.LEFT_OUTER_JOIN),
-	@CreateAlias(alias = "contaBancaria", associationPath = "contaBancaria", joinType = JoinType.LEFT_OUTER_JOIN) 
+	@CreateAlias(alias = "contaBancaria", associationPath = "contaBancaria", joinType = JoinType.LEFT_OUTER_JOIN)
 })
 public class ContaDTO extends DTO {
-	
+
 	@ProjectionEntityProperty("descricao")
 	@ColunaTabela(index = 0, titulo = "Descrição")
 	private String descricao;
@@ -29,7 +29,7 @@ public class ContaDTO extends DTO {
 	@ProjectionEntityProperty("categoria.nome")
 	@ColunaTabela(index = 1, titulo = "Categoria")
 	private String categoria;
-	
+
 	@ProjectionEntityProperty("contaBancaria.descricao")
 	@ColunaTabela(index = 2, titulo = "Conta Bancária")
 	private String contaBancaria;
@@ -41,7 +41,7 @@ public class ContaDTO extends DTO {
 	@ProjectionEntityProperty("valor")
 	@ColunaTabela(index = 4, titulo = "Valor", tipo = String.class, conversor = Conversor.BIG_DECIMAL)
 	private BigDecimal valor;
-	
+
 	@ProjectionEntityProperty("dataPagamento")
 	private Date pagamento;
 
@@ -50,7 +50,7 @@ public class ContaDTO extends DTO {
 
 	@ProjectionEntityProperty("totalParcelas")
 	private Integer totalParcela;
-	
+
 	@ProjectionEntityProperty("tipo")
 	private TipoConta tipo;
 
@@ -106,7 +106,7 @@ public class ContaDTO extends DTO {
 		return contaBancaria;
 	}
 
-	public void setContaBancaria(String contaBancaria) {
+	public void setContaBancaria(final String contaBancaria) {
 		this.contaBancaria = contaBancaria;
 	}
 
@@ -114,7 +114,7 @@ public class ContaDTO extends DTO {
 		return pagamento;
 	}
 
-	public void setPagamento(Date pagamento) {
+	public void setPagamento(final Date pagamento) {
 		this.pagamento = pagamento;
 	}
 
@@ -122,7 +122,7 @@ public class ContaDTO extends DTO {
 		return tipo;
 	}
 
-	public void setTipo(TipoConta tipo) {
+	public void setTipo(final TipoConta tipo) {
 		this.tipo = tipo;
 	}
 }

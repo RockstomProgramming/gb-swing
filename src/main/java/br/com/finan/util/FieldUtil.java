@@ -33,28 +33,28 @@ public final class FieldUtil {
 	}
 
 	public static Method[] getAllMethodsWithAnnotation(final Class<?> clazz, final Class<? extends Annotation> ann) {
-		Set<Method> metodos = new HashSet<>();
-		for (Method m : getAllMethods(clazz)) {
+		final Set<Method> metodos = new HashSet<>();
+		for (final Method m : getAllMethods(clazz)) {
 			if (m.isAnnotationPresent(ann)) {
 				metodos.add(m);
 			}
 		}
-		
+
 		return metodos.toArray(new Method[metodos.size()]);
 	}
-	
+
 	public static Method[] getAllMethods(final Class<?> clazz) {
-		List<Class<?>> classes = getAllSuperclasses(clazz);
+		final List<Class<?>> classes = getAllSuperclasses(clazz);
 		classes.add(clazz);
-		
-		Set<Method> metodos = new HashSet<>();
-		for (Class<?> c : classes) {
+
+		final Set<Method> metodos = new HashSet<>();
+		for (final Class<?> c : classes) {
 			metodos.addAll(Arrays.asList(c.getDeclaredMethods()));
 		}
-		
+
 		return metodos.toArray(new Method[metodos.size()]);
 	}
-	
+
 	/**
 	 * Return a list of all fields (whatever access status, and on whatever
 	 * superclass they were defined) that can be found on this class. This is

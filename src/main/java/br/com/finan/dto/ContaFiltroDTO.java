@@ -15,7 +15,7 @@ public class ContaFiltroDTO extends FiltroDTO {
 		return descricao;
 	}
 
-	public void setDescricao(String descricao) {
+	public void setDescricao(final String descricao) {
 		this.descricao = descricao;
 	}
 
@@ -23,7 +23,7 @@ public class ContaFiltroDTO extends FiltroDTO {
 		return conta;
 	}
 
-	public void setConta(ContaBancaria conta) {
+	public void setConta(final ContaBancaria conta) {
 		this.conta = conta;
 	}
 
@@ -31,7 +31,7 @@ public class ContaFiltroDTO extends FiltroDTO {
 		return categoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(final Categoria categoria) {
 		this.categoria = categoria;
 	}
 

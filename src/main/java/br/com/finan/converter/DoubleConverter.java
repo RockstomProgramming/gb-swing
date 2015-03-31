@@ -7,12 +7,12 @@ import br.com.finan.util.NumberUtil;
 public class DoubleConverter extends Converter<Double, String> {
 
 	@Override
-	public String convertForward(Double s) {
+	public String convertForward(final Double s) {
 		return NumberUtil.obterNumeroFormatado(s);
 	}
 
 	@Override
-	public Double convertReverse(String t) {
+	public Double convertReverse(final String t) {
 		if (t != null && !t.isEmpty()) {
 			return new Double(t);
 		}

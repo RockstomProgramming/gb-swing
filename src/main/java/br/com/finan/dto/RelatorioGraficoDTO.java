@@ -1,7 +1,7 @@
 package br.com.finan.dto;
 
 public class RelatorioGraficoDTO {
-	
+
 	private String chave;
 	private Number valor;
 
@@ -9,7 +9,7 @@ public class RelatorioGraficoDTO {
 		return chave;
 	}
 
-	public void setChave(String chave) {
+	public void setChave(final String chave) {
 		this.chave = chave;
 	}
 
@@ -17,7 +17,7 @@ public class RelatorioGraficoDTO {
 		return valor;
 	}
 
-	public void setValor(Number valor) {
+	public void setValor(final Number valor) {
 		this.valor = valor;
 	}
 }

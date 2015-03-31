@@ -16,7 +16,6 @@ import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.Conta;
 import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.enumerator.TipoConta;
-import br.com.finan.form.principal.PrincipalForm;
 import br.com.finan.util.CriterionInfo;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.NumberUtil;
@@ -91,18 +90,13 @@ public class ContaService {
 		return false;
 	}
 
-	public void atualizarSaldoFramePrincipal() {
-		final String saldo = getSaldoAtual();
-		PrincipalForm.lbSaldo.setText("Saldo: ".concat(saldo));
-	}
-	
 	public String getSaldoAtual(final Long idConta) {
 		final BigDecimal despesa = getSomaValores((BigDecimal) getBuilderSaldoPorConta(idConta).eq("tipo", TipoConta.DESPESA).uniqueResult());
 		final BigDecimal receita = getSomaValores((BigDecimal) getBuilderSaldoPorConta(idConta).eq("tipo", TipoConta.RECEITA).uniqueResult());
 		final String saldo = NumberUtil.obterNumeroFormatado(receita.subtract(despesa, MathContext.UNLIMITED));
 		return saldo;
 	}
-	
+
 	public String getSaldoAtual() {
 		return getSaldoAtual(null);
 	}
@@ -126,7 +120,7 @@ public class ContaService {
 	}
 
 	private CriteriaBuilder getBuilderSaldoPorConta(final Long idConta) {
-		CriteriaBuilder builderSaldo = getBuilderSaldo();
+		final CriteriaBuilder builderSaldo = getBuilderSaldo();
 		if (ObjetoUtil.isReferencia(idConta)) {
 			builderSaldo.eq("contaBancaria.id", idConta);
 		}
@@ -145,7 +139,7 @@ public class ContaService {
 		Date dtInicio = null;
 		try {
 			dtInicio = new SimpleDateFormat("dd/MM/yyyy").parse(dataInicio);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			e.printStackTrace();
 		}
 		return dtInicio;

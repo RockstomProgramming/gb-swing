@@ -21,34 +21,34 @@ import br.com.finan.util.ObjetoUtil;
 public class LoginForm extends Formulario {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String senha;
 	private boolean autenticado;
-	
+
 	public LoginForm() {
-		JPasswordField txtSenha = new JPasswordField(20);
-		
-		JButton btnEntrar = new JButton();
+		final JPasswordField txtSenha = new JPasswordField(20);
+
+		final JButton btnEntrar = new JButton();
 		btnEntrar.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				entrar();
 			}
 		});
-		
-		JPanel panel = new JPanel(new MigLayout());
+
+		final JPanel panel = new JPanel(new MigLayout());
 		panel.add(new JLabel("Digite a senha:"));
 		panel.add(txtSenha);
-		
+
 		add(panel);
-		
+
 		BindingUtil.create(new BindingGroup())
-			.add(txtSenha, "${senha}", txtSenha)
-			.getBindingGroup().bind();
+		.add(txtSenha, "${senha}", txtSenha)
+		.getBindingGroup().bind();
 	}
 
 	private void entrar() {
-		Config config = (Config) HibernateUtil.getCriteriaBuilder(Config.class).eq("senha", getSenha()).uniqueResult();
+		final Config config = (Config) HibernateUtil.getCriteriaBuilder(Config.class).eq("senha", getSenha()).uniqueResult();
 		setAutenticado(ObjetoUtil.isReferencia(config));
 	}
 
@@ -56,7 +56,7 @@ public class LoginForm extends Formulario {
 		return senha;
 	}
 
-	public void setSenha(String senha) {
+	public void setSenha(final String senha) {
 		this.senha = senha;
 	}
 
@@ -64,7 +64,7 @@ public class LoginForm extends Formulario {
 		return autenticado;
 	}
 
-	public void setAutenticado(boolean autenticado) {
+	public void setAutenticado(final boolean autenticado) {
 		this.autenticado = autenticado;
 	}
 

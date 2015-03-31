@@ -62,20 +62,20 @@ public class TransacoesForm extends Formulario {
 	private JButton btnLimpar;
 	private JTable tabela;
 	private JScrollPane scroll;
-	private List<TransacaoDTO> transacoes = ObservableCollections.observableList(new ArrayList<TransacaoDTO>());
-	
+	private final List<TransacaoDTO> transacoes = ObservableCollections.observableList(new ArrayList<TransacaoDTO>());
+
 	public TransacoesForm() {
 		iniciarComponentes();
 	}
-	
-	public void iniciarComponentes() {
+
+	private void iniciarComponentes() {
 		btnAbrir = new JButton("Abrir", new ImageIcon(getClass().getResource("/icon/Folder.png")));
 		btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
 		btnLimpar = new JButton("Limpar/Remover", new ImageIcon(getClass().getResource("/icon/Delete.png")));
-		
+
 		cmbCategoria = new JComboBox<Categoria>();
 		cmbContaBancaria = new JComboBox<ContaBancaria>();
-		
+
 		tabela = new JTable();
 		scroll = new JScrollPane();
 
@@ -87,7 +87,7 @@ public class TransacoesForm extends Formulario {
 
 		addAcoes();
 		addBinding().bind();
-		
+
 		tabela.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(cmbCategoria));
 
 		final JPanel pnlAcao = new JPanel(new MigLayout());
@@ -95,13 +95,13 @@ public class TransacoesForm extends Formulario {
 		pnlAcao.add(btnSalvar);
 		pnlAcao.add(btnLimpar);
 
-		JPanel pnlDados_2 = new JPanel(new MigLayout());
-		pnlDados_2.add(new JLabel("Conta Bancária:"));
-		pnlDados_2.add(cmbContaBancaria);
+		final JPanel pnlConta = new JPanel(new MigLayout());
+		pnlConta.add(new JLabel("Conta Bancária:"));
+		pnlConta.add(cmbContaBancaria);
 
-		JPanel pnlDados = new JPanel(new MigLayout());
+		final JPanel pnlDados = new JPanel(new MigLayout());
 		pnlDados.setBorder(new EtchedBorder());
-		pnlDados.add(pnlDados_2, "growx");
+		pnlDados.add(pnlConta, "growx");
 
 		final JPanel pnl = new JPanel(new MigLayout("wrap 1"));
 		pnl.add(pnlAcao);
@@ -117,16 +117,16 @@ public class TransacoesForm extends Formulario {
 	}
 
 	private BindingGroup addBinding() {
-		BindingGroup bindingGroup = new BindingGroup();
+		final BindingGroup bindingGroup = new BindingGroup();
 		BindingUtil.create(bindingGroup)
-			.addJTableBinding(transacoes, tabela)
-				.addColumnBinding(0, "${descricao}", "Descrição")
-				.addColumnBinding(1, "${data}", "Vencimento", new DateConverter(), String.class)
-				.addColumnBinding(2, "${valor}", "Valor", new DoubleConverter(), String.class)
-				.addColumnBinding(3, "${categoria}", "Categoria", Categoria.class).close()
-			.addJComboBoxBinding(getCategoriaService().obterCategorias(), cmbCategoria)
-			.addJComboBoxBinding(getContaBancariaService().obterContasBancarias(), cmbContaBancaria);
-		
+		.addJTableBinding(transacoes, tabela)
+		.addColumnBinding(0, "${descricao}", "Descrição")
+		.addColumnBinding(1, "${data}", "Vencimento", new DateConverter(), String.class)
+		.addColumnBinding(2, "${valor}", "Valor", new DoubleConverter(), String.class)
+		.addColumnBinding(3, "${categoria}", "Categoria", Categoria.class).close()
+		.addJComboBoxBinding(getCategoriaService().obterCategorias(), cmbCategoria)
+		.addJComboBoxBinding(getContaBancariaService().obterContasBancarias(), cmbContaBancaria);
+
 		return bindingGroup;
 	}
 
@@ -144,14 +144,14 @@ public class TransacoesForm extends Formulario {
 				abrirSelecionadorDeArquivos();
 			}
 		});
-		
+
 		btnLimpar.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				int[] lns = tabela.getSelectedRows();
+			public void actionPerformed(final ActionEvent e) {
+				final int[] lns = tabela.getSelectedRows();
 				if (lns.length > 0) {
 					int q = 0;
-					for (int linha : lns) {
+					for (final int linha : lns) {
 						transacoes.remove(linha - q);
 						q++;
 					}
@@ -182,18 +182,18 @@ public class TransacoesForm extends Formulario {
 			try {
 				final FileInputStream in = new FileInputStream(file);
 				final List<Transaction> tr = BankingUtil.obterTransacoesArquivoOfx(in);
-				for (Transaction transaction : tr) {
-					TransacaoDTO dto = new TransacaoDTO();
+				for (final Transaction transaction : tr) {
+					final TransacaoDTO dto = new TransacaoDTO();
 					dto.setData(transaction.getDatePosted());
 					dto.setDescricao(transaction.getMemo());
 					dto.setValor(transaction.getAmount());
-					
+
 					if (transaction.getTransactionType().equals(TransactionType.DEBIT)) {
 						dto.setTipo(TipoConta.DESPESA);
 					} else if (transaction.getTransactionType().equals(TransactionType.CREDIT)) {
 						dto.setTipo(TipoConta.RECEITA);
 					}
-					
+
 					transacoes.add(dto);
 				}
 
@@ -222,7 +222,7 @@ public class TransacoesForm extends Formulario {
 
 		transacoes.clear();
 		AppUtil.exibirMsgSalvarSucesso(this);
-		getContaService().atualizarSaldoFramePrincipal();
+		AppUtil.atualizarSaldoFramePrincipal();
 	}
 
 	public List<TransacaoDTO> getTransacoes() {

@@ -19,22 +19,22 @@ public final class CriterionInfo {
 
 	private CriterionInfo() {
 	}
-	
-	public static CriteriaBuilder getInstance(Class<?> entidade, Class<? extends DTO> dto) {
-		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(entidade);
-		return gerarProjecoes(builder, dto);
-	}
-	
-	public static CriteriaBuilder getInstance(CriteriaBuilder builder, Class<? extends DTO> dto) {
+
+	public static CriteriaBuilder getInstance(final Class<?> entidade, final Class<? extends DTO> dto) {
+		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(entidade);
 		return gerarProjecoes(builder, dto);
 	}
 
-	private static CriteriaBuilder gerarProjecoes(CriteriaBuilder builder, Class<? extends DTO> dto) {
-		
-		List<Class<?>> superclasses = FieldUtil.getAllSuperclasses(dto);
+	public static CriteriaBuilder getInstance(final CriteriaBuilder builder, final Class<? extends DTO> dto) {
+		return gerarProjecoes(builder, dto);
+	}
+
+	private static CriteriaBuilder gerarProjecoes(final CriteriaBuilder builder, final Class<? extends DTO> dto) {
+
+		final List<Class<?>> superclasses = FieldUtil.getAllSuperclasses(dto);
 		superclasses.add(dto);
-		
-		for (Class<?> clazz : superclasses) {
+
+		for (final Class<?> clazz : superclasses) {
 			if (clazz.isAnnotationPresent(Aliases.class)) {
 				final CreateAlias[] aliasesCreate = clazz.getAnnotation(Aliases.class).value();
 				for (final CreateAlias createAlias : aliasesCreate) {
@@ -42,13 +42,13 @@ public final class CriterionInfo {
 				}
 			}
 		}
-		
+
 		for (final Field field : FieldUtil.getAllFields(dto)) {
 			if (field.isAnnotationPresent(ProjectionEntityProperty.class)) {
 				builder.addProjection(field.getAnnotation(ProjectionEntityProperty.class).value(), field.getName());
 			}
 		}
-		
+
 		return builder.addAliasToBean(dto).close();
 	}
 }

@@ -35,6 +35,7 @@ import org.hibernate.criterion.Projections;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 
+import br.com.finan.annotation.OnGanharFoco;
 import br.com.finan.annotation.PostLoadTable;
 import br.com.finan.component.JMoneyField;
 import br.com.finan.converter.BigDecimalConverter;
@@ -60,7 +61,7 @@ import br.com.finan.validator.MaxLengthValidator;
 public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> extends CadastroForm<T, D> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String TITULO_CAD_RECEITA = "Cadastro de Receita";
 	public static final String TITULO_CAD_DESPESA = "Cadastro de Despesa";
 
@@ -73,22 +74,22 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	private JComboBox<FormaPagamento> cmbFormaPagamento;
 	private JComboBox<Frequencia> cmbRecorrencia;
 	private JTextField txtMaximo;
-	private JPanel pnlCad;
+	private final JPanel pnlCad;
 	private JCheckBox txtPago;
 	private JTextArea txtObservacoes;
-	private PainelFiltro pnlNavegacao;
-	
-	private List<Categoria> categorias;
-	private List<ContaBancaria> contasBancarias;
+	private final PainelFiltro pnlNavegacao;
+
+	private final List<Categoria> categorias;
+	private final List<ContaBancaria> contasBancarias;
 
 	private int limite = 1;
 	private Frequencia recorrencia = Frequencia.MENSAL;
-	
+
 	public CadastroContaForm() {
 		pnlNavegacao = new PainelFiltro();
 		categorias = ObservableCollections.observableList(new ArrayList<Categoria>());
 		contasBancarias = ObservableCollections.observableList(new ArrayList<ContaBancaria>());
-		
+
 		try {
 			txtDescricao = new JTextField(20);
 			txtVencimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
@@ -101,7 +102,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			txtMaximo = new JTextField(10);
 			txtPago = new JCheckBox("Sim");
 			txtObservacoes = new JTextArea(5, 15);
-			
+
 			txtVencimento.setColumns(10);
 			txtPagamento.setColumns(10);
 			txtValor.setColumns(10);
@@ -115,7 +116,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		pnlRecorrencia.add(cmbRecorrencia, "wrap, grow");
 		pnlRecorrencia.add(new JLabel("Limite:"));
 		pnlRecorrencia.add(txtMaximo);
-		
+
 		pnlCad = new JPanel(new MigLayout());
 		pnlCad.add(new JLabel("Descrição:"));
 		pnlCad.add(txtDescricao, "wrap, spanx2");
@@ -138,50 +139,48 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		pnlCad.add(txtObservacoes, "wrap");
 
 		add(pnlCad, "wrap");
-		
+
 		getBinding().addJComboBoxBinding(Arrays.asList(Frequencia.values()), cmbRecorrencia)
-			.add(tabela, "${selectedElement == null}", pnlRecorrencia, "enabled")
-			.add(tabela, "${selectedElement == null}", cmbRecorrencia, "enabled")
-			.add(tabela, "${selectedElement == null}", txtMaximo, "enabled")
-			.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), cmbFormaPagamento)
-			.addJComboBoxBinding(categorias, cmbCategoria)
-			.addJComboBoxBinding(contasBancarias, cmbContaBancaria)
-			.add(this, "${entidade.categoria}", cmbCategoria, "selectedItem")
-			.add(this, "${entidade.contaBancaria}", cmbContaBancaria, "selectedItem")
-			.add(this, "${entidade.formaPagamento}", cmbFormaPagamento, "selectedItem")
-			.add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
-			.add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
-			.add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
-			.add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
-			.add(this, "${entidade.isPago}", txtPago, "selected")
-			.add(this, "${entidade.observacoes}", txtObservacoes, new MaxLengthValidator(225))
-			.add(this, "${recorrencia}", cmbRecorrencia, "selectedItem")
-			.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
-			.add(txtPago, "${selected}", txtPagamento, "enabled")
-			.add(txtPago, "${selected}", cmbFormaPagamento, "enabled")
-			.add(tabela, "${selectedElement.descricao}", txtDescricao)
-			.add(tabela, "${selectedElement.observacoes}", txtObservacoes)
-			.add(tabela, "${selectedElement.valor}", txtValor)
-			.add(tabela, "${selectedElement.isPago}", txtPago, "selected")
-			.add(tabela, "${selectedElement.vencimento}", txtVencimento, new DateConverter())
-			.add(tabela, "${selectedElement.pagamento}", txtPagamento, new DateConverter())
-			.getBindingGroup().bind();
-		
-		calcularContas();
+		.add(tabela, "${selectedElement == null}", pnlRecorrencia, "enabled")
+		.add(tabela, "${selectedElement == null}", cmbRecorrencia, "enabled")
+		.add(tabela, "${selectedElement == null}", txtMaximo, "enabled")
+		.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), cmbFormaPagamento)
+		.addJComboBoxBinding(categorias, cmbCategoria)
+		.addJComboBoxBinding(contasBancarias, cmbContaBancaria)
+		.add(this, "${entidade.categoria}", cmbCategoria, "selectedItem")
+		.add(this, "${entidade.formaPagamento}", cmbFormaPagamento, "selectedItem")
+		.add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
+		.add(this, "${entidade.dataVencimento}", txtVencimento, new DateConverter())
+		.add(this, "${entidade.dataPagamento}", txtPagamento, new DateConverter())
+		.add(this, "${entidade.valor}", txtValor, new BigDecimalConverter())
+		.add(this, "${entidade.isPago}", txtPago, "selected")
+		.add(this, "${entidade.observacoes}", txtObservacoes, new MaxLengthValidator(225))
+		.add(this, "${recorrencia}", cmbRecorrencia, "selectedItem")
+		.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
+		.add(txtPago, "${selected}", txtPagamento, "enabled")
+		.add(txtPago, "${selected}", cmbFormaPagamento, "enabled")
+		.add(tabela, "${selectedElement.descricao}", txtDescricao)
+		.add(tabela, "${selectedElement.observacoes}", txtObservacoes)
+		.add(tabela, "${selectedElement.valor}", txtValor)
+		.add(tabela, "${selectedElement.isPago}", txtPago, "selected")
+		.add(tabela, "${selectedElement.vencimento}", txtVencimento, new DateConverter())
+		.add(tabela, "${selectedElement.pagamento}", txtPagamento, new DateConverter())
+		.getBindingGroup().bind();
+
 	}
-	
-	@Override
-	protected void onGanharFoco() {
+
+	@OnGanharFoco
+	public void iniciarListas() {
 		this.categorias.clear();
 		this.categorias.add(null);
 		this.categorias.addAll(getCategoriaService().obterCategorias());
-	
+
 		this.contasBancarias.clear();
 		this.contasBancarias.addAll(getContaBancariaService().obterContasBancarias());
 	}
-	
+
 	@Override
-	protected void popularInterface(Long idSelecionado) {
+	protected void popularInterface(final Long idSelecionado) {
 		super.popularInterface(idSelecionado);
 		if (ObjetoUtil.isReferencia(getEntidade())) {
 			txtPago.setSelected(getEntidade().isIsPago());
@@ -191,7 +190,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			cmbFormaPagamento.setSelectedItem(getEntidade().getFormaPagamento());
 		}
 	}
-	
+
 	protected String getAnoSelecionado() {
 		return ObjetoUtil.isReferencia(getPnlNavegacao()) ? getPnlNavegacao().getAno() : new SimpleDateFormat("yyyy").format(new Date());
 	}
@@ -199,48 +198,49 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	protected Integer getMesSelecionado() {
 		return ObjetoUtil.isReferencia(getPnlNavegacao()) ? getPnlNavegacao().getMesSelecionado().getReferencia() : getMesAtual().getReferencia();
 	}
-	
+
 	@PostLoadTable
 	public void calcularContas() {
 		if (ObjetoUtil.isReferencia(getPnlNavegacao())) {
-			BigDecimal qntAberto = (BigDecimal) getBuilderRel().eq("isPago", false)
+			final BigDecimal qntAberto = (BigDecimal) getBuilderRel().eq("isPago", false)
 					.getCriteria().setProjection(Projections.sum("valor")).uniqueResult();
-	
-			BigDecimal qntPago = (BigDecimal) getBuilderRel().eq("isPago", true)
+
+			final BigDecimal qntPago = (BigDecimal) getBuilderRel().eq("isPago", true)
 					.getCriteria().setProjection(Projections.sum("valor")).uniqueResult();
-			
-			BigDecimal qntTotal = (BigDecimal) getBuilderRel()
+
+			final BigDecimal qntTotal = (BigDecimal) getBuilderRel()
 					.getCriteria().setProjection(Projections.sum("valor")).uniqueResult();
-			
+
 			getPnlNavegacao().getLbQntAberto().setText(NumberUtil.obterNumeroFormatado(qntAberto));
 			getPnlNavegacao().getLbQntPago().setText(NumberUtil.obterNumeroFormatado(qntPago));
 			getPnlNavegacao().getLbTotal().setText(NumberUtil.obterNumeroFormatado(qntTotal));
 		}
 	}
-	
+
 	private CriteriaBuilder getBuilderRel() {
-		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
+		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
 				.eq("tipo", getClass().getSimpleName().equals(CadastroDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA)
 				.sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
 				.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado());
 		return builder;
 	}
-	
+
 	private Mes getMesAtual() {
 		return Mes.getMesPorReferencia(Integer.valueOf(new SimpleDateFormat("MM").format(new Date())));
 	}
-	
+
+	@Override
 	protected void salvar() {
-		
+
 		if (ObjetoUtil.isReferencia(getEntidade().getId())) {
-			
+
 			HibernateUtil.alterar(getEntidade());
 			AppUtil.exibirMsgAlterarSucesso(this);
-			
+
 		} else {
-		
+
 			final List<Date> vencimentos = new CalcularRecorrencia(getRecorrencia(), ((Conta) getEntidade()).getDataVencimento(), getLimite()).obterVencimentos();
-	
+
 			for (int i = 0; i < getLimite(); i++) {
 				try {
 					final Conta conta = new Conta();
@@ -248,27 +248,28 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 					conta.setParcela(i + 1);
 					conta.setTotalParcelas(getLimite());
 					conta.setDataVencimento(vencimentos.get(i));
+					conta.setContaBancaria(AppUtil.getContaSelecionada());
 					HibernateUtil.salvar(conta);
 				} catch (IllegalAccessException | InvocationTargetException ex) {
 					Logger.getLogger(CadastroContaForm.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-	
+
 			AppUtil.exibirMsgSalvarSucesso(this);
 		}
-		
+
 		iniciarDados();
-		getContaService().atualizarSaldoFramePrincipal();
+		AppUtil.atualizarSaldoFramePrincipal();
 	}
-	
+
 	public class PainelFiltro {
 
 		protected static final String MASK_YEAR = "yyyy";
 
-		private JButton btnMesAnterior;
-		private JButton btnMesProximo;
-		private JTextField txtAno;
-		private JComboBox<Mes> cmbMes;
+		private final JButton btnMesAnterior;
+		private final JButton btnMesProximo;
+		private final JTextField txtAno;
+		private final JComboBox<Mes> cmbMes;
 		private JLabel lbQntAberto;
 		private JLabel lbQntPago;
 		private JLabel lbTotal;
@@ -279,7 +280,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		public PainelFiltro() {
 			mesSelecionado = getMesAtual();
 			ano = new SimpleDateFormat(MASK_YEAR).format(new Date());
-			
+
 			btnMesAnterior = new JButton();
 			btnMesProximo = new JButton();
 			cmbMes = new JComboBox<Mes>();
@@ -287,39 +288,39 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			lbQntAberto = new JLabel();
 			lbQntPago = new JLabel();
 			lbTotal = new JLabel();
-			
+
 			txtAno.setText(ano);
 			txtAno.setEnabled(false);
 			cmbMes.setPreferredSize(new Dimension(150, 0));
-			
-			BindingGroup binding = new BindingGroup();
+
+			final BindingGroup binding = new BindingGroup();
 			BindingUtil.create(binding)
-				.addJComboBoxBinding(Arrays.asList(Mes.values()), cmbMes)
-				.add(this, "${mesSelecionado}", cmbMes, "selectedItem")
-				.add(this, "${ano}", txtAno);
-			
-			JPanel pnlNav = new JPanel(new MigLayout());
+			.addJComboBoxBinding(Arrays.asList(Mes.values()), cmbMes)
+			.add(this, "${mesSelecionado}", cmbMes, "selectedItem")
+			.add(this, "${ano}", txtAno);
+
+			final JPanel pnlNav = new JPanel(new MigLayout());
 			pnlNav.add(btnMesAnterior);
 			pnlNav.add(cmbMes);
 			pnlNav.add(btnMesProximo);
 			pnlNav.add(txtAno, "pushx");
-			
-			JPanel pnlRel = new JPanel(new MigLayout());
+
+			final JPanel pnlRel = new JPanel(new MigLayout());
 			pnlRel.add(addBoldLabel(new JLabel("Em Aberto:")));
 			pnlRel.add(lbQntAberto, "gapright 20");
 			pnlRel.add(addBoldLabel(new JLabel("Pago:")));
 			pnlRel.add(lbQntPago, "gapright 20");
 			pnlRel.add(addBoldLabel(new JLabel("Total:")));
 			pnlRel.add(lbTotal);
-			
+
 			pnlFiltro.add(pnlNav, "wrap, growx");
 			pnlFiltro.add(pnlRel, "wrap, growx");
-			
+
 			binding.bind();
 			addAcoes();
 		}
 
-		private JLabel addBoldLabel(JLabel label) {
+		private JLabel addBoldLabel(final JLabel label) {
 			label.setFont(new Font(null, Font.BOLD, 12));
 			return label;
 		}
@@ -328,7 +329,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			btnMesAnterior.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play_Reversed.png")));
 			btnMesAnterior.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(final java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final ActionEvent evt) {
 					irMesAnterior(cmbMes, txtAno);
 				}
 			});
@@ -336,19 +337,19 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			btnMesProximo.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play.png")));
 			btnMesProximo.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(final java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final ActionEvent evt) {
 					irProximoMes(cmbMes, txtAno);
 				}
 			});
-			
+
 			cmbMes.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
-//					iniciarDados();
+				public void actionPerformed(final ActionEvent e) {
+					//					iniciarDados();
 				}
 			});
 		}
-		
+
 		protected void irMesAnterior(final JComboBox<Mes> txtMes, final JTextField txtAno) {
 			final int mes = getMesSelecionado().getReferencia() - 1;
 			navegar(mes, txtAno, txtMes);
@@ -379,7 +380,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			return mesSelecionado;
 		}
 
-		public void setMesSelecionado(Mes mesSelecionado) {
+		public void setMesSelecionado(final Mes mesSelecionado) {
 			this.mesSelecionado = mesSelecionado;
 		}
 
@@ -387,15 +388,15 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			return ano;
 		}
 
-		public void setAno(String ano) {
+		public void setAno(final String ano) {
 			this.ano = ano;
 		}
-		
+
 		public JLabel getLbQntAberto() {
 			return lbQntAberto;
 		}
-		
-		public void setLbQntAberto(JLabel lbQntAberto) {
+
+		public void setLbQntAberto(final JLabel lbQntAberto) {
 			this.lbQntAberto = lbQntAberto;
 		}
 
@@ -403,21 +404,21 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			return lbQntPago;
 		}
 
-		public void setLbQntPago(JLabel lbQntPago) {
+		public void setLbQntPago(final JLabel lbQntPago) {
 			this.lbQntPago = lbQntPago;
 		}
-		
+
 		public JLabel getLbTotal() {
 			return lbTotal;
 		}
 
-		public void setLbTotal(JLabel lbTotal) {
+		public void setLbTotal(final JLabel lbTotal) {
 			this.lbTotal = lbTotal;
 		}
 	}
-	
+
 	@Override
-	protected JPanel getPanelCadastro() {	
+	protected JPanel getPanelCadastro() {
 		return pnlCad;
 	}
 
@@ -425,7 +426,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		return limite;
 	}
 
-	public void setLimite(int limite) {
+	public void setLimite(final int limite) {
 		this.limite = limite;
 	}
 
@@ -433,7 +434,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		return recorrencia;
 	}
 
-	public void setRecorrencia(Frequencia recorrencia) {
+	public void setRecorrencia(final Frequencia recorrencia) {
 		this.recorrencia = recorrencia;
 	}
 

@@ -24,11 +24,11 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 	private static final long serialVersionUID = 1L;
 
 	private static final String TITULO_FRAME = "Cadastro de Categorias";
-	private JTextField txtNome;
-	private JComboBox<Categoria> cmbSupCategoria;
-	private JPanel pnlCadastro;
-	private List<Categoria> categorias;
-	
+	private final JTextField txtNome;
+	private final JComboBox<Categoria> cmbSupCategoria;
+	private final JPanel pnlCadastro;
+	private final List<Categoria> categorias;
+
 	public CadastroCategoriaForm() {
 		txtNome = new JTextField(20);
 		cmbSupCategoria = new JComboBox<Categoria>();
@@ -39,22 +39,21 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 		pnlCadastro.add(txtNome, "wrap");
 		pnlCadastro.add(new JLabel("Categoria:"));
 		pnlCadastro.add(cmbSupCategoria, "wrap, growx");
-		
+
 		add(pnlCadastro, "growx");
 
-		BindingUtil binding = getBinding();
+		final BindingUtil binding = getBinding();
 		binding.addJComboBoxBinding(categorias, cmbSupCategoria)
-			.add(this, "${entidade.superCategoria}", cmbSupCategoria, "selectedItem")
-			.add(this, "${entidade.nome}", txtNome)
-			.add(tabela, "${selectedElement.nome}", txtNome)
-			.getBindingGroup().bind();
-		
+		.add(this, "${entidade.superCategoria}", cmbSupCategoria, "selectedItem")
+		.add(this, "${entidade.nome}", txtNome)
+		.add(tabela, "${selectedElement.nome}", txtNome)
+		.getBindingGroup().bind();
+
 		remove(pnlFiltro);
-		
-		carregarDados();
+
 		limparCampos(pnlCadastro);
 	}
-	
+
 	@PostLoadTable
 	public void carregarDados() {
 		if (ObjetoUtil.isReferencia(categorias)) {
@@ -62,15 +61,15 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 			categorias.addAll(getCategoriaService().obterCategorias());
 		}
 	}
-	
+
 	@Override
-	protected void popularInterface(Long idSelecionado) {
+	protected void popularInterface(final Long idSelecionado) {
 		super.popularInterface(idSelecionado);
 		if (ObjetoUtil.isReferencia(getEntidade())) {
 			cmbSupCategoria.setSelectedItem(getEntidade().getSuperCategoria());
 		}
 	}
-	
+
 	@Override
 	protected String getTituloFrame() {
 		return TITULO_FRAME;
@@ -82,7 +81,7 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 	}
 
 	@Override
-	protected void adicionarRestricoes(CriteriaBuilder builder) {
+	protected void adicionarRestricoes(final CriteriaBuilder builder) {
 		// TODO Auto-generated method stub
 	}
 

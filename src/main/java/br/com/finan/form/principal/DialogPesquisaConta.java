@@ -18,34 +18,34 @@ import br.com.finan.util.HibernateUtil;
 public class DialogPesquisaConta extends DialogPesquisa<ContaFiltroDTO> {
 
 	private static final long serialVersionUID = 1L;
-	
-	private JTextField txtDescricao;
-	private JComboBox<Categoria> cmbCategoria;
-	private JComboBox<ContaBancaria> cmbContaBancaria;
+
+	private final JTextField txtDescricao;
+	private final JComboBox<Categoria> cmbCategoria;
+	private final JComboBox<ContaBancaria> cmbContaBancaria;
 
 	public DialogPesquisaConta() {
 		txtDescricao = new JTextField(20);
 		cmbCategoria = new JComboBox<Categoria>();
 		cmbContaBancaria = new JComboBox<ContaBancaria>();
-		
-		JPanel pnlFiltro = new JPanel(new MigLayout("wrap 2"));
+
+		final JPanel pnlFiltro = new JPanel(new MigLayout("wrap 2"));
 		pnlFiltro.add(new JLabel("Descrição:"));
 		pnlFiltro.add(txtDescricao, "growx");
 		pnlFiltro.add(new JLabel("Categoria:"));
 		pnlFiltro.add(cmbCategoria, "growx");
 		pnlFiltro.add(new JLabel("Conta Bancária:"));
 		pnlFiltro.add(cmbContaBancaria, "growx");
-		
-		BindingGroup bindingGroup = new BindingGroup();
+
+		final BindingGroup bindingGroup = new BindingGroup();
 		BindingUtil.create(bindingGroup)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
-			.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria)
-			.add(this, "${filtro.descricao}", txtDescricao)
-			.add(this, "${filtro.categoria}", cmbCategoria, "selectedItem")
-			.add(this, "${filtro.conta}", cmbContaBancaria, "selectedItem");
+		.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(Categoria.class).eqStatusAtivo().list(), cmbCategoria)
+		.addJComboBoxBinding(HibernateUtil.getCriteriaBuilder(ContaBancaria.class).eqStatusAtivo().list(), cmbContaBancaria)
+		.add(this, "${filtro.descricao}", txtDescricao)
+		.add(this, "${filtro.categoria}", cmbCategoria, "selectedItem")
+		.add(this, "${filtro.conta}", cmbContaBancaria, "selectedItem");
 
 		bindingGroup.bind();
-		
+
 		add(pnlFiltro, "wrap");
 		add(pnlAcao, "growx");
 

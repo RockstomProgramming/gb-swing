@@ -22,48 +22,48 @@ import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
 
 public class AutenticadorForm extends Formulario {
-	
+
 	private static final String TITULO_FRAME = "Configuração de Bloqueio";
 	private static final long serialVersionUID = 1L;
-	
+
 	private Config config;
-	
+
 	public AutenticadorForm() {
 		config = (Config) HibernateUtil.getCriteriaBuilder(Config.class).uniqueResult();
-		
+
 		if (!ObjetoUtil.isReferencia(config)) {
 			config = new Config();
 		}
-		
-		JPasswordField txtSenha = new JPasswordField(20);
-		JCheckBox ckSenha = new JCheckBox("Bloquear com senha");
-		
-		JButton btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
+
+		final JPasswordField txtSenha = new JPasswordField(20);
+		final JCheckBox ckSenha = new JCheckBox("Bloquear com senha");
+
+		final JButton btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
 		btnSalvar.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				salvar();
 			}
 		});
-		
-		JPanel panel = new JPanel(new MigLayout());
+
+		final JPanel panel = new JPanel(new MigLayout());
 		panel.add(new JLabel("Senha:"));
 		panel.add(txtSenha, "wrap");
 		panel.add(ckSenha, "spanx2, wrap");
 		panel.add(btnSalvar, "spanx2");
-		
+
 		BindingUtil.create(new BindingGroup())
-			.add(this, "${config.senha}", txtSenha)
-			.add(this, "${config.bloquear}", ckSenha, "selected")
-			.add(ckSenha, "${selected}", txtSenha, "enabled")
-			.getBindingGroup().bind();
-		
+		.add(this, "${config.senha}", txtSenha)
+		.add(this, "${config.bloquear}", ckSenha, "selected")
+		.add(ckSenha, "${selected}", txtSenha, "enabled")
+		.getBindingGroup().bind();
+
 		setClosable(true);
 		setTitle(TITULO_FRAME);
 		add(panel);
 		pack();
 	}
-	
+
 	private void salvar() {
 		HibernateUtil.salvarOuAlterar(config);
 		AppUtil.exibirMsgSalvarSucesso(this);
@@ -75,7 +75,7 @@ public class AutenticadorForm extends Formulario {
 		return config;
 	}
 
-	public void setConfig(Config config) {
+	public void setConfig(final Config config) {
 		this.config = config;
 	}
 }

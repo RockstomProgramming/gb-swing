@@ -5,12 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.hibernate.sql.JoinType;
-
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface CreateAlias {
-	String associationPath();
-	String alias();
-	JoinType joinType();
+public @interface OnGanharFoco {
+
 }

@@ -12,10 +12,10 @@ public class DTO {
 
 	@ProjectionEntityProperty("id")
 	private Long id;
-	
-//	@ColunaTabela(index = 0, titulo = "")
+
+	//	@ColunaTabela(index = 0, titulo = "")
 	private boolean selecionado;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -28,7 +28,7 @@ public class DTO {
 		return selecionado;
 	}
 
-	public void setSelecionado(boolean selecionado) {
+	public void setSelecionado(final boolean selecionado) {
 		this.selecionado = selecionado;
 	}
 }

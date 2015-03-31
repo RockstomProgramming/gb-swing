@@ -45,7 +45,7 @@ public final class BankingUtil {
 
 				for (final BankStatementResponseTransaction b : bank) {
 					for (final Transaction transaction : b.getMessage().getTransactionList().getTransactions()) {
-						Double amount = transaction.getAmount();
+						final Double amount = transaction.getAmount();
 						if (amount < 0) {
 							transaction.setAmount(amount * (-1));
 						}

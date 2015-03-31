@@ -28,7 +28,7 @@ public final class HibernateUtil {
 	public static CriteriaBuilder getCriteriaBuilder(final Class<?> entidade) {
 		return new CriteriaBuilder(getSessao().createCriteria(entidade));
 	}
-	
+
 	public static void salvarOuAlterar(final Entidade entidade) {
 		if (ObjetoUtil.isReferencia(entidade.getId())) {
 			alterar(entidade);
@@ -80,9 +80,10 @@ public final class HibernateUtil {
 	}
 
 	public static void inativar(final Long id, final String classe) {
-		if (!ObjetoUtil.isReferencia(id)) 
+		if (!ObjetoUtil.isReferencia(id)) {
 			throw new RuntimeException("O id da entidade está nulo");
-		
+		}
+
 		final Query query = getSessao().createQuery("UPDATE ".concat(classe).concat(" SET status = :status WHERE id = :id"));
 		query.setParameter("status", EnumStatus.INATIVO);
 		query.setParameter("id", id);
@@ -90,7 +91,7 @@ public final class HibernateUtil {
 	}
 
 	public static void excluir(final Long id, final String classe) {
-		Query query = getSessao().createQuery("DELETE FROM ".concat(classe).concat(" WHERE id = :id"));
+		final Query query = getSessao().createQuery("DELETE FROM ".concat(classe).concat(" WHERE id = :id"));
 		query.setParameter("id", id);
 		query.executeUpdate();
 	}

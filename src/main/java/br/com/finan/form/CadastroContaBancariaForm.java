@@ -5,20 +5,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
+import br.com.finan.annotation.PosSalvar;
 import br.com.finan.dao.CriteriaBuilder;
 import br.com.finan.dto.ContaBancariaDTO;
 import br.com.finan.entidade.ContaBancaria;
+import br.com.finan.util.AppUtil;
 
 public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, ContaBancariaDTO> {
 
 	private static final String TITULO_FRAME = "Cadastro de Contas Bancárias";
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlCadastro;
-	
+	private final JPanel pnlCadastro;
+
 	public CadastroContaBancariaForm() {
-		JTextField txtDescricao = new JTextField(20);
-		JTextField txtNumero = new JTextField(10);
-		JTextField txtAgencia = new JTextField(5);
+		final JTextField txtDescricao = new JTextField(20);
+		final JTextField txtNumero = new JTextField(10);
+		final JTextField txtAgencia = new JTextField(5);
 
 		pnlCadastro = new JPanel(new MigLayout());
 		pnlCadastro.add(new JLabel("Descrição:"));
@@ -31,29 +33,34 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 		add(pnlCadastro, "growx");
 
 		getBinding()
-			.add(tabela, "${selectedElement.descricao}", txtDescricao)
-			.add(tabela, "${selectedElement.agencia}", txtAgencia)
-			.add(tabela, "${selectedElement.numero}", txtNumero)
-			.add(this, "${entidade.descricao}", txtDescricao)
-			.add(this, "${entidade.agencia}", txtAgencia)
-			.add(this, "${entidade.numero}", txtNumero).getBindingGroup().bind();
-		
+		.add(tabela, "${selectedElement.descricao}", txtDescricao)
+		.add(tabela, "${selectedElement.agencia}", txtAgencia)
+		.add(tabela, "${selectedElement.numero}", txtNumero)
+		.add(this, "${entidade.descricao}", txtDescricao)
+		.add(this, "${entidade.agencia}", txtAgencia)
+		.add(this, "${entidade.numero}", txtNumero).getBindingGroup().bind();
+
 		remove(pnlFiltro);
 	}
-	
+
+	@PosSalvar
+	public void atualizarContasTelaPrincipal() {
+		AppUtil.atualizarContas();
+	}
+
 	@Override
 	protected JPanel getPanelCadastro() {
 		return pnlCadastro;
 	}
-	
+
 	@Override
 	protected String getTituloFrame() {
 		return TITULO_FRAME;
 	}
 
 	@Override
-	protected void adicionarRestricoes(CriteriaBuilder builder) {
+	protected void adicionarRestricoes(final CriteriaBuilder builder) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

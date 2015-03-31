@@ -6,13 +6,13 @@ import br.com.finan.entidade.Categoria;
 import br.com.finan.enumerator.TipoConta;
 
 public class TransacaoDTO {
-	
+
 	private String descricao;
 	private Double valor;
 	private Date data;
 	private Categoria categoria;
 	private TipoConta tipo;
-	
+
 	@Override
 	public String toString() {
 		return getDescricao().concat(" - ").concat(valor.toString());
@@ -22,7 +22,7 @@ public class TransacaoDTO {
 		return descricao;
 	}
 
-	public void setDescricao(String descricao) {
+	public void setDescricao(final String descricao) {
 		this.descricao = descricao;
 	}
 
@@ -30,7 +30,7 @@ public class TransacaoDTO {
 		return valor;
 	}
 
-	public void setValor(Double valor) {
+	public void setValor(final Double valor) {
 		this.valor = valor;
 	}
 
@@ -38,7 +38,7 @@ public class TransacaoDTO {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(final Date data) {
 		this.data = data;
 	}
 
@@ -46,7 +46,7 @@ public class TransacaoDTO {
 		return categoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(final Categoria categoria) {
 		this.categoria = categoria;
 	}
 
@@ -54,7 +54,7 @@ public class TransacaoDTO {
 		return tipo;
 	}
 
-	public void setTipo(TipoConta tipo) {
+	public void setTipo(final TipoConta tipo) {
 		this.tipo = tipo;
 	}
 }

@@ -3,10 +3,9 @@ package br.com.finan.form.principal;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
@@ -57,7 +56,7 @@ public class PrincipalForm extends JFrame {
 
 	private static final String TITULO_FRAME = "Gerenciador Financeiro";
 	private static final long serialVersionUID = 1L;
-	
+
 	private JButton btnImportar;
 	private JMenuBar jMenuBar1;
 	private JMenuItem menuCadDespsea;
@@ -66,15 +65,16 @@ public class PrincipalForm extends JFrame {
 	private JMenu menuSair;
 	private JMenuItem menuCadCategoria;
 	private JMenuItem menuCadContaBancaria;
-	
+
 	public static JDesktopPane desktop;
 	public static JLabel lbSaldo;
 	public static List<ContaBancaria> contasBancarias;
+	public static JComboBox<ContaBancaria> cmbConta;
 	private JMenu menuRelatorio;
 	private JMenuItem menuExtrato;
 	private JMenuItem menuGrafico;
 	private JMenuItem menuSenha;
-	
+
 	/**
 	 * Creates new form Main
 	 */
@@ -105,82 +105,82 @@ public class PrincipalForm extends JFrame {
 		menuCadastro.add(menuCadDespsea);
 
 		jMenuBar1.add(menuCadastro);
-		
+
 		menuCadastro.add(new JSeparator());
-		
+
 		menuCadCategoria = new JMenuItem("Categoria");
 		menuCadCategoria.setIcon(new ImageIcon(getClass().getResource("/icon/Paste.png")));
 		menuCadastro.add(menuCadCategoria);
-		
+
 		menuCadContaBancaria = new JMenuItem("Conta Bancaria");
 		menuCadContaBancaria.setIcon(new ImageIcon(getClass().getResource("/icon/User.png")));
 		menuCadastro.add(menuCadContaBancaria);
-		
+
 		menuRelatorio = new JMenu("Relatórios");
 		jMenuBar1.add(menuRelatorio);
-		
+
 		menuExtrato = new JMenuItem("Extrato");
 		menuRelatorio.add(menuExtrato);
-		
+
 		menuGrafico = new JMenuItem("Gráfico");
 		menuRelatorio.add(menuGrafico);
-		
-		JMenu menuConfiguracoes = new JMenu("Configurações");
+
+		final JMenu menuConfiguracoes = new JMenu("Configurações");
 		jMenuBar1.add(menuConfiguracoes);
-		
+
 		menuSenha = new JMenuItem("Bloquear com senha");
 		menuConfiguracoes.add(menuSenha);
 
 		menuSair.setText("Sair");
 		jMenuBar1.add(menuSair);
-		
+
 		btnImportar.setText("Importar (*.ofx)");
 		btnImportar.setIcon(new ImageIcon(getClass().getResource("/icon/Arrow_Down.png")));
-		
-		JButton btnSaldo = new JButton("Consultar Saldo", new ImageIcon(getClass().getResource("/icon/Edit-Document-icon.png")));
+
+		final JButton btnSaldo = new JButton("Consultar Saldo", new ImageIcon(getClass().getResource("/icon/Edit-Document-icon.png")));
 		btnSaldo.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				abrirFrame(SaldoForm.class, NomeFrame.SALDO_FRAME.toString());
 			}
 		});
-		
-		JComboBox<ContaBancaria> cmbConta = new JComboBox<ContaBancaria>();
+
+		cmbConta = new JComboBox<ContaBancaria>();
 		cmbConta.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println();
+			public void actionPerformed(final ActionEvent e) {
+				AppUtil.atualizarSaldoFramePrincipal();
 			}
 		});
-		
+
 		contasBancarias = ObservableCollections.observableList(new ArrayList<ContaBancaria>());
-		
+
 		BindingUtil.create(new BindingGroup())
-			.addJComboBoxBinding(contasBancarias, cmbConta)
-			.getBindingGroup().bind();
-		
+		.addJComboBoxBinding(contasBancarias, cmbConta)
+		.getBindingGroup().bind();
+
 		AppUtil.atualizarContas();
-		
+
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setTitle(TITULO_FRAME);
-		
-		JPanel pnlAtalhos = new JPanel(new MigLayout());
+
+		final JPanel pnlAtalhos = new JPanel(new MigLayout());
 		pnlAtalhos.setBorder(new EtchedBorder());
 		pnlAtalhos.add(btnImportar);
 		pnlAtalhos.add(btnSaldo, "push");
 		pnlAtalhos.add(cmbConta);
 		pnlAtalhos.add(lbSaldo);
-		
+
 		setJMenuBar(jMenuBar1);
 		getContentPane().setLayout(new MigLayout());
 		getContentPane().add(pnlAtalhos, "growx, wrap");
 		getContentPane().add(desktop, "push, grow, wrap");
 		getContentPane().setPreferredSize(new Dimension(800, 600));
-		
+
 		pack();
 	}
-	
+
 	private void iniciarDados() {
 		menuCadDespsea.addActionListener(new ActionListener() {
 			@Override
@@ -195,35 +195,35 @@ public class PrincipalForm extends JFrame {
 				abrirFrame(CadastroReceitaForm.class, NomeFrame.CADASTRO_RECEITA_FRAME.toString());
 			}
 		});
-		
+
 		menuCadCategoria.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				abrirFrame(CadastroCategoriaForm.class, NomeFrame.CADASTRO_CATEGORIA_FRAME.toString());
 			}
 		});
 
 		menuCadContaBancaria.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				abrirFrame(CadastroContaBancariaForm.class, NomeFrame.CADASTRO_CONTA_BANCARIA_FRAME.toString());
 			}
 		});
 
 		menuExtrato.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				abrirFrame(RelatorioContaForm.class, NomeFrame.RELATORIO_CONTA_FRAME.toString());
 			}
 		});
-		
+
 		menuGrafico.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				abrirFrame(GraficoContaForm.class, NomeFrame.GRAFICO_CONTA_FRAME.toString());
 			}
 		});
-		
+
 		btnImportar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -237,7 +237,7 @@ public class PrincipalForm extends JFrame {
 				System.exit(0);
 			}
 		});
-		
+
 		menuSenha.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -246,13 +246,13 @@ public class PrincipalForm extends JFrame {
 		});
 	}
 
-	private void abrirFrame(final Class<? extends JInternalFrame> clazz, final String nome, Object... args) {
+	private void abrirFrame(final Class<? extends JInternalFrame> clazz, final String nome, final Object... args) {
 		if (!ObjetoUtil.isReferencia(getFrameDesktop(nome))) {
 			try {
 				JInternalFrame frame = null;
 				if (args.length > 0) {
-					List<Class<?>> tipos = new ArrayList<>();
-					for (Object arg : args) {
+					final List<Class<?>> tipos = new ArrayList<>();
+					for (final Object arg : args) {
 						tipos.add(arg.getClass());
 					}
 					try {
@@ -271,15 +271,15 @@ public class PrincipalForm extends JFrame {
 				ex.printStackTrace();
 			}
 		} else {
-			JInternalFrame frame = (JInternalFrame) getFrameDesktop(nome);
+			final JInternalFrame frame = (JInternalFrame) getFrameDesktop(nome);
 			try {
 				frame.setSelected(true);
-			} catch (PropertyVetoException e) {
+			} catch (final PropertyVetoException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	public Component getFrameDesktop(final String nomeFrame) {
 		final Component[] components = desktop.getComponents();
 		for (final Component comp : components) {
@@ -292,7 +292,7 @@ public class PrincipalForm extends JFrame {
 	}
 
 	enum NomeFrame {
-		CADASTRO_DESPESA_FRAME, 
+		CADASTRO_DESPESA_FRAME,
 		CADASTRO_RECEITA_FRAME,
 		CADASTRO_CATEGORIA_FRAME,
 		CADASTRO_CONTA_BANCARIA_FRAME,

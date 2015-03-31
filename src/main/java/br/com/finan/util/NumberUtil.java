@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public final class NumberUtil {
 
-	private static final NumberFormat format = NumberFormat.getInstance(new Locale("pt", "BR"));
+	private static final NumberFormat FORMATO = NumberFormat.getInstance(new Locale("pt", "BR"));
 	public static final int DECIMAL_DIGITS = 2;
 
 	private NumberUtil() {
@@ -37,9 +37,9 @@ public final class NumberUtil {
 	public static String obterNumeroFormatado(final Object value) {
 		if (ObjetoUtil.isReferencia(value)) {
 			configurarFormato();
-			return format.format(value);
+			return FORMATO.format(value);
 		}
-		
+
 		return "0,00";
 	}
 
@@ -53,7 +53,7 @@ public final class NumberUtil {
 	 */
 	public static BigDecimal obterNumeroFormatado(final String value) {
 		try {
-			return new BigDecimal(format.parse(value).toString()).setScale(DECIMAL_DIGITS, RoundingMode.CEILING);
+			return new BigDecimal(FORMATO.parse(value).toString()).setScale(DECIMAL_DIGITS, RoundingMode.CEILING);
 		} catch (final ParseException ex) {
 			Logger.getLogger(NumberUtil.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -68,7 +68,7 @@ public final class NumberUtil {
 	 * @author Wesley Luiz
 	 */
 	private static void configurarFormato() {
-		format.setMaximumFractionDigits(2);
-		format.setMinimumFractionDigits(2);
+		FORMATO.setMaximumFractionDigits(2);
+		FORMATO.setMinimumFractionDigits(2);
 	}
 }

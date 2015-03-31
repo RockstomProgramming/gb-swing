@@ -8,10 +8,10 @@ import br.com.finan.enumerator.TipoConta;
 public class CadastroReceitaForm extends CadastroContaForm<Conta, ContaDTO> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	protected String getTituloFrame() {
-		return CadastroDespesaForm.TITULO_CAD_RECEITA;
+		return CadastroContaForm.TITULO_CAD_RECEITA;
 	}
 
 	@Override
@@ -19,10 +19,10 @@ public class CadastroReceitaForm extends CadastroContaForm<Conta, ContaDTO> {
 		super.iniciarDados();
 		getEntidade().setTipo(TipoConta.RECEITA);
 	}
-	
+
 	@Override
-	protected void adicionarRestricoes(CriteriaBuilder builder) {
+	protected void adicionarRestricoes(final CriteriaBuilder builder) {
 		builder.sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
-			.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado()).eq("tipo", TipoConta.RECEITA);
+		.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado()).eq("tipo", TipoConta.RECEITA);
 	}
 }

@@ -6,32 +6,32 @@ import javax.swing.event.InternalFrameListener;
 public abstract class FocoListener implements InternalFrameListener {
 
 	@Override
-	public void internalFrameOpened(InternalFrameEvent e) {
+	public void internalFrameOpened(final InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void internalFrameClosing(InternalFrameEvent e) {
+	public void internalFrameClosing(final InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void internalFrameClosed(InternalFrameEvent e) {
+	public void internalFrameClosed(final InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void internalFrameIconified(InternalFrameEvent e) {
+	public void internalFrameIconified(final InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void internalFrameDeiconified(InternalFrameEvent e) {
+	public void internalFrameDeiconified(final InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void internalFrameDeactivated(InternalFrameEvent e) {
+	public void internalFrameDeactivated(final InternalFrameEvent e) {
 		// TODO Auto-generated method stub
 	}
 

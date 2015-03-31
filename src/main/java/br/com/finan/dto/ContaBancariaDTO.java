@@ -4,7 +4,7 @@ import br.com.finan.annotation.ColunaTabela;
 import br.com.finan.annotation.ProjectionEntityProperty;
 
 public class ContaBancariaDTO extends DTO {
-	
+
 	@ProjectionEntityProperty("descricao")
 	@ColunaTabela(index = 0, titulo = "Descrição")
 	private String descricao;
@@ -12,7 +12,7 @@ public class ContaBancariaDTO extends DTO {
 	@ProjectionEntityProperty("numero")
 	@ColunaTabela(index = 1, titulo = "Conta")
 	private String numero;
-	
+
 	@ProjectionEntityProperty("agencia")
 	@ColunaTabela(index = 2, titulo = "Agência")
 	private String agencia;
@@ -21,7 +21,7 @@ public class ContaBancariaDTO extends DTO {
 		return descricao;
 	}
 
-	public void setDescricao(String descricao) {
+	public void setDescricao(final String descricao) {
 		this.descricao = descricao;
 	}
 
@@ -29,7 +29,7 @@ public class ContaBancariaDTO extends DTO {
 		return numero;
 	}
 
-	public void setNumero(String numero) {
+	public void setNumero(final String numero) {
 		this.numero = numero;
 	}
 
@@ -37,7 +37,7 @@ public class ContaBancariaDTO extends DTO {
 		return agencia;
 	}
 
-	public void setAgencia(String agencia) {
+	public void setAgencia(final String agencia) {
 		this.agencia = agencia;
 	}
 }

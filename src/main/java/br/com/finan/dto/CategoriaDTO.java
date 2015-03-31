@@ -9,7 +9,7 @@ import br.com.finan.annotation.ProjectionEntityProperty;
 
 @Aliases({ @CreateAlias(alias = "superCategoria", associationPath = "superCategoria", joinType = JoinType.LEFT_OUTER_JOIN) })
 public class CategoriaDTO extends DTO {
-	
+
 	@ProjectionEntityProperty("nome")
 	@ColunaTabela(index = 0, titulo = "Nome")
 	private String nome;
@@ -22,7 +22,7 @@ public class CategoriaDTO extends DTO {
 		return nome;
 	}
 
-	public void setNome(String nome) {
+	public void setNome(final String nome) {
 		this.nome = nome;
 	}
 
@@ -30,7 +30,7 @@ public class CategoriaDTO extends DTO {
 		return supCategoria;
 	}
 
-	public void setSupCategoria(String supCategoria) {
+	public void setSupCategoria(final String supCategoria) {
 		this.supCategoria = supCategoria;
 	}
 }

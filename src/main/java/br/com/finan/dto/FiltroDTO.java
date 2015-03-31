@@ -5,7 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 
 public class FiltroDTO implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 	private final PropertyChangeSupport property = new PropertyChangeSupport(this);
 
