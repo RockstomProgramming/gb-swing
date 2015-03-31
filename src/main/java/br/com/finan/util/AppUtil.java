@@ -5,6 +5,9 @@ import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
+import br.com.finan.form.principal.PrincipalForm;
+import br.com.finan.service.ContaBancariaService;
+
 /**
  *
  * @author Wesley Luiz
@@ -27,5 +30,10 @@ public final class AppUtil {
 	public static boolean exibirMensagemConfirmacaoInativacao(Component comp) {
 		int result = JOptionPane.showConfirmDialog(comp, "Confirma a exclusão do item selecionado?", "Confirmação de Exclusão", JOptionPane.YES_NO_OPTION);
 		return result == JOptionPane.YES_OPTION ? true : false;
+	}
+	
+	public static void atualizarContas() {
+		PrincipalForm.contasBancarias.clear();
+		PrincipalForm.contasBancarias.addAll(new ContaBancariaService().obterContasBancarias());
 	}
 }

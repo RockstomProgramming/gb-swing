@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.criterion.Order;
@@ -94,12 +95,16 @@ public class ContaService {
 		final String saldo = getSaldoAtual();
 		PrincipalForm.lbSaldo.setText("Saldo: ".concat(saldo));
 	}
-
-	public String getSaldoAtual() {
-		final BigDecimal despesa = getSomaDespesa();
-		final BigDecimal receita = getSomaReceita();
+	
+	public String getSaldoAtual(final Long idConta) {
+		final BigDecimal despesa = getSomaValores((BigDecimal) getBuilderSaldoPorConta(idConta).eq("tipo", TipoConta.DESPESA).uniqueResult());
+		final BigDecimal receita = getSomaValores((BigDecimal) getBuilderSaldoPorConta(idConta).eq("tipo", TipoConta.RECEITA).uniqueResult());
 		final String saldo = NumberUtil.obterNumeroFormatado(receita.subtract(despesa, MathContext.UNLIMITED));
 		return saldo;
+	}
+	
+	public String getSaldoAtual() {
+		return getSaldoAtual(null);
 	}
 
 	public String getSaldoAtual(final BigDecimal despesa, final BigDecimal receita) {
@@ -120,12 +125,30 @@ public class ContaService {
 		return ObjetoUtil.isReferencia(res) ? res : new BigDecimal(0);
 	}
 
+	private CriteriaBuilder getBuilderSaldoPorConta(final Long idConta) {
+		CriteriaBuilder builderSaldo = getBuilderSaldo();
+		if (ObjetoUtil.isReferencia(idConta)) {
+			builderSaldo.eq("contaBancaria.id", idConta);
+		}
+		return builderSaldo;
+	}
+
 	private void addRestricoesBasicas(final String dataInicio, final String dataFim, final TipoConta tipo, final CriteriaBuilder builder) {
 		builder.eqStatusAtivo().eq("isPago", true).eq("tipo", tipo);
 
 		if (!isDataVazia(dataInicio, dataFim)) {
-			builder.between("dataVencimento", dataInicio, dataFim);
+			builder.between("dataVencimento", getData(dataInicio), getData(dataFim));
 		}
+	}
+
+	private Date getData(final String dataInicio) {
+		Date dtInicio = null;
+		try {
+			dtInicio = new SimpleDateFormat("dd/MM/yyyy").parse(dataInicio);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return dtInicio;
 	}
 
 	private BigDecimal getSomaValores(final BigDecimal valor) {

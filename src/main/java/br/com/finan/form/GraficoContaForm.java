@@ -6,8 +6,6 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,10 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.text.MaskFormatter;
 
-import org.jdesktop.beansbinding.BindingGroup;
-
 import net.miginfocom.swing.MigLayout;
 import net.sf.jasperreports.view.JasperViewer;
+
+import org.jdesktop.beansbinding.BindingGroup;
+
 import br.com.finan.dto.RelatorioGraficoDTO;
 import br.com.finan.entidade.Categoria;
 import br.com.finan.entidade.ContaBancaria;
@@ -113,7 +112,7 @@ public class GraficoContaForm extends Formulario {
 				
 				params.put("TOTAL", total);
 				
-				Collections.sort(dados, new Comparator<RelatorioGraficoDTO>() {
+				/*Collections.sort(dados, new Comparator<RelatorioGraficoDTO>() {
 					@Override
 					public int compare(RelatorioGraficoDTO o1, RelatorioGraficoDTO o2) {
 						double v1 = o1.getValor().doubleValue();
@@ -127,17 +126,19 @@ public class GraficoContaForm extends Formulario {
 						
 						return 0;
 					}
-				});
+				});*/
 				
 				JasperViewer frame = JasperUtil.gerarRelatorio(GRAFICO_JASPER, dados, params);
 				frame.setVisible(true);
 			}
 
 			private void adicionarDados(String chave, Number valor) {
-				RelatorioGraficoDTO dto = new RelatorioGraficoDTO();
-				dto.setChave(chave);
-				dto.setValor(valor);
-				dados.add(dto);
+				if (valor.doubleValue() > 0) {
+					RelatorioGraficoDTO dto = new RelatorioGraficoDTO();
+					dto.setChave(chave);
+					dto.setValor(valor);
+					dados.add(dto);
+				}
 			}
 		});
 		

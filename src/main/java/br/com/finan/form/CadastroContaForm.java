@@ -173,6 +173,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	@Override
 	protected void onGanharFoco() {
 		this.categorias.clear();
+		this.categorias.add(null);
 		this.categorias.addAll(getCategoriaService().obterCategorias());
 	
 		this.contasBancarias.clear();
@@ -219,7 +220,9 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	
 	private CriteriaBuilder getBuilderRel() {
 		CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(Conta.class).eqStatusAtivo()
-				.eq("tipo", getClass().getSimpleName().equals(CadastroDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA);
+				.eq("tipo", getClass().getSimpleName().equals(CadastroDespesaForm.class.getSimpleName()) ? TipoConta.DESPESA : TipoConta.RECEITA)
+				.sqlRestrictions("MONTH(dataVencimento) = " + getMesSelecionado())
+				.sqlRestrictions("YEAR(dataVencimento) = " + getAnoSelecionado());
 		return builder;
 	}
 	
@@ -272,7 +275,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 
 		private Mes mesSelecionado;
 		private String ano;
-		
+
 		public PainelFiltro() {
 			mesSelecionado = getMesAtual();
 			ano = new SimpleDateFormat(MASK_YEAR).format(new Date());
@@ -280,7 +283,7 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			btnMesAnterior = new JButton();
 			btnMesProximo = new JButton();
 			cmbMes = new JComboBox<Mes>();
-			txtAno = new JTextField(20);
+			txtAno = new JTextField(10);
 			lbQntAberto = new JLabel();
 			lbQntPago = new JLabel();
 			lbTotal = new JLabel();

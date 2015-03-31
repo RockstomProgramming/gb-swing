@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grafico" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="0.6209213230591563"/>
+	<property name="ireport.zoom" value="0.8264462809917373"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="style1">
@@ -44,65 +44,33 @@
 			</textField>
 		</band>
 	</title>
-	<columnHeader>
-		<band height="20">
-			<staticText>
-				<reportElement style="style1" x="0" y="0" width="305" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Série]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="style1" x="305" y="0" width="202" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Valor]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
-	<detail>
-		<band height="20">
-			<textField>
-				<reportElement style="style1" x="0" y="0" width="305" height="20"/>
-				<textElement verticalAlignment="Middle">
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{chave}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement style="style1" x="305" y="0" width="202" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
 	<summary>
-		<band height="288">
+		<band height="356">
 			<pieChart>
 				<chart isShowLegend="true" theme="default">
-					<reportElement mode="Transparent" x="0" y="82" width="802" height="206"/>
+					<reportElement positionType="FixRelativeToBottom" mode="Transparent" x="83" y="70" width="614" height="218"/>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend position="Bottom"/>
+					<chartLegend position="Left"/>
 				</chart>
 				<pieDataset>
 					<keyExpression><![CDATA[$F{chave}]]></keyExpression>
 					<valueExpression><![CDATA[$F{valor}]]></valueExpression>
 				</pieDataset>
-				<piePlot labelFormat="{0} ({2})">
-					<plot/>
-					<itemLabel/>
+				<piePlot labelFormat="{0} ({2})" legendLabelFormat="{0} (R$ {1})">
+					<plot orientation="Horizontal" labelRotation="50.0"/>
+					<itemLabel>
+						<font size="8"/>
+					</itemLabel>
 				</piePlot>
 			</pieChart>
 			<textField pattern="#,##0.00">
-				<reportElement style="style1" x="305" y="0" width="202" height="20"/>
+				<reportElement style="style1" x="65" y="0" width="202" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{TOTAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="style1" x="0" y="0" width="305" height="20"/>
+				<reportElement style="style1" x="0" y="0" width="65" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 					<paragraph leftIndent="10"/>

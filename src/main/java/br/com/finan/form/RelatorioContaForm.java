@@ -124,7 +124,10 @@ public class RelatorioContaForm extends Formulario {
 	
 	@Override
 	protected void onGanharFoco() {
+		categorias.add(null);
 		categorias.addAll(getCategoriaService().obterCategorias());
+		
+		contasBancarias.add(null);
 		contasBancarias.addAll(getContaBancariaService().obterContasBancarias());
 	}
 	

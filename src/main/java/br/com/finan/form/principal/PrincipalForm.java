@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
@@ -15,6 +17,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -28,6 +31,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
+
+import br.com.finan.entidade.ContaBancaria;
 import br.com.finan.form.AutenticadorForm;
 import br.com.finan.form.CadastroCategoriaForm;
 import br.com.finan.form.CadastroContaBancariaForm;
@@ -35,7 +43,10 @@ import br.com.finan.form.CadastroDespesaForm;
 import br.com.finan.form.CadastroReceitaForm;
 import br.com.finan.form.GraficoContaForm;
 import br.com.finan.form.RelatorioContaForm;
+import br.com.finan.form.SaldoForm;
 import br.com.finan.form.TransacoesForm;
+import br.com.finan.util.AppUtil;
+import br.com.finan.util.BindingUtil;
 import br.com.finan.util.ObjetoUtil;
 
 /**
@@ -58,6 +69,7 @@ public class PrincipalForm extends JFrame {
 	
 	public static JDesktopPane desktop;
 	public static JLabel lbSaldo;
+	public static List<ContaBancaria> contasBancarias;
 	private JMenu menuRelatorio;
 	private JMenuItem menuExtrato;
 	private JMenuItem menuGrafico;
@@ -125,13 +137,39 @@ public class PrincipalForm extends JFrame {
 		btnImportar.setText("Importar (*.ofx)");
 		btnImportar.setIcon(new ImageIcon(getClass().getResource("/icon/Arrow_Down.png")));
 		
+		JButton btnSaldo = new JButton("Consultar Saldo", new ImageIcon(getClass().getResource("/icon/Edit-Document-icon.png")));
+		btnSaldo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				abrirFrame(SaldoForm.class, NomeFrame.SALDO_FRAME.toString());
+			}
+		});
+		
+		JComboBox<ContaBancaria> cmbConta = new JComboBox<ContaBancaria>();
+		cmbConta.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println();
+			}
+		});
+		
+		contasBancarias = ObservableCollections.observableList(new ArrayList<ContaBancaria>());
+		
+		BindingUtil.create(new BindingGroup())
+			.addJComboBoxBinding(contasBancarias, cmbConta)
+			.getBindingGroup().bind();
+		
+		AppUtil.atualizarContas();
+		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setTitle(TITULO_FRAME);
 		
 		JPanel pnlAtalhos = new JPanel(new MigLayout());
 		pnlAtalhos.setBorder(new EtchedBorder());
-		pnlAtalhos.add(btnImportar, "push");
+		pnlAtalhos.add(btnImportar);
+		pnlAtalhos.add(btnSaldo, "push");
+		pnlAtalhos.add(cmbConta);
 		pnlAtalhos.add(lbSaldo);
 		
 		setJMenuBar(jMenuBar1);
@@ -139,7 +177,7 @@ public class PrincipalForm extends JFrame {
 		getContentPane().add(pnlAtalhos, "growx, wrap");
 		getContentPane().add(desktop, "push, grow, wrap");
 		getContentPane().setPreferredSize(new Dimension(800, 600));
-
+		
 		pack();
 	}
 	
@@ -261,6 +299,7 @@ public class PrincipalForm extends JFrame {
 		TRANSACOES_FRAME,
 		RELATORIO_CONTA_FRAME,
 		GRAFICO_CONTA_FRAME,
-		AUTENTICADOR_FRAME;
+		AUTENTICADOR_FRAME,
+		SALDO_FRAME;
 	}
 }
