@@ -360,18 +360,21 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			navegar(mes, txtAno, txtMes);
 		}
 
-		private void navegar(int mes, final JTextField txtAno, final JComboBox<Mes> txtMes) throws NumberFormatException {
+		private void navegar(final int mes, final JTextField txtAno, final JComboBox<Mes> txtMes) throws NumberFormatException {
+			Mes ref;
 			if (mes < 1) {
-				mes = 12;
+				ref = Mes.getMesPorReferencia(12);
 				final Integer a = Integer.valueOf(getAno()) - 1;
 				txtAno.setText(a.toString());
 			} else if (mes > 12) {
-				mes = 1;
+				ref = Mes.getMesPorReferencia(1);
 				final Integer a = Integer.valueOf(getAno()) + 1;
 				txtAno.setText(a.toString());
+			} else {
+				ref = Mes.getMesPorReferencia(mes);
 			}
 
-			txtMes.setSelectedItem(Mes.getMesPorReferencia(mes));
+			txtMes.setSelectedItem(ref);
 			setPagina(1);
 			buscarDados(0);
 		}

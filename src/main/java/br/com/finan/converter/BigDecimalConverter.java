@@ -13,32 +13,35 @@ import org.jdesktop.beansbinding.Converter;
 import br.com.finan.util.NumberUtil;
 
 /**
- *
+ * 
  * @author Wesley Luiz
  */
 public class BigDecimalConverter extends Converter<BigDecimal, String> {
 
-	NumberFormat format = NumberFormat.getInstance(new Locale("pt", "BR"));
+	private static final NumberFormat FORMATO = NumberFormat
+			.getInstance(new Locale("pt", "BR"));
 
 	public BigDecimalConverter() {
-		format.setMaximumFractionDigits(2);
-		format.setMinimumFractionDigits(2);
+		super();
+		FORMATO.setMaximumFractionDigits(2);
+		FORMATO.setMinimumFractionDigits(2);
 	}
 
 	@Override
-	public String convertForward(final BigDecimal s) {
-		return NumberUtil.obterNumeroFormatado(s);
+	public String convertForward(final BigDecimal numero) {
+		return NumberUtil.obterNumeroFormatado(numero);
 	}
 
 	@Override
-	public BigDecimal convertReverse(final String t) {
-		if (t != null && !t.isEmpty()) {
-			try {
-				return new BigDecimal(format.parse(t).toString()).setScale(2, RoundingMode.CEILING);
-			} catch (final ParseException ex) {
-				Logger.getLogger(BigDecimalConverter.class.getName()).log(Level.SEVERE, null, ex);
+	public BigDecimal convertReverse(final String numero) {
+		BigDecimal res = null;
+		try {
+			if (numero != null && !numero.isEmpty()) {
+				res = new BigDecimal(FORMATO.parse(numero).toString()).setScale(2, RoundingMode.CEILING);
 			}
+		} catch (final ParseException ex) {
+			Logger.getLogger(BigDecimalConverter.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		return null;
+		return res;
 	}
 }

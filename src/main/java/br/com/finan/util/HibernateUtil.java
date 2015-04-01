@@ -20,7 +20,11 @@ import br.com.finan.enumerator.EnumStatus;
 public final class HibernateUtil {
 
 	public static EntityManagerFactory factory;
-
+	
+	private HibernateUtil() {
+		super();
+	}
+	
 	public static Session getSessao() {
 		return (Session) factory.createEntityManager().getDelegate();
 	}
@@ -38,52 +42,48 @@ public final class HibernateUtil {
 	}
 
 	public static void salvar(final Entidade entidade) {
-		final EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
+		final EntityManager manager = factory.createEntityManager();
+		manager.getTransaction().begin();
 		try {
-			em.persist(entidade);
-			em.getTransaction().commit();
+			manager.persist(entidade);
+			manager.getTransaction().commit();
 		} catch (final Exception ex) {
-			em.getTransaction().rollback();
+			manager.getTransaction().rollback();
 			Logger.getLogger(HibernateUtil.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
-			em.close();
+			manager.close();
 		}
 	}
 
 	public static void alterar(final Entidade entidade) {
-		final EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
+		final EntityManager manager = factory.createEntityManager();
+		manager.getTransaction().begin();
 		try {
-			em.merge(entidade);
-			em.getTransaction().commit();
+			manager.merge(entidade);
+			manager.getTransaction().commit();
 		} catch (final Exception ex) {
-			em.getTransaction().rollback();
+			manager.getTransaction().rollback();
 			Logger.getLogger(HibernateUtil.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
-			em.close();
+			manager.close();
 		}
 	}
 
 	public static void remover(final Entidade entidade) {
-		final EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
+		final EntityManager manager = factory.createEntityManager();
+		manager.getTransaction().begin();
 		try {
-			em.remove(entidade);
-			em.getTransaction().commit();
+			manager.remove(entidade);
+			manager.getTransaction().commit();
 		} catch (final Exception ex) {
-			em.getTransaction().rollback();
+			manager.getTransaction().rollback();
 			Logger.getLogger(HibernateUtil.class.getName()).log(Level.SEVERE, null, ex);
 		} finally {
-			em.close();
+			manager.close();
 		}
 	}
 
 	public static void inativar(final Long id, final String classe) {
-		if (!ObjetoUtil.isReferencia(id)) {
-			throw new RuntimeException("O id da entidade está nulo");
-		}
-
 		final Query query = getSessao().createQuery("UPDATE ".concat(classe).concat(" SET status = :status WHERE id = :id"));
 		query.setParameter("status", EnumStatus.INATIVO);
 		query.setParameter("id", id);
