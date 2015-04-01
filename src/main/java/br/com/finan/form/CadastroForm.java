@@ -6,18 +6,15 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Converter;
@@ -41,36 +38,26 @@ import br.com.finan.util.FieldUtil;
 import br.com.finan.util.HibernateUtil;
 import br.com.finan.util.ObjetoUtil;
 
+@SuppressWarnings("unchecked")
 public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Formulario {
 
 	private static final long serialVersionUID = 1L;
+	private static final int MAX_REGISTROS = 15;
+
 	private final BindingUtil binding;
-	private final JPanel panelAcoes;
 	private T entidade;
 	private List<D> dados;
 	private Long idSelecionado;
-
 	private int pagina = 1;
 	private Long qntRegistros = 0L;
-	protected final int MAX_REGISTROS = 15;
+	private ComponentesCadastro componentes;
 
-	protected JScrollPane scroll;
-	protected JTable tabela;
-	protected JButton btnSalvar;
-	protected JButton btnNovo;
-	protected JButton btnExcluir;
-	protected JButton btnAtualizar;
-
-	protected JButton btnAnterior;
-	protected JButton btnPrimeiro;
-	protected JButton btnProximo;
-	protected JButton btnUltimo;
-	protected JLabel lbPaginacao;
-	protected JPanel pnlPaginacao;
-	protected JPanel pnlFiltro;
-
-	@SuppressWarnings("rawtypes")
 	public CadastroForm() {
+		super();
+
+		componentes = new ComponentesCadastro();
+		binding = BindingUtil.create(new BindingGroup());
+
 		getContentPane().setLayout(new MigLayout());
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle(getTituloFrame());
@@ -78,174 +65,165 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		setResizable(true);
 		setMaximizable(true);
 
-		final BindingGroup bindingGroup = new BindingGroup();
-		binding = BindingUtil.create(bindingGroup);
+		iniciarEntidade();
+		paginar();
+		adicionarAcoes();
+		adicionarBindings();
+		montarTela();
 
-		btnExcluir = new JButton("Excluir", new ImageIcon(getClass().getResource("/icon/Delete.png")));
-		btnExcluir.addActionListener(new ActionListener() {
+		pack();
+	}
+
+	protected abstract void adicionarRestricoes(CriteriaBuilder builder);
+
+	protected abstract JPanel getPanelCadastro();
+
+	protected abstract String getTituloFrame();
+
+	private void montarTela() {
+		componentes.getScroll().setViewportView(componentes.getTabela());
+
+		componentes.getPanelAcoes().setBorder(new EtchedBorder());
+		componentes.getPanelAcoes().add(componentes.getBtnNovo());
+		componentes.getPanelAcoes().add(componentes.getBtnSalvar());
+		componentes.getPanelAcoes().add(componentes.getBtnExcluir());
+		componentes.getPanelAcoes().add(componentes.getBtnAtualizar(), "push");
+		componentes.getPanelAcoes().add(componentes.getBtnPrimeiro());
+		componentes.getPanelAcoes().add(componentes.getBtnAnterior());
+		componentes.getPanelAcoes().add(componentes.getLbPaginacao());
+		componentes.getPanelAcoes().add(componentes.getBtnProximo());
+		componentes.getPanelAcoes().add(componentes.getBtnUltimo());
+
+		componentes.getPnlFiltro().setBorder(new EtchedBorder());
+
+		add(componentes.getPnlFiltro(), "wrap, growx, pushx");
+		add(componentes.getScroll(), "wrap, push, grow");
+		add(componentes.getPanelAcoes(), "wrap, growx");
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void adicionarBindings() {
+		final ColumnBinding columnBinding = binding.add(componentes.getTabela(), "${selectedElement != null}", componentes.getBtnExcluir(), "enabled").add(componentes.getTabela(), "${selectedElement != null}", componentes.getBtnNovo(), "enabled")
+				.add(componentes.getTabela(), "${selectedElement.id}", this, "idSelecionado").addJTableBinding(dados, componentes.getTabela());
+
+		for (final Field f : getCamposTabela().values()) {
+			final ColunaTabela ann = f.getAnnotation(ColunaTabela.class);
+			final Conversor conversor = ann.conversor();
+			Converter converter = null;
+			if (conversor.equals(Conversor.DEFAULT)) {
+				columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), ann.tipo());
+			} else {
+				switch (conversor) {
+				case DATE:
+					converter = new DateConverter();
+					break;
+				case BIG_DECIMAL:
+					converter = new BigDecimalConverter();
+					break;
+				case DOUBLE:
+					converter = new DoubleConverter();
+					break;
+				}
+				columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), converter, ann.tipo());
+			}
+		}
+	}
+
+	private void adicionarAcoes() {
+		componentes.getBtnExcluir().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				inativar();
 			}
 		});
 
-		btnNovo = new JButton("Novo", new ImageIcon(getClass().getResource("/icon/Add.png")));
-		btnNovo.addActionListener(new ActionListener() {
+		componentes.getBtnNovo().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				iniciarDados();
 			}
 		});
 
-		btnSalvar = new JButton("Salvar", new ImageIcon(getClass().getResource("/icon/Save.png")));
-		btnSalvar.addActionListener(new ActionListener() {
+		componentes.getBtnSalvar().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				salvar();
 			}
 		});
 
-		pnlPaginacao = new JPanel();
-		lbPaginacao = new JLabel();
-
-		btnPrimeiro = new JButton(new ImageIcon(getClass().getResource("/icon/Symbol_Rewind.png")));
-		btnPrimeiro.addActionListener(new ActionListener() {
+		componentes.getBtnPrimeiro().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irPrimeiraPagina();
 			}
 		});
 
-		btnAnterior = new JButton();
-		btnAnterior.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play_Reversed.png")));
-		btnAnterior.addActionListener(new ActionListener() {
+		componentes.getBtnAnterior().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irPaginaAnterior();
 			}
 		});
 
-		btnProximo = new JButton();
-		btnProximo.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_Play.png")));
-		btnProximo.addActionListener(new ActionListener() {
+		componentes.getBtnProximo().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irProximaPagina();
 			}
 		});
 
-		btnUltimo = new JButton();
-		btnUltimo.setIcon(new ImageIcon(getClass().getResource("/icon/Symbol_FastForward.png")));
-		btnUltimo.addActionListener(new ActionListener() {
+		componentes.getBtnUltimo().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				irUltimaPagina();
 			}
 		});
 
-		btnAtualizar = new JButton("Atualizar");
-		btnAtualizar.setIcon(new ImageIcon(getClass().getResource("/icon/refresh.png")));
-		btnAtualizar.addActionListener(new ActionListener() {
+		componentes.getBtnAtualizar().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				paginar();
 			}
 		});
+	}
 
-		iniciarDados();
+	protected void buscarDados(final int primeiroResultado) {
+		final Class<D> dto = (Class<D>) obterTipoDaClasse(1);
+		final CriteriaBuilder builder = CriterionInfo.getInstance(getBuilder(), dto);
+		final Criteria criteria = builder.getCriteria();
+		criteria.setFirstResult(primeiroResultado);
+		criteria.setMaxResults(MAX_REGISTROS);
 
-		tabela = new JTable();
-		scroll = new JScrollPane();
-		scroll.setViewportView(tabela);
+		final List<D> lista = criteria.list();
 
-		final ColumnBinding columnBinding =
-				binding.add(tabela, "${selectedElement != null}", btnExcluir, "enabled")
-				.add(tabela, "${selectedElement != null}", btnNovo, "enabled")
-				.add(tabela, "${selectedElement.id}", this, "idSelecionado")
-				.addJTableBinding(dados, tabela);
-
-		for (final Field f : getCamposTabela().values()) {
-			final ColunaTabela ann = f.getAnnotation(ColunaTabela.class);
-			final Conversor conversor = ann.conversor();
-			Converter converter = null;
-			if (!conversor.equals(Conversor.DEFAULT)) {
-				switch (conversor) {
-				case DATE: converter = new DateConverter(); break;
-				case BIG_DECIMAL: converter = new BigDecimalConverter(); break;
-				case DOUBLE : converter = new DoubleConverter(); break;
-				}
-				columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), converter, ann.tipo());
-			} else {
-				columnBinding.addColumnBinding(ann.index(), "${".concat(f.getName()).concat("}"), ann.titulo(), ann.tipo());
-			}
+		if (ObjetoUtil.isReferencia(dados)) {
+			dados.clear();
+			dados.addAll(lista);
+		} else {
+			dados = ObservableCollections.observableList(lista);
 		}
 
-		panelAcoes = new JPanel(new MigLayout());
-		panelAcoes.setBorder(new EtchedBorder());
-		panelAcoes.add(btnNovo);
-		panelAcoes.add(btnSalvar);
-		panelAcoes.add(btnExcluir);
-		panelAcoes.add(btnAtualizar, "push");
-		panelAcoes.add(btnPrimeiro);
-		panelAcoes.add(btnAnterior);
-		panelAcoes.add(lbPaginacao);
-		panelAcoes.add(btnProximo);
-		panelAcoes.add(btnUltimo);
+		qntRegistros = (Long) getBuilder().getCriteria().setProjection(Projections.rowCount()).uniqueResult();
 
-		pnlFiltro = new JPanel(new MigLayout());
-		pnlFiltro.setBorder(new EtchedBorder());
-
-		add(pnlFiltro, "wrap, growx, pushx");
-		add(scroll, "wrap, push, grow");
-		add(panelAcoes, "wrap, growx");
-
-		pack();
+		validarBtnPaginacao();
+		executarMetodos(PostLoadTable.class);
 	}
 
-	protected void irProximaPagina() {
-		setPagina(getPagina() + 1);
-		paginar();
-	}
-
-	protected void irPaginaAnterior() {
-		setPagina(getPagina() == 0 ? 0 : getPagina() - 1);
-		paginar();
-	}
-
-	protected void irPrimeiraPagina() {
-		setPagina(1);
-		paginar();
-	}
-
-	protected void irUltimaPagina() {
-		setPagina(getQntPagina());
-		paginar();
-	}
-
-	private void paginar() {
-		final int max = getPagina() * MAX_REGISTROS;
-		final int min = max - MAX_REGISTROS;
-		buscarDados(min);
-	}
-
-	protected int getQntPagina() {
-		int p = (int) (getQntRegistros() / MAX_REGISTROS);
-		if (getQntRegistros() % MAX_REGISTROS > 0) {
-			p++;
+	protected void excluir() {
+		if (AppUtil.exibirMensagemConfirmacaoInativacao(this)) {
+			HibernateUtil.excluir(idSelecionado, obterTipoDaClasse(0).getSimpleName());
+			iniciarDados();
 		}
-		return p;
 	}
 
-	protected boolean isUltimaPagina() {
-		return getPagina() >= getQntPagina();
-	}
+	private CriteriaBuilder getBuilder() {
+		final Class<T> entidade = (Class<T>) obterTipoDaClasse(0);
+		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(entidade);
+		builder.eqStatusAtivo();
 
-	protected void validarBtnPaginacao() {
-		btnPrimeiro.setEnabled(getPagina() != 1);
-		btnAnterior.setEnabled(btnPrimeiro.isEnabled());
-		btnProximo.setEnabled(!isUltimaPagina());
-		btnUltimo.setEnabled(!isUltimaPagina());
-		lbPaginacao.setText(getPagina() + " de " + getQntPagina());
+		adicionarRestricoes(builder);
+
+		return builder;
 	}
 
 	private Map<Integer, Field> getCamposTabela() {
@@ -258,6 +236,29 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		return campos;
 	}
 
+	public JPanel getPnlFiltro() {
+		return componentes.getPnlFiltro();
+	}
+
+	public JPanel getPnlPaginacao() {
+		return componentes.getPnlPaginacao();
+	}
+
+	protected int getQntPagina() {
+		int p = (int) (getQntRegistros() / MAX_REGISTROS);
+		if (getQntRegistros() % MAX_REGISTROS > 0) {
+			p++;
+		}
+		return p;
+	}
+
+	protected void inativar() {
+		if (AppUtil.exibirMensagemConfirmacaoInativacao(this)) {
+			HibernateUtil.inativar(idSelecionado, obterTipoDaClasse(0).getSimpleName());
+			iniciarDados();
+		}
+	}
+
 	protected void iniciarDados() {
 		setIdSelecionado(null);
 
@@ -266,42 +267,36 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		limparCampos();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void iniciarEntidade() {
 		try {
 			entidade = (T) obterTipoDaClasse(0).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, null, e);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void buscarDados(final int primeiroResultado) {
-		final Class<D> dto = (Class<D>) obterTipoDaClasse(1);
-		final List<D> lista = CriterionInfo.getInstance(getBuilder(), dto).getCriteria().setFirstResult(primeiroResultado).setMaxResults(MAX_REGISTROS).list();
-
-		if (!ObjetoUtil.isReferencia(dados)) {
-			dados = ObservableCollections.observableList(lista);
-		} else {
-			dados.clear();
-			dados.addAll(lista);
-		}
-
-		qntRegistros = (Long) getBuilder().getCriteria().setProjection(Projections.rowCount()).uniqueResult();
-
-		validarBtnPaginacao();
-		executarMetodos(PostLoadTable.class);
+	protected void irPaginaAnterior() {
+		setPagina(getPagina() == 0 ? 0 : getPagina() - 1);
+		paginar();
 	}
 
-	@SuppressWarnings("unchecked")
-	private CriteriaBuilder getBuilder() {
-		final Class<T> entidade = (Class<T>) obterTipoDaClasse(0);
-		final CriteriaBuilder builder = HibernateUtil.getCriteriaBuilder(entidade);
-		builder.eqStatusAtivo();
+	protected void irPrimeiraPagina() {
+		setPagina(1);
+		paginar();
+	}
 
-		adicionarRestricoes(builder);
+	protected void irProximaPagina() {
+		setPagina(getPagina() + 1);
+		paginar();
+	}
 
-		return builder;
+	protected void irUltimaPagina() {
+		setPagina(getQntPagina());
+		paginar();
+	}
+
+	protected boolean isUltimaPagina() {
+		return getPagina() >= getQntPagina();
 	}
 
 	protected void limparCampos() {
@@ -309,6 +304,21 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		if (ObjetoUtil.isReferencia(panelCadastro)) {
 			limparCampos(panelCadastro);
 		}
+	}
+
+	@SuppressWarnings({ "restriction" })
+	protected Class<?> obterTipoDaClasse(final int index) {
+		return (Class<?>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
+	}
+
+	private void paginar() {
+		final int max = pagina * MAX_REGISTROS;
+		final int min = max - MAX_REGISTROS;
+		buscarDados(min);
+	}
+
+	protected void popularInterface(final Long idSelecionado) {
+		setEntidade((T) HibernateUtil.getCriteriaBuilder(obterTipoDaClasse(0)).eqId(idSelecionado).uniqueResult());
 	}
 
 	protected void salvar() {
@@ -319,37 +329,36 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		iniciarDados();
 	}
 
-	protected void inativar() {
-		if (AppUtil.exibirMensagemConfirmacaoInativacao(this)) {
-			HibernateUtil.inativar(idSelecionado, obterTipoDaClasse(0).getSimpleName());
-			iniciarDados();
-		}
+	protected void validarBtnPaginacao() {
+		componentes.getBtnPrimeiro().setEnabled(getPagina() != 1);
+		componentes.getBtnAnterior().setEnabled(componentes.getBtnPrimeiro().isEnabled());
+		componentes.getBtnProximo().setEnabled(!isUltimaPagina());
+		componentes.getBtnUltimo().setEnabled(!isUltimaPagina());
+		componentes.getLbPaginacao().setText(getPagina() + " de " + getQntPagina());
 	}
 
-	protected void excluir() {
-		if (AppUtil.exibirMensagemConfirmacaoInativacao(this)) {
-			HibernateUtil.excluir(idSelecionado, obterTipoDaClasse(0).getSimpleName());
-			iniciarDados();
-		}
+	public List<D> getDados() {
+		return dados;
 	}
 
-	@SuppressWarnings({ "restriction" })
-	protected Class<?> obterTipoDaClasse(final int index) {
-		return (Class<?>) ((sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl) getClass().getGenericSuperclass()).getActualTypeArguments()[index];
-	}
-
-	protected abstract String getTituloFrame();
-
-	protected abstract void adicionarRestricoes(CriteriaBuilder builder);
-
-	protected abstract JPanel getPanelCadastro();
-
-	public BindingUtil getBinding() {
-		return binding;
+	public T getEntidade() {
+		return entidade;
 	}
 
 	public Long getIdSelecionado() {
 		return idSelecionado;
+	}
+
+	public int getPagina() {
+		return pagina;
+	}
+
+	public Long getQntRegistros() {
+		return qntRegistros;
+	}
+
+	public void setEntidade(final T entidade) {
+		this.entidade = entidade;
 	}
 
 	public void setIdSelecionado(final Long idSelecionado) {
@@ -357,28 +366,20 @@ public abstract class CadastroForm<T extends Entidade, D extends DTO> extends Fo
 		this.idSelecionado = idSelecionado;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void popularInterface(final Long idSelecionado) {
-		setEntidade((T) HibernateUtil.getCriteriaBuilder(obterTipoDaClasse(0)).eqId(idSelecionado).uniqueResult());
-	}
-
-	public T getEntidade() {
-		return entidade;
-	}
-
-	public void setEntidade(final T entidade) {
-		this.entidade = entidade;
-	}
-
-	public int getPagina() {
-		return pagina;
-	}
-
 	public void setPagina(final int pagina) {
 		this.pagina = pagina;
 	}
 
-	public Long getQntRegistros() {
-		return qntRegistros;
+	public BindingUtil getBinding() {
+		return binding;
 	}
+
+	public ComponentesCadastro getComponentes() {
+		return componentes;
+	}
+
+	public void setComponentes(final ComponentesCadastro componentes) {
+		this.componentes = componentes;
+	}
+
 }

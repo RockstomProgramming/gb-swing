@@ -29,6 +29,8 @@ public class AutenticadorForm extends Formulario {
 	private Config config;
 
 	public AutenticadorForm() {
+		super();
+		
 		config = (Config) HibernateUtil.getCriteriaBuilder(Config.class).uniqueResult();
 
 		if (!ObjetoUtil.isReferencia(config)) {

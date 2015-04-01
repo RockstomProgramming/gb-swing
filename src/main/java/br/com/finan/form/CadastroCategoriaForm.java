@@ -46,10 +46,10 @@ public class CadastroCategoriaForm extends CadastroForm<Categoria, CategoriaDTO>
 		binding.addJComboBoxBinding(categorias, cmbSupCategoria)
 		.add(this, "${entidade.superCategoria}", cmbSupCategoria, "selectedItem")
 		.add(this, "${entidade.nome}", txtNome)
-		.add(tabela, "${selectedElement.nome}", txtNome)
+		.add(getComponentes().getTabela(), "${selectedElement.nome}", txtNome)
 		.getBindingGroup().bind();
 
-		remove(pnlFiltro);
+		remove(getPnlFiltro());
 
 		limparCampos(pnlCadastro);
 	}

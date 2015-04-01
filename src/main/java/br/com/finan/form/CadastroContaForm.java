@@ -70,7 +70,6 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 	private JFormattedTextField txtPagamento;
 	private JMoneyField txtValor;
 	private JComboBox<Categoria> cmbCategoria;
-	private JComboBox<ContaBancaria> cmbContaBancaria;
 	private JComboBox<FormaPagamento> cmbFormaPagamento;
 	private JComboBox<Frequencia> cmbRecorrencia;
 	private JTextField txtMaximo;
@@ -96,7 +95,6 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			txtPagamento = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txtValor = new JMoneyField();
 			cmbCategoria = new JComboBox<Categoria>();
-			cmbContaBancaria = new JComboBox<ContaBancaria>();
 			cmbFormaPagamento = new JComboBox<FormaPagamento>();
 			cmbRecorrencia = new JComboBox<Frequencia>();
 			txtMaximo = new JTextField(10);
@@ -118,35 +116,33 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		pnlRecorrencia.add(txtMaximo);
 
 		pnlCad = new JPanel(new MigLayout());
+		pnlCad.setBorder(new EtchedBorder());
 		pnlCad.add(new JLabel("Descrição:"));
-		pnlCad.add(txtDescricao, "wrap, spanx2");
+		pnlCad.add(txtDescricao);
+		pnlCad.add(pnlRecorrencia, "wrap, spany4");
 		pnlCad.add(new JLabel("Vencimento:"));
-		pnlCad.add(txtVencimento);
+		pnlCad.add(txtVencimento, "wrap");
 		pnlCad.add(new JLabel("Valor (R$):"));
 		pnlCad.add(txtValor, "wrap");
 		pnlCad.add(new JLabel("Categoria:"));
-		pnlCad.add(cmbCategoria, "grow");
-		pnlCad.add(new JLabel("Conta Bancária:"));
-		pnlCad.add(cmbContaBancaria, "grow, wrap");
+		pnlCad.add(cmbCategoria, "wrap");
 		pnlCad.add(new JLabel("Pago:"));
-		pnlCad.add(txtPago);
+		pnlCad.add(txtPago, "wrap");
 		pnlCad.add(new JLabel("Forma Pagamento:"));
-		pnlCad.add(cmbFormaPagamento, "grow, wrap");
+		pnlCad.add(cmbFormaPagamento, "wrap");
 		pnlCad.add(new JLabel("Pagamento:"));
-		pnlCad.add(txtPagamento);
-		pnlCad.add(pnlRecorrencia, "wrap, growx, span 2 2");
+		pnlCad.add(txtPagamento, "wrap");
 		pnlCad.add(new JLabel("Observações:"));
-		pnlCad.add(txtObservacoes, "wrap");
+		pnlCad.add(txtObservacoes, "growx");
 
-		add(pnlCad, "wrap");
+		add(pnlCad, "growx");
 
 		getBinding().addJComboBoxBinding(Arrays.asList(Frequencia.values()), cmbRecorrencia)
-		.add(tabela, "${selectedElement == null}", pnlRecorrencia, "enabled")
-		.add(tabela, "${selectedElement == null}", cmbRecorrencia, "enabled")
-		.add(tabela, "${selectedElement == null}", txtMaximo, "enabled")
+		.add(getComponentes().getTabela(), "${selectedElement == null}", pnlRecorrencia, "enabled")
+		.add(getComponentes().getTabela(), "${selectedElement == null}", cmbRecorrencia, "enabled")
+		.add(getComponentes().getTabela(), "${selectedElement == null}", txtMaximo, "enabled")
 		.addJComboBoxBinding(Arrays.asList(FormaPagamento.values()), cmbFormaPagamento)
 		.addJComboBoxBinding(categorias, cmbCategoria)
-		.addJComboBoxBinding(contasBancarias, cmbContaBancaria)
 		.add(this, "${entidade.categoria}", cmbCategoria, "selectedItem")
 		.add(this, "${entidade.formaPagamento}", cmbFormaPagamento, "selectedItem")
 		.add(this, "${entidade.descricao}", txtDescricao, new MaxLengthValidator(50))
@@ -159,12 +155,12 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 		.add(this, "${limite}", txtMaximo, new IntegerValidator(4))
 		.add(txtPago, "${selected}", txtPagamento, "enabled")
 		.add(txtPago, "${selected}", cmbFormaPagamento, "enabled")
-		.add(tabela, "${selectedElement.descricao}", txtDescricao)
-		.add(tabela, "${selectedElement.observacoes}", txtObservacoes)
-		.add(tabela, "${selectedElement.valor}", txtValor)
-		.add(tabela, "${selectedElement.isPago}", txtPago, "selected")
-		.add(tabela, "${selectedElement.vencimento}", txtVencimento, new DateConverter())
-		.add(tabela, "${selectedElement.pagamento}", txtPagamento, new DateConverter())
+		.add(getComponentes().getTabela(), "${selectedElement.descricao}", txtDescricao)
+		.add(getComponentes().getTabela(), "${selectedElement.observacoes}", txtObservacoes)
+		.add(getComponentes().getTabela(), "${selectedElement.valor}", txtValor)
+		.add(getComponentes().getTabela(), "${selectedElement.isPago}", txtPago, "selected")
+		.add(getComponentes().getTabela(), "${selectedElement.vencimento}", txtVencimento, new DateConverter())
+		.add(getComponentes().getTabela(), "${selectedElement.pagamento}", txtPagamento, new DateConverter())
 		.getBindingGroup().bind();
 
 	}
@@ -186,7 +182,6 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			txtPago.setSelected(getEntidade().isIsPago());
 			txtObservacoes.setText(getEntidade().getObservacoes());
 			cmbCategoria.setSelectedItem(getEntidade().getCategoria());
-			cmbContaBancaria.setSelectedItem(getEntidade().getContaBancaria());
 			cmbFormaPagamento.setSelectedItem(getEntidade().getFormaPagamento());
 		}
 	}
@@ -313,8 +308,8 @@ public abstract class CadastroContaForm<T extends Conta, D extends ContaDTO> ext
 			pnlRel.add(addBoldLabel(new JLabel("Total:")));
 			pnlRel.add(lbTotal);
 
-			pnlFiltro.add(pnlNav, "wrap, growx");
-			pnlFiltro.add(pnlRel, "wrap, growx");
+			getPnlFiltro().add(pnlNav, "wrap, growx");
+			getPnlFiltro().add(pnlRel, "wrap, growx");
 
 			binding.bind();
 			addAcoes();

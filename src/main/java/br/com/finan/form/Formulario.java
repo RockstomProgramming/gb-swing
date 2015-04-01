@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
@@ -22,6 +23,8 @@ import br.com.finan.util.FieldUtil;
 public abstract class Formulario extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	protected static final Logger LOG = Logger.getLogger(Formulario.class.getName());
 
 	private final ContaService contaService;
 	private final CategoriaService categoriaService;

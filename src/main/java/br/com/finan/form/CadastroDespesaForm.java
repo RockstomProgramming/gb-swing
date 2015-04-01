@@ -8,11 +8,7 @@ import br.com.finan.enumerator.TipoConta;
 public class CadastroDespesaForm extends CadastroContaForm<Conta, ContaDTO> {
 
 	private static final long serialVersionUID = 1L;
-
-	//	public CadastroDespesaForm() {
-	//		buscarDados(0);
-	//	}
-
+	
 	@Override
 	protected String getTituloFrame() {
 		return CadastroContaForm.TITULO_CAD_DESPESA;

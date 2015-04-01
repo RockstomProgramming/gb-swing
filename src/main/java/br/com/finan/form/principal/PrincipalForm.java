@@ -42,7 +42,6 @@ import br.com.finan.form.CadastroDespesaForm;
 import br.com.finan.form.CadastroReceitaForm;
 import br.com.finan.form.GraficoContaForm;
 import br.com.finan.form.RelatorioContaForm;
-import br.com.finan.form.SaldoForm;
 import br.com.finan.form.TransacoesForm;
 import br.com.finan.util.AppUtil;
 import br.com.finan.util.BindingUtil;
@@ -137,14 +136,6 @@ public class PrincipalForm extends JFrame {
 		btnImportar.setText("Importar (*.ofx)");
 		btnImportar.setIcon(new ImageIcon(getClass().getResource("/icon/Arrow_Down.png")));
 
-		final JButton btnSaldo = new JButton("Consultar Saldo", new ImageIcon(getClass().getResource("/icon/Edit-Document-icon.png")));
-		btnSaldo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				abrirFrame(SaldoForm.class, NomeFrame.SALDO_FRAME.toString());
-			}
-		});
-
 		cmbConta = new JComboBox<ContaBancaria>();
 		cmbConta.addActionListener(new ActionListener() {
 			@Override
@@ -167,8 +158,7 @@ public class PrincipalForm extends JFrame {
 
 		final JPanel pnlAtalhos = new JPanel(new MigLayout());
 		pnlAtalhos.setBorder(new EtchedBorder());
-		pnlAtalhos.add(btnImportar);
-		pnlAtalhos.add(btnSaldo, "push");
+		pnlAtalhos.add(btnImportar, "pushx");
 		pnlAtalhos.add(cmbConta);
 		pnlAtalhos.add(lbSaldo);
 

@@ -33,14 +33,14 @@ public class CadastroContaBancariaForm extends CadastroForm<ContaBancaria, Conta
 		add(pnlCadastro, "growx");
 
 		getBinding()
-		.add(tabela, "${selectedElement.descricao}", txtDescricao)
-		.add(tabela, "${selectedElement.agencia}", txtAgencia)
-		.add(tabela, "${selectedElement.numero}", txtNumero)
+		.add(getComponentes().getTabela(), "${selectedElement.descricao}", txtDescricao)
+		.add(getComponentes().getTabela(), "${selectedElement.agencia}", txtAgencia)
+		.add(getComponentes().getTabela(), "${selectedElement.numero}", txtNumero)
 		.add(this, "${entidade.descricao}", txtDescricao)
 		.add(this, "${entidade.agencia}", txtAgencia)
 		.add(this, "${entidade.numero}", txtNumero).getBindingGroup().bind();
 
-		remove(pnlFiltro);
+		remove(getPnlFiltro());
 	}
 
 	@PosSalvar
